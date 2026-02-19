@@ -24,11 +24,7 @@ class Transaction extends Model
     ];
 
     protected $casts = [
-<<<<<<< Updated upstream
-        'paid_at' => 'datetime',
-=======
         'paid_at' => 'datetime:Y-m-d H:i:s',
->>>>>>> Stashed changes
         'total_amount' => 'integer',
         'paid_amount' => 'integer',
     ];
@@ -56,7 +52,6 @@ class Transaction extends Model
     {
         return $this->hasMany(TransactionDetail::class, 'transaction_id');
     }
-<<<<<<< Updated upstream
 
     public function wallet_movements()
     {
@@ -68,7 +63,3 @@ class Transaction extends Model
         return $this->belongsTo(Settlement::class, 'settlement_id', 'id');
     }
 }
-=======
-    
-}
->>>>>>> Stashed changes
