@@ -21,7 +21,19 @@ class Merchant extends Model
         'district_id',
         'village_id',
         'is_active',
+        'fax',
+        'website',
     ];
+
+    public function getFaxAttribute($value)
+    {
+        return $value ?? '';
+    }
+
+    public function getWebsiteAttribute($value)
+    {
+        return $value ?? '';
+    }
 
     function transactions()
     {
