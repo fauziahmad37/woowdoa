@@ -254,4 +254,31 @@ class UserController extends BaseApiController
             'message' => 'Password updated successfully',
         ], 200);
     }
+
+    /**
+     * Change PIN by auth
+     */
+    public function changePin(Request $request)
+    {
+        $request->validate([
+            'nis' => 'required',
+            'current_pin' => 'required|digits:4',
+            'new_pin' => 'required|digits:4|confirmed',
+        ]);
+        $student = Student::where('nis', $request->nis)->first();
+        if (!$student) {
+            return $this->error('Student not found', 404);
+        }
+
+        if (!\Hash::check($request->current_pin, $student->pin)) {
+            return $this->error('Current PIN is incorrect', 422);
+        }
+
+        $student->pin = \Hash::make($request->new_pin);
+        $student->save();
+        return response()->json([
+            'success' => true,
+            'message' => 'PIN updated successfully',
+        ], 200);
+    }
 }
