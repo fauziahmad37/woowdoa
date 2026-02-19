@@ -33,6 +33,7 @@ public function store(Request $request)
 
         $request->session()->regenerate();
 
+<<<<<<< Updated upstream
         $user = Auth::user()->load('level');
 
         session([
@@ -40,6 +41,10 @@ public function store(Request $request)
             'profile_photo' => $user->profile_photo,
             'hak_akses' => $user->level->user_level_name ?? 'User'
         ]);
+=======
+        // ambil school_id user yang login
+        session(['school_id' => Auth::user()->school_id]);
+>>>>>>> Stashed changes
 
         return redirect()->route('dashboard');
     }
@@ -48,6 +53,10 @@ public function store(Request $request)
         'username' => 'Username atau password salah.',
     ])->onlyInput('username');
 }
+<<<<<<< Updated upstream
+=======
+  
+>>>>>>> Stashed changes
 
     /**
      * Logout

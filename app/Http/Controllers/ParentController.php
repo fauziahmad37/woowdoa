@@ -11,8 +11,11 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+<<<<<<< Updated upstream
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\ParentImport;
+=======
+>>>>>>> Stashed changes
 
 class ParentController extends Controller
 {

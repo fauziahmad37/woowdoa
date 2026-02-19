@@ -110,6 +110,12 @@ Route::resource('parent', ParentController::class);
 // report transaksi santri
 Route::get('/transaksi_santri', [ReportTransactionController::class,'index'])
     ->name('report.transaksi_santri');
+
+    // dashboard
+Route::get('/dashboard-transaksi-siswa', [DashboardTransaksiSiswaController::class, 'index'])
+    ->name('dashboard.transaksi.siswa');
+
+
 Route::get('/transaksi/detail/{id}', [ReportTransactionController::class, 'detail'])
     ->name('transaksi.detail');
 Route::get('/transaksi_santri/export/excel', [ReportTransactionController::class,'exportExcel'])
