@@ -73,10 +73,12 @@ class TransactionController extends BaseApiController
             $query->whereHas('student', function ($q) use ($studentIds) {
                 $q->whereIn('id', $studentIds);
             });
+            $query->whereIn('payment_type_id', [1]);
+            $query->leftJoin('merchants as m', 'transactions.merchant_id', '=', 'm.id');
             $query->leftJoin('students as s', 'transactions.student_id', '=', 's.id');
             $query->leftJoin('classes as c', 's.class_id', '=', 'c.id');
             $query->leftJoin('payment_types as pt', 'transactions.payment_type_id', '=', 'pt.id');
-            $query->select('transactions.*', 's.student_name', 's.nis', 's.class_id', 'c.class_level', 'c.class_name', 'pt.payment_name');
+            $query->select('transactions.*', 's.student_name', 's.nis', 's.class_id', 'c.class_level', 'c.class_name', 'pt.payment_name', 'm.merchant_name');
         }
 
         // 🔹 Clone query untuk hitung total
