@@ -1,0 +1,156 @@
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use App\Http\Controllers\Controller;
+use App\Models\User;
+use App\Models\PasswordResetOtp;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use Carbon\Carbon;
+
+class AuthController extends Controller
+{
+    //
+    public function register(Request $request)
+    {
+        $validatedData = $request->validate([
+            'name' => 'required|max:55',
+            'email' => 'email|required|unique:users',
+            // 'password' => 'required|confirmed'
+            'password' => 'required'
+        ]);
+
+        $validatedData['password'] = Hash::make($request->password);
+
+        $user = User::create($validatedData);
+
+        $accessToken = $user->createToken('authToken')->accessToken;
+
+        return response(['user' => $user, 'access_token' => $accessToken], 201);
+    }
+
+    public function login(Request $request)
+    {
+        $loginData = $request->validate([
+            'username' => 'required',
+            'password' => 'required'
+        ]);
+
+        if (!auth()->attempt($loginData)) {
+            return response(['message' => 'Username atau password tidak sesuai'], 400);
+        }
+
+        // $accessToken = auth()->user()->createToken('authToken')->accessToken;
+        $accessToken = auth()->user()->createToken('authToken')->plainTextToken;
+        // $user = User::where('email', $request->email)->first();
+        // $accessToken = $user->createToken('auth-token')->plainTextToken;
+
+        return response(['user' => auth()->user(), 'access_token' => $accessToken]);
+    }
+
+    public function logout(Request $request)
+    {
+        auth()->user()->tokens()->delete();
+
+        return [
+            'message' => 'Logged out'
+        ];
+    }
+
+    public function sendOtp(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email'
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user) {
+            return response()->json([
+                'message' => 'Email tidak terdaftar'
+            ], 404);
+        }
+
+        $otp = rand(100000, 999999);
+
+        PasswordResetOtp::create([
+            'email' => $user->email,
+            'otp' => $otp,
+            'expired_at' => now()->addMinutes(10)
+        ]);
+
+        Mail::raw("OTP reset password anda: $otp", function ($msg) use ($user) {
+            $msg->to($user->email)
+                ->subject('Reset Password OTP');
+        });
+
+        return response()->json([
+            'message' => 'OTP berhasil dikirim'
+        ]);
+    }
+
+    public function verifyOtp(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'otp' => 'required'
+        ]);
+
+        $otp = PasswordResetOtp::where('email', $request->email)
+            ->where('otp', $request->otp)
+            ->where('is_used', false)
+            ->latest()
+            ->first();
+
+        if (!$otp) {
+            return response()->json(['message' => 'OTP salah'], 400);
+        }
+
+        if (now()->gt($otp->expired_at)) {
+            return response()->json(['message' => 'OTP kadaluarsa'], 400);
+        }
+
+        return response()->json(['message' => 'OTP valid']);
+    }
+
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'otp' => 'required',
+            'password' => 'required|confirmed|min:6'
+        ]);
+
+        $otp = PasswordResetOtp::where('email', $request->email)
+            ->where('otp', $request->otp)
+            ->where('is_used', false)
+            ->latest()
+            ->first();
+
+        if (!$otp || now()->gt($otp->expired_at)) {
+            return response()->json([
+                'message' => 'OTP tidak valid'
+            ], 400);
+        }
+
+        $user = User::where('email', $request->email)->first();
+
+        $user->update([
+            'password' => Hash::make($request->password)
+        ]);
+
+        // tandai otp sudah dipakai
+        $otp->update([
+            'is_used' => true
+        ]);
+
+        // jika pakai sanctum
+        $user->tokens()->delete();
+
+        return response()->json([
+            'message' => 'Password berhasil direset'
+        ]);
+    }
+}
