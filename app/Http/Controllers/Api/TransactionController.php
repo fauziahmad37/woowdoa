@@ -87,7 +87,7 @@ class TransactionController extends BaseApiController
 
         // JIKA USER LOGIN DENGAN ROLE SELAIN MERCHANT ATAU 2, MAKA TIDAK BOLEH MENGAKSES ENDPOINT INI
         $user = auth()->user();
-        if (!in_array($user->user_level_id, ['2'])) {
+        if (!in_array($user->user_level_id, ['2','3'])) {
             return $this->error('Hanya merchant yang dapat mengakses endpoint ini', 403);
         }
 
@@ -225,7 +225,7 @@ class TransactionController extends BaseApiController
 
             // ==========================================================================
 
-            // Simpan ke wallet movement
+            // Simpan ke wallet movement, wallet movement ini digunakan untuk mencatat setiap perubahan saldo di e-wallet santri
             $ewalletMovement = WalletMovement::create([
                 'ewallet_id' => $ewallet->id,
                 'transaction_id' => $transaction->id,
@@ -233,6 +233,21 @@ class TransactionController extends BaseApiController
                 'amount' => $request->amount,
                 'balance_before' => $saldoBefore,
                 'balance_after' => $saldoAfter,
+                'description' => 'Pembayaran di merchant ' . $user->merchant->merchant_name,
+            ]);
+
+            // Simpan ke wallet merchant, wallet movement ini digunakan untuk mencatat setiap perubahan saldo di e-wallet merchant
+            // get ewallet merchant
+            $ewalletMerchant = Ewallet::where('user_id', $user->id)->first();
+            $saldoBeforeMerchant = $ewalletMerchant->balance;
+            $saldoAfterMerchant = $saldoBeforeMerchant + $request->amount;
+            $ewalletMerchant = WalletMovement::create([
+                'ewallet_id' => $ewalletMerchant->id,
+                'transaction_id' => $transaction->id,
+                'type' => 'credit',
+                'amount' => $request->amount,
+                'balance_before' => $saldoBeforeMerchant,
+                'balance_after' => $saldoAfterMerchant,
                 'description' => 'Pembayaran di merchant ' . $user->merchant->merchant_name,
             ]);
 
