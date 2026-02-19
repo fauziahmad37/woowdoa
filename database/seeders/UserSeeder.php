@@ -39,7 +39,7 @@ class UserSeeder extends Seeder
         User::create([
             'complete_name' => 'Fauzan Tamsin',
             'username' => 'fauzan',
-            'email' => 'fauzan.tamsin09@gmail.com',
+            'email' => 'fauzantamsin09@gmail.com',
             'password' => bcrypt('123456'),
             'user_level_id' => 2,
             'last_login' => now(),
