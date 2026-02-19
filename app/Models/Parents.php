@@ -26,7 +26,6 @@ class Parents extends Authenticatable
         'address',
         'active',
         'user_id',
-<<<<<<< Updated upstream
         'school_id',
         'gender',
         'dead_or_alive',
@@ -40,9 +39,6 @@ class Parents extends Authenticatable
         'postal_code',
         'student_id',
         'nik',
-=======
-        'school_id'
->>>>>>> Stashed changes
     ];
 
     /**

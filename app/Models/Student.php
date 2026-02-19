@@ -35,11 +35,6 @@ class Student extends Authenticatable
         'saldo',
         'user_id',
         'pin',
-<<<<<<< Updated upstream
-
-=======
-       
->>>>>>> Stashed changes
     ];
 
     /**

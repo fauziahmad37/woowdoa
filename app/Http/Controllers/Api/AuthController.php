@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Card;
 use App\Models\User;
 use App\Models\PasswordResetOtp;
 use App\Models\Student;
@@ -70,6 +71,15 @@ class AuthController extends Controller
                 if ($student) {
                     $user->nis = $student->nis; // tambahkan nis ke response
                     $user->balance = $student->ewallet ? $student->ewallet->balance : 0; // tambahkan balance ke response
+
+                    // cari kartu aktif berdasarkan nis
+                    $card = Card::where('nis', $student->nis)->where('status', 'active')->first();
+                    if ($card) {
+                        $user->card_number = $card->card_number; // tambahkan card_number ke response
+                    } else {
+                        $user->card_number = null; // jika tidak ada kartu aktif, set card_number ke null
+                    }
+
                 }
             }
         }
