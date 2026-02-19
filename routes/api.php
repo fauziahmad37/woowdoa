@@ -35,6 +35,9 @@ Route::prefix('v1')
         // Route::get('/projects/search/{title}', [ProjectController::class, 'search'])
         //     ->name('projects.search');
 
+        // REFRESH TOKEN
+        Route::post('/refresh-token', [AuthController::class, 'refreshToken']);
+
         // Profile
         Route::get('/users', [UserController::class, 'index']);
         Route::get('/users/profile', [UserController::class, 'profile']);

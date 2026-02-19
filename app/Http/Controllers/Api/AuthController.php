@@ -159,4 +159,22 @@ class AuthController extends Controller
             'message' => 'Password berhasil direset'
         ]);
     }
+
+    public function refreshToken(Request $request)
+    {
+
+        $user = $request->user();
+
+
+        // hapus token lama yang sedang dipakai
+        $request->user()->currentAccessToken()->delete();
+
+        // buat token baru
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        return response()->json([
+            'message' => 'Token berhasil diperbarui',
+            'token' => $token,
+        ]);
+    }
 }
