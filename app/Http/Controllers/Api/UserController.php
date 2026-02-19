@@ -57,6 +57,7 @@ class UserController extends BaseApiController
         $merchant->city_name = $merchant->city ? $merchant->city->name : null;
         $merchant->district_name = $merchant->district ? $merchant->district->name : null;
         $merchant->village_name = $merchant->village ? $merchant->village->name : null;
+        $merchant->bank_name = $merchant->bank ? $merchant->bank->nama : null;
 
         return $this->success($merchant, 'User profile retrieved successfully');
     }
@@ -202,9 +203,8 @@ class UserController extends BaseApiController
         }
 
         $parent = Parents::where('user_id', $user->id)->first(); // ambil id parent
-        $children = Student::where('parent_id', $parent->id)->get(); // ambil data anak berdasarkan id parent
-        $parentFather = Parents::where('student_id', $children->pluck('id')); // ambil data ayah berdasarkan
-
+        $children = Student::where('parent_id', $parent->id)->first(); // ambil data anak berdasarkan id parent
+        $parentFather = Parents::where('id', $children->parent_id)->first(); // ambil data ayah berdasarkan
         $parentFather->children = $children; // tambahkan data anak ke dalam response
 
         $parentFather->province_name = $parentFather->province ? $parentFather->province->name : null;
@@ -213,17 +213,18 @@ class UserController extends BaseApiController
         $parentFather->village_name = $parentFather->village ? $parentFather->village->name : null;
 
         // ambil data ibu berdasarkan id anak yang sama dengan id anak yang dimiliki oleh ayah
-        $parentMother = Parents::where('student_id', $children->pluck('id'))->where('gender', 'perempuan')->first(); // ambil data ibu berdasarkan
-        $parentMother->children = $children; // tambahkan data anak ke dalam response
+        // $parentMother = Parents::where('student_id', $children->pluck('id'))->where('gender', 'perempuan')->first(); // ambil data ibu berdasarkan
 
-        $parentMother->province_name = $parentMother->province ? $parentMother->province->name : null;
-        $parentMother->city_name = $parentMother->city ? $parentMother->city->name : null;
-        $parentMother->district_name = $parentMother->district ? $parentMother->district->name : null;
-        $parentMother->village_name = $parentMother->village ? $parentMother->village->name : null;
+        // $parentMother->children = $children; // tambahkan data anak ke dalam response
+
+        // $parentMother->province_name = $parentMother->province ? $parentMother->province->name : null;
+        // $parentMother->city_name = $parentMother->city ? $parentMother->city->name : null;
+        // $parentMother->district_name = $parentMother->district ? $parentMother->district->name : null;
+        // $parentMother->village_name = $parentMother->village ? $parentMother->village->name : null;
 
         $data = [
             'father' => $parentFather,
-            'mother' => $parentMother,
+            // 'mother' => $parentMother,
             'children' => $children
         ];
 
