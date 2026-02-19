@@ -203,7 +203,7 @@ class UserController extends BaseApiController
 
         $parent = Parents::where('user_id', $user->id)->first(); // ambil id parent
         $children = Student::where('parent_id', $parent->id)->get(); // ambil data anak berdasarkan id parent
-        $parentFather = Parents::where('student_id', $children->pluck('id'))->where('gender', 'laki-laki')->first(); // ambil data ayah berdasarkan
+        $parentFather = Parents::where('student_id', $children->pluck('id')); // ambil data ayah berdasarkan
 
         $parentFather->children = $children; // tambahkan data anak ke dalam response
 
