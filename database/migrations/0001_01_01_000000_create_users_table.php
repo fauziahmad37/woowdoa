@@ -23,8 +23,8 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('profile_photo', 2048)->nullable();
             $table->integer('merchant_id')->nullable();
-            $table->integer('store_id')->nullable();
             $table->timestamp('expired_at')->nullable();
+            $table->text('device_token')->nullable();
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
