@@ -127,9 +127,9 @@ class TransactionController extends BaseApiController
 
         try {
             $santri = Student::select('students.id', 'students.student_name', 'students.nis', 'students.user_id', 'students.pin', 'students.class_id', 'students.school_id', 'students.va_number', 'students.parent_id')
-            ->leftJoin('cards as c', 'students.nis', '=', 'c.nis')
-            ->where('c.card_number', $request->card_number)
-            ->first();
+                ->leftJoin('cards as c', 'students.nis', '=', 'c.nis')
+                ->where('c.card_number', $request->card_number)
+                ->first();
 
             // cek santri
             if (!$santri) {
@@ -178,7 +178,9 @@ class TransactionController extends BaseApiController
             $saldoAfter  = $saldoBefore - $request->amount;
 
             // buat kode transaksi
-            $transactionCode = 'TRX-' . Str::upper(Str::random(10));
+            do {
+                $transactionCode = 'TRX-' . Str::upper(Str::random(10));
+            } while (Transaction::where('transaction_code', $transactionCode)->exists()); // pastikan kode transaksi unik
 
             $transaction = Transaction::create([
                 'merchant_id' => $user->merchant_id,
@@ -188,21 +190,9 @@ class TransactionController extends BaseApiController
                 'total_amount' => $request->amount,
                 'paid_amount' => $request->amount,
                 'status' => 'pending',
+                'payment_type_id' => 1, // Tambahkan ini untuk menyimpan tipe pembayaran
+                'card_number' => $request->card_number, // Simpan nomor kartu untuk referensi
             ]);
-
-            // UPDATE KE API BANK UNTUK PROSES PEMBAYARAN (SIMULASI)
-            // Simulasi delay proses pembayaran =========================================
-            $bankResult = $this->processToBank($request, $transaction->id);
-            if ($bankResult->getStatusCode() != 200) {
-                DB::rollBack();
-                return $this->error('Gagal memproses pembayaran ke bank', 500);
-            } else {
-                // Update status transaksi menjadi 'paid'
-                $transaction->update(['status' => 'paid', 'paid_at' => now()]);
-            }
-
-            // ==========================================================================
-
 
             $qty = $request->qty ?? 1;
             // Simpan detail transaksi
@@ -214,6 +204,20 @@ class TransactionController extends BaseApiController
                 'sub_total' => $request->amount * $qty,
                 'description' => 'Pembayaran di merchant ' . $user->merchant->merchant_name,
             ]);
+
+            // UPDATE KE API BANK UNTUK PROSES PEMBAYARAN (SIMULASI)
+            // Simulasi delay proses pembayaran =========================================
+            $bankResult = $this->processToBank($request, $transaction->id);
+            if ($bankResult->getStatusCode() != 200) {
+                // DB::rollBack();
+                DB::commit();
+                return $this->error('Gagal memproses pembayaran ke bank', 500);
+            } else {
+                // Update status transaksi menjadi 'paid'
+                $transaction->update(['status' => 'paid', 'paid_at' => now()]);
+            }
+
+            // ==========================================================================
 
             // Simpan ke wallet movement
             $ewalletMovement = WalletMovement::create([
@@ -345,5 +349,6 @@ class TransactionController extends BaseApiController
         sleep(10);
 
         return $this->success($transaction, 'Transaksi berhasil diproses ke bank');
+        // return $this->error('Gagal memproses pembayaran ke bank', 500);
     }
 }
