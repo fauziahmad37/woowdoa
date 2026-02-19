@@ -11,6 +11,10 @@ class Province extends Model
     public $incrementing = false; // karena id CHAR
     protected $keyType = 'string';
 
+    protected $fillable = [
+        'name',
+    ];
+
     public function cities()
     {
         return $this->hasMany(City::class, 'province_id', 'id');
