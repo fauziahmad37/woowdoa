@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\TransactionController;
 use App\Http\Controllers\Api\ChatController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\RegionController;
+use App\Http\Controllers\Api\JadwalKegiatanController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 
@@ -84,6 +85,9 @@ Route::prefix('v1')
         Route::get('/cities/{provinceId}', [RegionController::class, 'cities']);
         Route::get('/districts/{cityId}', [RegionController::class, 'districts']);
         Route::get('/villages/{districtId}', [RegionController::class, 'villages']);
+
+        // Jadwal Kegiatan
+        Route::get('/jadwal_kegiatan', [JadwalKegiatanController::class, 'index']);
     });
 
 Route::group(
