@@ -73,7 +73,7 @@ class AuthController extends Controller
             ], 404);
         }
 
-        $otp = rand(100000, 999999);
+        $otp = rand(10000, 99999);
 
         PasswordResetOtp::create([
             'email' => $user->email,
