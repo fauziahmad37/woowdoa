@@ -46,7 +46,7 @@ class EwalletController extends BaseApiController
     public function topup(Request $request)
     {
         $request->validate([
-            'card_number' => 'required|exists:ewallets,id',
+            'card_number' => 'required|exists:cards,card_number',
             'amount' => 'required|numeric|min:1',
         ]);
 
@@ -54,7 +54,7 @@ class EwalletController extends BaseApiController
 
         // hanya admin
         if ($user->user_level_id != '1') {
-            return $this->error('Unauthorized', 403);
+            return $this->error('Hanya admin yang dapat melakukan top-up', 403);
         }
 
         $student = Student::select('students.id', 'students.student_name', 'students.nis', 'students.user_id')
