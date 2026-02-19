@@ -203,9 +203,7 @@ class TransactionController extends BaseApiController
             $transactionDetail = TransactionDetail::create([
                 'transaction_id' => $transaction->id,
                 'product_name' => $request->product_name ?? 'Pembayaran Merchant',
-                'quantity' => $qty,
                 'price' => $request->amount,
-                'sub_total' => $request->amount * $qty,
                 'description' => 'Pembayaran di merchant ' . $user->merchant->merchant_name,
                 'created_at' => now(),
                 'updated_at' => now()
@@ -236,12 +234,18 @@ class TransactionController extends BaseApiController
                 'description' => 'Pembayaran di merchant ' . $user->merchant->merchant_name,
             ]);
 
+            // potong saldo
+            $ewallet->update([
+                'balance' => $saldoAfter
+            ]);
+
             // Simpan ke wallet merchant, wallet movement ini digunakan untuk mencatat setiap perubahan saldo di e-wallet merchant
             // get ewallet merchant
             $ewalletMerchant = Ewallet::where('user_id', $user->id)->first();
             $saldoBeforeMerchant = $ewalletMerchant->balance;
             $saldoAfterMerchant = $saldoBeforeMerchant + $request->amount;
-            $ewalletMerchant = WalletMovement::create([
+
+            $ewalletMovementMerchant = WalletMovement::create([
                 'ewallet_id' => $ewalletMerchant->id,
                 'transaction_id' => $transaction->id,
                 'type' => 'credit',
@@ -251,9 +255,9 @@ class TransactionController extends BaseApiController
                 'description' => 'Pembayaran di merchant ' . $user->merchant->merchant_name,
             ]);
 
-            // potong saldo
-            $ewallet->update([
-                'balance' => $saldoAfter
+            // Update saldo e-wallet merchant
+            $ewalletMerchant->update([
+                'balance' => $saldoAfterMerchant
             ]);
 
             // Siapkan data notifikasi
