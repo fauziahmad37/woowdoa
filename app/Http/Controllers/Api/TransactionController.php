@@ -177,11 +177,7 @@ class TransactionController extends BaseApiController
             $saldoBefore = $ewallet->balance;
             $saldoAfter  = $saldoBefore - $request->amount;
 
-            // buat kode transaksi
-            do {
-                $transactionCode = 'TRX-' . Str::upper(Str::random(10));
-            } while (Transaction::where('transaction_code', $transactionCode)->exists()); // pastikan kode transaksi unik
-
+            $transactionCode = $this->generateTransactionCode();
             $transaction = Transaction::create([
                 'merchant_id' => $user->merchant_id,
                 'student_id' => $santri->id,
@@ -346,9 +342,21 @@ class TransactionController extends BaseApiController
         }
 
         // Simulasi delay proses pembayaran
-        sleep(10);
+        sleep(2);
 
         return $this->success($transaction, 'Transaksi berhasil diproses ke bank');
         // return $this->error('Gagal memproses pembayaran ke bank', 500);
+    }
+
+    /**
+     * Generate kode transaksi unik
+     */
+    function generateTransactionCode()
+    {
+        do {
+            $code = 'TRX-' . now()->format('Ymd') . Str::upper(Str::random(6));
+        } while (Transaction::where('transaction_code', $code)->exists());
+
+        return $code;
     }
 }
