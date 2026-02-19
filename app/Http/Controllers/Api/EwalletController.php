@@ -165,8 +165,9 @@ class EwalletController extends BaseApiController
             ->when($request->end_date, function ($query) use ($request) {
                 $query->where('created_at', '<=', \Carbon\Carbon::parse($request->end_date)->endOfDay());
             })
-            ->orderBy('created_at', 'desc')
+            ->orderBy('id', 'desc')
             ->get();
+
         return $this->success($history, 'Ewallet transaction history retrieved successfully');
     }
 
