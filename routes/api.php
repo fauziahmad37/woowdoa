@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\NewsController;
+use App\Http\Controllers\Api\EventsController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 
 Route::post('register', '\App\Http\Controllers\Api\AuthController@register');
@@ -31,6 +32,7 @@ Route::prefix('v1')
 
         // Route::apiResource('projects', ProjectController::class);
         Route::apiResource('news', NewsController::class);
+        Route::apiResource('events', EventsController::class);
     });
 
 Route::group(
