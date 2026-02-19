@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Services\FirebaseService;
 
 use App\Http\Controllers\Api\BaseApiController;
+use App\Models\Ewallet;
 use App\Services\ImageUploadService;
 
 use Illuminate\Http\Request;
@@ -12,6 +13,7 @@ use Illuminate\Support\Str;
 
 use App\Models\Settlement;
 use App\Models\Transaction;
+use App\Models\User;
 
 class SettlementController extends BaseApiController
 {
@@ -59,16 +61,41 @@ class SettlementController extends BaseApiController
             return $this->error('Unauthorized', 403);
         }
 
+        // get user_id owner merchant
+        $owner = User::where('merchant_id', $user->merchant_id)
+            ->where('user_level_id', '2')
+            ->first();
+
+        // check saldo ewallet merchant
+        $ewallet = Ewallet::where('user_id', $owner->id)->first();
+        if (!$ewallet || $ewallet->balance < $request->amount)  {
+            return $this->error('Insufficient balance in e-wallet', 400);
+        }
+
         $settlement = Settlement::create([
             'merchant_id' => $user->merchant_id,
+            'user_id_owner' => $owner->id,
             'amount' => $request->amount,
             'status' => 'pending'
         ]);
 
+        // send notification with API External
+        $url = 'http://103.181.243.148:5005/send-notification';
+        $data = [
+            "user_id" => $owner->id,
+            "title" => "Settlement Request",
+            "message" => "Permintaan settlement sebesar Rp " . number_format($request->amount, 0, ',', '.') . " telah dibuat.",
+            "type" => "settlement",
+        ];
+        $client = new \GuzzleHttp\Client();
+        $response = $client->post($url, [
+            'json' => $data
+        ]);
+        $response = json_decode($response->getBody(), true);
 
-
-
-
+        if (!$response['success']) {
+            return $this->error('Failed to send notification', 500);
+        }
 
         return $this->success($settlement, 'Settlement processed successfully');
     }
