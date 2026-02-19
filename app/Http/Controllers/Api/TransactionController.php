@@ -124,7 +124,7 @@ class TransactionController extends BaseApiController
 
         // JIKA USER LOGIN DENGAN ROLE SELAIN MERCHANT ATAU 2, MAKA TIDAK BOLEH MENGAKSES ENDPOINT INI
         $user = auth()->user();
-        if (!in_array($user->user_level_id, ['2'])) {
+        if (!in_array($user->user_level_id, ['2', '3'])) {
             return $this->error('Unauthorized', 403);
         }
 
