@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\RegionController;
 use App\Http\Controllers\Api\JadwalKegiatanController;
 use App\Http\Controllers\Api\NotificationController;
+use App\Http\Controllers\Api\ReportCardController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 
 Route::post('register', '\App\Http\Controllers\Api\AuthController@register');
@@ -88,6 +89,9 @@ Route::prefix('v1')
 
         // Jadwal Kegiatan
         Route::get('/jadwal_kegiatan', [JadwalKegiatanController::class, 'index']);
+
+        // Report Card
+        Route::get('/report_cards', [ReportCardController::class, 'index']);
     });
 
 Route::group(
