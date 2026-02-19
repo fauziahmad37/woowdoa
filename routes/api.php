@@ -13,6 +13,8 @@ use App\Http\Controllers\Api\JadwalKegiatanController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\ReportCardController;
 use App\Http\Controllers\Api\AttendanceController;
+use App\Http\Controllers\Api\SettlementController;
+use App\Http\Controllers\Api\EwalletController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 
 Route::post('register', '\App\Http\Controllers\Api\AuthController@register');
@@ -66,6 +68,14 @@ Route::prefix('v1')
         Route::post('transactions/pay', [TransactionController::class, 'pay'])->name('transactions.pay');
         Route::get('transactions/code/{code}', [TransactionController::class, 'showByCode'])->name('transactions.showByCode');
         Route::post('/bank/callback', [BankController::class, 'callback']);
+
+        // Settlement
+        Route::get('/settlements', [SettlementController::class, 'index'])->name('settlements.index');
+        Route::post('/settlements/process', [SettlementController::class, 'process'])->name('settlements.process');
+
+        // Ewallet
+        Route::get('/ewallets', [EwalletController::class, 'index'])->name('ewallets.index');
+        Route::post('/ewallets/topup', [EwalletController::class, 'topup'])->name('ewallets.topup');
 
         // Contacts
         Route::get('/contacts', [ChatController::class, 'contacts']);
