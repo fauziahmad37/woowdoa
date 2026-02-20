@@ -18,7 +18,8 @@ return new class extends Migration
             $table->text('address')->nullable();
             $table->string('phone', 20)->nullable();
             $table->string('email')->nullable();
-            $table->boolean('active')->default();
+            $table->boolean('is_active')->default(true);
+            $table->string('logo')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
