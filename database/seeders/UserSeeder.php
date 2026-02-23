@@ -23,6 +23,7 @@ class UserSeeder extends Seeder
             'last_login' => now(),
             'is_active' => true,
             'phone' => '081234567890',
+            'school_id' => 1,
         ]);
 
         User::create([
@@ -34,6 +35,7 @@ class UserSeeder extends Seeder
             'last_login' => now(),
             'is_active' => true,
             'phone' => '081234567890',
+            'school_id' => 1,
         ]);
 
         User::create([
@@ -45,6 +47,7 @@ class UserSeeder extends Seeder
             'last_login' => now(),
             'is_active' => true,
             'phone' => '081234567890',
+            'school_id' => 1,
         ]);
 
         User::create([
@@ -56,7 +59,19 @@ class UserSeeder extends Seeder
             'last_login' => now(),
             'is_active' => true,
             'phone' => '081234567890',
+            'school_id' => 1,
         ]);
 
+        User::create([
+            'complete_name' => 'Abdul Razak',
+            'username' => 'abdul.razak',
+            'email' => 'abdul.razak@gmail.com',
+            'password' => bcrypt('123456'),
+            'user_level_id' => 4,
+            'last_login' => now(),
+            'is_active' => true,
+            'phone' => '081234567890',
+            'school_id' => 1,
+        ]);
     }
 }
