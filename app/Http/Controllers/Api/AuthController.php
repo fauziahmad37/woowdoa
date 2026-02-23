@@ -47,6 +47,12 @@ class AuthController extends Controller
         // $user = User::where('email', $request->email)->first();
         // $accessToken = $user->createToken('auth-token')->plainTextToken;
 
+        // STORE DEVICE TOKEN
+        if ($request->has('device_token')) {
+            $deviceToken = $request->input('device_token');
+            auth()->user()->update(['device_token' => $deviceToken]);
+        }
+
         return response(['user' => auth()->user(), 'access_token' => $accessToken]);
     }
 
@@ -109,7 +115,7 @@ class AuthController extends Controller
         }
 
         if (now()->gt($otp->expired_at)) {
-            return response()->json(['message' => 'OTP kadaluarsa'], 400);
+            return response()->json(['message' => 'OTP kadaluarsa'], 401);
         }
 
         return response()->json(['message' => 'OTP valid']);
