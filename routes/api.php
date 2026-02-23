@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\NewsController;
 use App\Http\Controllers\Api\EventsController;
+use App\Http\Controllers\Api\TransactionController;
+use App\Http\Controllers\Api\ChatController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 
 Route::post('register', '\App\Http\Controllers\Api\AuthController@register');
@@ -33,6 +35,16 @@ Route::prefix('v1')
         // Route::apiResource('projects', ProjectController::class);
         Route::apiResource('news', NewsController::class);
         Route::apiResource('events', EventsController::class);
+
+        Route::get('transactions', [TransactionController::class, 'index'])->name('transactions.index');
+        Route::post('transactions/scan', [TransactionController::class, 'scan'])->name('transactions.scan');
+        Route::post('transactions/pay', [TransactionController::class, 'pay'])->name('transactions.pay');
+        Route::get('transactions/code/{code}', [TransactionController::class, 'showByCode'])->name('transactions.showByCode');
+
+        Route::get('/contacts', [ChatController::class, 'contacts']);
+        Route::get('/conversations', [ChatController::class, 'conversations']);
+        Route::get('/messages/{conversationId}', [ChatController::class, 'getMessages']);
+        Route::post('/send', [ChatController::class, 'sendMessage']);
     });
 
 Route::group(
