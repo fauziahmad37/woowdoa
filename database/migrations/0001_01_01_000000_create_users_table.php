@@ -25,6 +25,7 @@ return new class extends Migration
             $table->integer('merchant_id')->nullable();
             $table->timestamp('expired_at')->nullable();
             $table->text('device_token')->nullable();
+            $table->foreignId('school_id')->constrained()->cascadeOnDelete();
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
