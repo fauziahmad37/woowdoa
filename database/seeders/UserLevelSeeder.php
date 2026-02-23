@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\User;
 use App\Models\UserLevel;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -26,6 +27,21 @@ class UserLevelSeeder extends Seeder
         UserLevel::create([
             'user_level_id' => '3',
             'user_level_name' => 'Store',
+        ]);
+
+        UserLevel::create([
+            'user_level_id' => '4',
+            'user_level_name' => 'Guru',
+        ]);
+
+        UserLevel::create([
+            'user_level_id' => '5',
+            'user_level_name' => 'Orang Tua',
+        ]);
+
+        UserLevel::create([
+            'user_level_id' => '6',
+            'user_level_name' => 'Siswa',
         ]);
     }
 }

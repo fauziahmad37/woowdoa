@@ -2,6 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Models\Classes;
+use App\Models\Schools;
+use App\Models\Student;
+use App\Models\TahunAjaran;
 use App\Models\User;
 use App\Models\UserLevel;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -18,6 +22,11 @@ class DatabaseSeeder extends Seeder
             UserLevelSeeder::class,
             UserSeeder::class,
             MenuSeeder::class,
+            SchoolSeeder::class,
+            TahunAjaranSeeder::class,
+            ClassesSeeder::class,
+            ParentSeeder::class,
+            StudentSeeder::class,
         ]);
     }
 }
