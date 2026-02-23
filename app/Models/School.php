@@ -22,4 +22,14 @@ class School extends Model
     {
         return $this->hasMany(Teacher::class, 'school_id', 'id');
     }
+
+    function students()
+    {
+        return $this->hasMany(Student::class, 'school_id', 'id');
+    }
+
+    function users()
+    {
+        return $this->hasMany(User::class, 'school_id', 'id');
+    }
 }
