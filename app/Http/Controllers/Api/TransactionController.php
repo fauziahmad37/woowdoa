@@ -4,13 +4,18 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Api\BaseApiController;
 use Illuminate\Http\Request;
-use App\Models\Student;
 
+use App\Models\User;
+use App\Models\Student;
+use App\Models\Notification;
 use App\Models\Transaction;
+use App\Services\FirebaseService;
+
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-
 use Illuminate\Support\Str;
+
+
 
 class TransactionController extends BaseApiController
 {
@@ -40,6 +45,9 @@ class TransactionController extends BaseApiController
             $query->whereDate('transaction_date', '<=', $request->end_date);
         }
 
+        // 🔹 Clone query untuk hitung total
+        $totalAmount = (clone $query)->sum('amount');
+
         // perpage
         $perPage = $request->input('per_page', 10);
 
@@ -47,7 +55,9 @@ class TransactionController extends BaseApiController
             ->orderBy('transaction_date', 'desc')
             ->paginate($perPage);
 
-        return $this->successPaginate($transactions, 'List transaksi retrieved successfully');
+       return $this->successPaginate($transactions, 'List transaksi retrieved successfully', [
+            'total_amount' => $totalAmount
+        ]);
     }
 
     /**
@@ -121,9 +131,39 @@ class TransactionController extends BaseApiController
                 'transaction_date' => now(),
             ]);
 
+            // Insert ke table notifikasi
+            Notification::create([
+                'title' => 'Pembayaran Berhasil',
+                'body' => "Pembayaran sebesar Rp {$request->amount} berhasil. Sisa saldo Anda sekarang Rp {$saldoAfter}.",
+                'is_read' => false,
+                'user_id' => $santri->user_id,
+                'type' => 'transaksi',
+                'data' => json_encode([
+                    'transaction_id' => $transaction->id,
+                    'transaction_code' => $transactionCode,
+                    'amount' => $request->amount,
+                    'saldo_before' => $saldoBefore,
+                    'saldo_after' => $saldoAfter,
+                    'transaction_date' => now()->format('Y-m-d H:i:s'),
+                ])
+            ]);
+
             DB::commit();
 
+            // Push notifikasi menggunakan Firebase Cloud Messaging
+            $firebase = new FirebaseService();
+
+            $device_token = $santri->user->device_token;
+
+            $firebase->sendNotification(
+                $device_token,
+                "Pembayaran Berhasil",
+                "Pembayaran sebesar Rp {$request->amount} berhasil. Sisa saldo Anda sekarang Rp {$saldoAfter}."
+            );
+
+
             return $this->success([
+                'transaction_id' => $transaction->id,
                 'transaction_code' => $transaction->transaction_code,
                 'tanggal' => $transaction->transaction_date->format('d-m-Y, H:i'),
                 'total_pembayaran' => $transaction->amount,
