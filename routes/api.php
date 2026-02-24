@@ -41,10 +41,16 @@ Route::prefix('v1')
         Route::post('transactions/pay', [TransactionController::class, 'pay'])->name('transactions.pay');
         Route::get('transactions/code/{code}', [TransactionController::class, 'showByCode'])->name('transactions.showByCode');
 
+        // Contacts
         Route::get('/contacts', [ChatController::class, 'contacts']);
+
+        // Conversations
         Route::get('/conversations', [ChatController::class, 'conversations']);
-        Route::get('/messages/{conversationId}', [ChatController::class, 'getMessages']);
-        Route::post('/send', [ChatController::class, 'sendMessage']);
+        Route::post('/conversations', [ChatController::class, 'startConversation']);
+
+        // Messages
+        Route::get('/conversations/{conversation}', [ChatController::class, 'getMessages']);
+        Route::post('/messages', [ChatController::class, 'sendMessage']);
     });
 
 Route::group(

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Events\TestMessage;
 
 Route::get('/', function () {
     return view('welcome');
@@ -20,10 +21,15 @@ Route::middleware('auth')->group(function () {
 require __DIR__.'/auth.php';
 
 
-Route::group([ 'namespace'=> '\App\Http\Controllers', 'prefix' => '',  'as'=>'', 'middleware' => 'auth' ], function () { 
-  Route::resource('projects', 'ProjectController'); 
+Route::group([ 'namespace'=> '\App\Http\Controllers', 'prefix' => '',  'as'=>'', 'middleware' => 'auth' ], function () {
+  Route::resource('projects', 'ProjectController');
 });
 
-Route::group([ 'namespace'=> '\App\Http\Controllers\Admin', 'prefix' => 'admin',  'as'=>'admin.', 'middleware' => 'auth' ], function () { 
-  Route::resource('projects', 'ProjectController'); 
+Route::group([ 'namespace'=> '\App\Http\Controllers\Admin', 'prefix' => 'admin',  'as'=>'admin.', 'middleware' => 'auth' ], function () {
+  Route::resource('projects', 'ProjectController');
+});
+
+Route::get('/test-broadcast', function () {
+    event(new TestMessage('Halo dari Reverb 🚀'));
+    return 'Event dikirim!';
 });
