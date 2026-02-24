@@ -22,7 +22,7 @@ class BaseApiController extends Controller
     /**
      * Success response with pagination
      */
-    protected function successPaginate($paginated, string $message = 'Success'): JsonResponse
+    protected function successPaginate($paginated, string $message = 'Success', $extraMeta = []): JsonResponse
     {
         return response()->json([
             'success' => true,
@@ -33,7 +33,7 @@ class BaseApiController extends Controller
                 'last_page' => $paginated->lastPage(),
                 'per_page' => $paginated->perPage(),
                 'total' => $paginated->total(),
-            ]
+            ] + $extraMeta
         ]);
     }
 
