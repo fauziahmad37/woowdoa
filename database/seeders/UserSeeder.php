@@ -51,6 +51,30 @@ class UserSeeder extends Seeder
         ]);
 
         User::create([
+            'complete_name' => 'Sukma',
+            'username' => 'sukma',
+            'email' => 'sukma@gmail.com',
+            'password' => bcrypt('123456'),
+            'user_level_id' => 6,
+            'last_login' => now(),
+            'is_active' => true,
+            'phone' => '081234567890',
+            'school_id' => 1,
+        ]);
+
+        User::create([
+            'complete_name' => 'Panji',
+            'username' => 'panji',
+            'email' => 'panji@gmail.com',
+            'password' => bcrypt('123456'),
+            'user_level_id' => 6,
+            'last_login' => now(),
+            'is_active' => true,
+            'phone' => '081234567890',
+            'school_id' => 1,
+        ]);
+
+        User::create([
             'complete_name' => 'Tamsin',
             'username' => 'tamsin',
             'email' => 'tamsin@gmail.com',
@@ -60,6 +84,7 @@ class UserSeeder extends Seeder
             'is_active' => true,
             'phone' => '081234567890',
             'school_id' => 1,
+            'device_token' => 'f6XzQ0gmQKmv0o6PlEOwNC:APA91bGsO2o0WcYDvse4Nd4L7_IccXGtyWEB6wbQHi_mB-92Af5VvaQrvZd4WmBaeuWV0iocJTx1UTXBvD5LfCPV62w3eBoXVK_LTrnTTBsf0e29ey5V_Vg',
         ]);
 
         User::create([
@@ -72,6 +97,7 @@ class UserSeeder extends Seeder
             'is_active' => true,
             'phone' => '081234567890',
             'school_id' => 1,
+            'profile_photo' => '/storage/users/teacher1.jpg',
         ]);
     }
 }
