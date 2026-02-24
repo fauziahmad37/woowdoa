@@ -11,16 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('messages', function (Blueprint $table) {
+        Schema::create('notifications', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('conversation_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('sender_id')->constrained('users')->cascadeOnDelete();
-            $table->text('message');
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->string('type'); // news, transaksi, chat
+            $table->string('title');
+            $table->text('body')->nullable();
+            $table->json('data')->nullable(); // deep link / id referensi
             $table->boolean('is_read')->default(false);
+            $table->timestamp('read_at')->nullable();
             $table->timestamps();
-
-            $table->index(['conversation_id', 'created_at']);
-            $table->index(['sender_id', 'is_read']);
         });
     }
 
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('conversations');
+        Schema::dropIfExists('notifications');
     }
 };

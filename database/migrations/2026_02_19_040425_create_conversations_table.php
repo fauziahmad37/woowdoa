@@ -18,6 +18,9 @@ return new class extends Migration
             $table->timestamp('last_message_at')->nullable();
             $table->timestamps();
 
+            $table->index(['parent_id']);
+            $table->index(['teacher_id']);
+
             $table->unique(['parent_id', 'teacher_id']);
         });
     }
