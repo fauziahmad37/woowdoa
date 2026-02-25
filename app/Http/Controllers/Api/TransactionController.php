@@ -67,6 +67,12 @@ class TransactionController extends BaseApiController
     {
         $nis = trim($request->input('nis'));
 
+        // JIKA USER LOGIN DENGAN ROLE SELAIN MERCHANT ATAU 2, MAKA TIDAK BOLEH MENGAKSES ENDPOINT INI
+        $user = auth()->user();
+        if (!in_array($user->user_level_id, ['2'])) {
+            return $this->error('Hanya merchant yang dapat mengakses endpoint ini', 403);
+        }
+
         $santri = Student::select('id', 'student_name', 'nis', 'saldo')
             ->where('nis', $nis)
             ->first();
@@ -88,8 +94,14 @@ class TransactionController extends BaseApiController
         $request->validate([
             'nis' => 'required',
             'amount' => 'required|numeric|min:1000',
-            'pin' => 'required'
+            'pin' => 'required',
         ]);
+
+        // JIKA USER LOGIN DENGAN ROLE SELAIN MERCHANT ATAU 2, MAKA TIDAK BOLEH MENGAKSES ENDPOINT INI
+        $user = auth()->user();
+        if (!in_array($user->user_level_id, ['2'])) {
+            return $this->error('Unauthorized', 403);
+        }
 
         DB::beginTransaction();
 
@@ -123,6 +135,7 @@ class TransactionController extends BaseApiController
             $transactionCode = 'TRX-' . Str::upper(Str::random(10));
 
             $transaction = Transaction::create([
+                'merchant_id' => $user->merchant_id,
                 'transaction_code' => $transactionCode,
                 'student_id' => $santri->id,
                 'amount' => $request->amount,

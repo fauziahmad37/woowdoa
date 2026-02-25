@@ -99,5 +99,19 @@ class UserSeeder extends Seeder
             'school_id' => 1,
             'profile_photo' => '/storage/users/teacher1.jpg',
         ]);
+
+        User::create([
+            'complete_name' => 'Ibu Siti',
+            'username' => 'ibu.siti',
+            'email' => 'kantin.ibusiti@gmail.com',
+            'password' => bcrypt('123456'),
+            'user_level_id' => 2,
+            'last_login' => now(),
+            'is_active' => true,
+            'phone' => '081234567890',
+            'school_id' => 1,
+            'profile_photo' => '/storage/users/teacher2.jpg',
+            'merchant_id' => 1,
+        ]);
     }
 }

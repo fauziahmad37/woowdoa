@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Classes;
+use App\Models\Merchant;
 use App\Models\Schools;
 use App\Models\Student;
 use App\Models\TahunAjaran;
@@ -21,6 +22,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             SchoolSeeder::class,
             UserLevelSeeder::class,
+            MerchantSeeder::class,
             UserSeeder::class,
             MenuSeeder::class,
             TahunAjaranSeeder::class,
