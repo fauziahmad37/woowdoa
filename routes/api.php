@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\NewsController;
 use App\Http\Controllers\Api\EventsController;
 use App\Http\Controllers\Api\TransactionController;
 use App\Http\Controllers\Api\ChatController;
+use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 
 Route::post('register', '\App\Http\Controllers\Api\AuthController@register');
@@ -51,6 +52,9 @@ Route::prefix('v1')
         // Messages
         Route::get('/conversations/{conversation}', [ChatController::class, 'getMessages']);
         Route::post('/messages', [ChatController::class, 'sendMessage']);
+
+        // Notifications
+        Route::get('/notifications', [NotificationController::class, 'index']);
     });
 
 Route::group(

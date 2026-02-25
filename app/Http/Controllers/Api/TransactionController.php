@@ -138,14 +138,14 @@ class TransactionController extends BaseApiController
                 'is_read' => false,
                 'user_id' => $santri->user_id,
                 'type' => 'transaksi',
-                'data' => json_encode([
+                'data' => [
                     'transaction_id' => $transaction->id,
                     'transaction_code' => $transactionCode,
                     'amount' => $request->amount,
                     'saldo_before' => $saldoBefore,
                     'saldo_after' => $saldoAfter,
                     'transaction_date' => now()->format('Y-m-d H:i:s'),
-                ])
+                ]
             ]);
 
             DB::commit();
