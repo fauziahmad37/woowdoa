@@ -8,14 +8,14 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Student;
 use App\Models\Notification;
+use App\Models\Parents;
 use App\Models\Transaction;
 use App\Services\FirebaseService;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
-
-
+use Mockery\Matcher\Not;
 
 class TransactionController extends BaseApiController
 {
@@ -43,6 +43,12 @@ class TransactionController extends BaseApiController
         // Filter end date
         if ($request->filled('end_date')) {
             $query->whereDate('transaction_date', '<=', $request->end_date);
+        }
+
+        // Filter berdasarkan merchant_id dari user yang login
+        $user = auth()->user();
+        if ($user->user_level_id == '2') { // Jika user adalah merchant
+            $query->where('merchant_id', $user->merchant_id);
         }
 
         // 🔹 Clone query untuk hitung total
@@ -144,12 +150,12 @@ class TransactionController extends BaseApiController
                 'transaction_date' => now(),
             ]);
 
-            // Insert ke table notifikasi
-            Notification::create([
+
+            $dataInsert = [
                 'title' => 'Pembayaran Berhasil',
                 'body' => "Pembayaran sebesar Rp {$request->amount} berhasil. Sisa saldo Anda sekarang Rp {$saldoAfter}.",
                 'is_read' => false,
-                'user_id' => $santri->user_id,
+                'user_id' => $user->id, // Notifikasi untuk merchant
                 'type' => 'transaksi',
                 'data' => [
                     'transaction_id' => $transaction->id,
@@ -159,21 +165,37 @@ class TransactionController extends BaseApiController
                     'saldo_after' => $saldoAfter,
                     'transaction_date' => now()->format('Y-m-d H:i:s'),
                 ]
-            ]);
+            ];
+
+            // Insert ke table notifikasi untuk merchant
+            Notification::create($dataInsert);
+            // Insert ke table notifikasi untuk santri
+            $dataInsert['user_id'] = $santri->user_id;
+            Notification::create($dataInsert);
+            // Insert ke table notifikasi untuk wali santri (jika ada)
+            $dataInsert['user_id'] = Parents::where('id', $santri->parent_id)->value('user_id');
+            Notification::create($dataInsert);
 
             DB::commit();
 
             // Push notifikasi menggunakan Firebase Cloud Messaging
             $firebase = new FirebaseService();
 
-            $device_token = $santri->user->device_token;
+            $deviceTokens = [];
+            $deviceTokens[] = $user->device_token; // Notifikasi untuk merchant
+            $deviceTokens[] = $santri->user->device_token; // Notifikasi untuk santri
+            $userIdParent = Parents::where('id', $santri->parent_id)->value('user_id'); // Notifikasi untuk wali santri (jika ada)
+            $deviceTokens[] = User::where('id', $userIdParent)->value('device_token');
 
-            $firebase->sendNotification(
-                $device_token,
-                "Pembayaran Berhasil",
-                "Pembayaran sebesar Rp {$request->amount} berhasil. Sisa saldo Anda sekarang Rp {$saldoAfter}."
-            );
-
+            foreach ($deviceTokens as $token) {
+                if ($token) {
+                    $firebase->sendNotification(
+                        $token,
+                        "Pembayaran Berhasil",
+                        "Pembayaran sebesar Rp {$request->amount} berhasil. Sisa saldo Anda sekarang Rp {$saldoAfter}."
+                    );
+                }
+            }
 
             return $this->success([
                 'transaction_id' => $transaction->id,

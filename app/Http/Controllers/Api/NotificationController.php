@@ -36,6 +36,8 @@ class NotificationController extends BaseApiController
             $query->where('is_read', $request->is_read);
         }
 
+        $unreadCount = (clone $query)->where('is_read', false)->count();
+
         $query->orderBy('created_at', 'desc');
 
         $perPage = $request->get('per_page', 10);
@@ -44,7 +46,38 @@ class NotificationController extends BaseApiController
 
         return $this->successPaginate(
             $notifications,
-            'List history notifikasi berhasil diambil'
+            'List history notifikasi berhasil diambil',
+            ['unread_count' => $unreadCount]
         );
+    }
+
+    /**
+     * Update status read / unread notifikasi
+     */
+    public function updateStatus(Request $request, $id)
+    {
+        $request->validate([
+            'is_read' => 'required|boolean',
+        ]);
+
+        $user = auth()->user();
+
+        $notification = Notification::where('id', $id)
+            ->where('user_id', $user->id)
+            ->first();
+
+        if (!$notification) {
+            return $this->error('Notifikasi tidak ditemukan', 404);
+        }
+
+        $notification->update([
+            'is_read' => $request->is_read
+        ]);
+
+        $unreadCount = Notification::where('user_id', $user->id)
+            ->where('is_read', false)
+            ->count();
+
+        return $this->success(['notification' => $notification, 'unread_count' => $unreadCount], 'Status notifikasi berhasil diperbarui');
     }
 }

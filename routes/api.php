@@ -55,6 +55,7 @@ Route::prefix('v1')
 
         // Notifications
         Route::get('/notifications', [NotificationController::class, 'index']);
+        Route::patch('/notifications/{id}/status', [NotificationController::class, 'updateStatus']);
     });
 
 Route::group(
