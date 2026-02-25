@@ -113,5 +113,19 @@ class UserSeeder extends Seeder
             'profile_photo' => '/storage/users/teacher2.jpg',
             'merchant_id' => 1,
         ]);
+
+        User::create([
+            'complete_name' => 'Pak Budi',
+            'username' => 'pak.budi',
+            'email' => 'pak.budi@gmail.com',
+            'password' => bcrypt('123456'),
+            'user_level_id' => 2,
+            'last_login' => now(),
+            'is_active' => true,
+            'phone' => '081234567891',
+            'school_id' => 1,
+            'profile_photo' => '/storage/users/teacher3.jpg',
+            'merchant_id' => 2,
+        ]);
     }
 }

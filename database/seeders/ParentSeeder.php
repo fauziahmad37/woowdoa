@@ -15,11 +15,11 @@ class ParentSeeder extends Seeder
     public function run(): void
     {
         Parents::create([
-            'parent_name' => 'Ahmad Fauzi',
+            'parent_name' => 'Tamsin',
             'parent_phone' => '081234567890',
             'address' => 'Jl. Merdeka No. 123, Jakarta',
             'active' => true,
-            'user_id' => 4,
+            'user_id' => 6,
         ]);
 
     }

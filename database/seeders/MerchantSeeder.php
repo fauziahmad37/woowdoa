@@ -26,5 +26,16 @@ class MerchantSeeder extends Seeder
             'is_active' => true,
         ]);
 
+        Merchant::create([
+            'merchant_code' => 'KIS456',
+            'merchant_name' => 'Kantin Pak Budi',
+            'owner_name' => 'Pak Budi',
+            'email' => 'kantin.pakbudi@gmail.com',
+            'phone' => '081234567891',
+            'address' => 'Jl. Merdeka No. 124, Jakarta',
+            'city' => 'Jakarta',
+            'province' => 'DKI Jakarta',
+            'is_active' => true,
+        ]);
     }
 }
