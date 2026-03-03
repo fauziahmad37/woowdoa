@@ -1,36 +1,108 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="csrf-token" content="{{ csrf_token() }}">
+<html lang="en">
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>WooWDoa</title>
 
-        <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+    {{-- PWA --}}
+    {{-- <link rel="manifest" href="{{ asset('pwa.json') }}">
+    <meta name="theme-color" content="#0d6efd">
+    <link rel="apple-touch-icon" href="{{ asset('icons/icon-192x192.png') }}"> --}}
 
-        <!-- Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-    </head>
-    <body class="font-sans antialiased">
-        <div class="min-h-screen bg-gray-100">
-            @include('layouts.navigation')
+    <script src="//unpkg.com/alpinejs" defer></script>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-            <!-- Page Heading -->
-            @isset($header)
-                <header class="bg-white shadow">
-                    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                        {{ $header }}
-                    </div>
-                </header>
-            @endisset
+    <style>
+        /* Mobile View Body */
+        @media (max-width: 425px) {
+            body {
+                display: block !important;
+            }
+        }
+    </style>
 
-            <!-- Page Content -->
-            <main>
-                {{ $slot }}
-            </main>
-        </div>
-    </body>
+     @yield('styles')
+</head>
+
+{{-- <body class="min-h-screen grid grid-cols-[250px_1fr]"> --}}
+
+
+
+<body 
+    x-data="{
+        open: true,
+        pinned: true,
+        isMobile: window.innerWidth < 768,
+        toggleSidebar() {
+            if (this.isMobile) {
+                this.open = !this.open;
+                this.pinned = false;
+            } else {
+                this.pinned = !this.pinned;
+                this.open = this.pinned;
+            }
+        }
+    }"
+    x-init="window.addEventListener('resize', () => isMobile = window.innerWidth < 768)"
+    class="min-h-screen flex"
+>
+    <!-- Sidebar Menu (full height) -->
+    <aside class="hidden md:block w-[250px] bg-white">
+        @include('layouts.sidebar')
+    </aside>
+
+    <!-- Sidebar (Mobile) -->
+    <div class="fixed inset-0 z-40 flex md:hidden" x-show="sidebarOpen"
+        x-transition:enter="transition ease-in-out duration-300 transform" x-transition:enter-start="-translate-x-full"
+        x-transition:enter-end="translate-x-0" x-transition:leave="transition ease-in-out duration-300 transform"
+        x-transition:leave-start="translate-x-0" x-transition:leave-end="-translate-x-full">
+        <!-- Overlay -->
+        <div class="fixed inset-0 bg-black bg-opacity-50" @click="sidebarOpen = false"></div>
+
+        <!-- Sidebar Content -->
+        <aside class="relative w-[250px] bg-white shadow-xl h-full" style="padding-top: 75px;">
+            @include('layouts.sidebar')
+        </aside>
+    </div>
+
+    <!-- Konten Wrapper (kolom konten + header + footer) -->
+    <div class="flex-1 flex flex-col">
+
+        <!-- Header -->
+        <header class="bg-white text-gray-800 p-4 sticky top-0 z-50 shadow flex justify-between items-center">
+
+           @include('layouts.navigation')
+
+        </header>
+
+        <!-- Konten Tengah -->
+        <main class="bg-white p-6 flex-1 overflow-y-auto">
+            @yield('content')
+        </main>
+
+        <!-- Footer -->
+        <footer class="bg-white text-gray-800 text-center p-4">
+            <p>&copy; 2025 Semua Hak Dilindungi</p>
+        </footer>
+
+    </div>
+
+    @yield('scripts')
+
+
+    {{-- PWA --}}
+    <script>
+        // if ("serviceWorker" in navigator) {
+        //     window.addEventListener("load", function() {
+        //         navigator.serviceWorker.register("/sw.js")
+        //             .then(reg => console.log("Service Worker registered", reg))
+        //             .catch(err => console.log("Service Worker failed", err));
+        //     });
+        // }
+    </script>
+</body>
+
 </html>

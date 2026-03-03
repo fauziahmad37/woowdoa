@@ -8,13 +8,15 @@ use Illuminate\Database\Eloquent\Model;
 class TahunAjaran extends Model
 {
     protected $table = 'tahun_ajaran';
-    use HasFactory;
 
     protected $fillable = [
         'tahun_ajaran',
-        'semester',
-        'start_date',
-        'end_date',
         'is_active',
     ];
+
+    // Relasi ke students
+    public function tahunajarans()
+    {
+        return $this->hasMany(Santri::class, 'tahun_ajaran_id');
+    }
 }

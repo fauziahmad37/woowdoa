@@ -1,0 +1,208 @@
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    color: #444;
+    line-height: 32px;
+    height: 35px;
+}
+
+/* custom.css */
+.select2-container {
+    width: 100% !important;
+}
+
+/* custom.css */
+.select2-container .select2-selection--single {
+    height: 38px; /* sesuaikan dengan height input lain */
+    padding: 6px 12px; /* sesuaikan dengan padding input */
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    line-height: 24px; /* agar text vertikal center */
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 36px; /* sesuaikan dengan selection height */
+}
+
+
+.select2-custom + .select2-container .select2-selection--single {
+    height: 38px;
+    padding: 6px 12px !important;
+}
+
+
+.select2-container--default .select2-selection--single {
+    height: 40px !important;
+    line-height: 40px !important;
+}
+
+.input-form {
+    border-color: #aaa;
+}
+
+
+.button-add {
+     min-width: 170px;
+     text-align: center !important;
+    background: linear-gradient(203.18deg, #FF8F00 11.82%, #FF6200 85.47%);
+
+}
+
+.button-cancel {
+    background-color: #fff !important;
+    border: 1px solid #7E7E7E !important;
+    color :#7E7E7E !important;
+    min-width: 170px;
+}
+/* sembunyikan default arrow */
+/* Style untuk dropdown "Tampilkan X data" */
+.dataTables_length select {
+    @apply border border-gray-300 rounded-lg px-3 py-1 text-sm appearance-none bg-white pr-8;
+    background-image: url("data:image/svg+xml,%3Csvg fill='none' stroke='%23666' stroke-width='2' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E<path stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'></path>%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.5rem center;
+    background-size: 1rem;
+}
+
+.dataTables_length label {
+    @apply flex items-center gap-2 text-sm text-gray-700;
+}
+
+
+
+label {
+    margin-bottom :10px; 
+}
+
+
+.tombol-action {
+    padding-top: 15px;
+    padding-left: 10px;
+    border-radius: 100%;
+    width: 35px;
+    height: 35px;
+}
+
+.select2-container .select2-selection--single {
+    height: 41px;
+    padding: 6px 12px;
+}
+
+ .step-completed {
+        background-color: #F97316;
+        color: white;
+        border-color: #F97316;
+    }
+    .step-completed::after {
+        content: '✓';
+        font-weight: bold;
+    }
+
+/* -----------------------
+   Laravel paginator (Tailwind markup)
+   ----------------------- */
+
+/* default style */
+nav[role="navigation"] .inline-flex.items-center,
+nav[role="navigation"] a.inline-flex.items-center,
+nav[role="navigation"] span.inline-flex.items-center {
+  background: #fff !important;
+  color: #9CA3AF !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 6px;
+  padding: 6px 12px;
+  min-width: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* kasih jarak antar tombol & angka */
+nav[role="navigation"] .inline-flex.items-center:not(:last-child) {
+  margin-right: 6px; /* jarak antar tombol */
+}
+
+/* jarak lebih besar antara prev/next dan angka */
+nav[role="navigation"] [rel="prev"],
+nav[role="navigation"] [rel="next"] {
+  margin: 0 10px !important;
+}
+
+/* halaman aktif */
+nav[role="navigation"] [aria-current="page"] .inline-flex.items-center {
+  background: #FF6200 !important;
+  color: #fff !important;
+  border-color: #FF6200 !important;
+}
+
+/* prev/next aktif */
+nav[role="navigation"] a[rel="prev"].inline-flex,
+nav[role="navigation"] a[rel="next"].inline-flex,
+nav[role="navigation"] a.inline-flex[rel="prev"],
+nav[role="navigation"] a.inline-flex[rel="next"] {
+  background: #FDE2D3 !important;
+  color: #F37022 !important;
+  border-color: #FF6200 !important;
+}
+
+/* warna icon di prev/next aktif */
+nav[role="navigation"] a[rel="prev"] svg,
+nav[role="navigation"] a[rel="next"] svg {
+  color: #F37022 !important;
+  fill: #F37022 !important;
+}
+
+/* prev/next disabled */
+nav[role="navigation"] span[aria-disabled="true"] .inline-flex.items-center {
+  background: #fff !important;
+  color: #9CA3AF !important;
+  border-color: #e5e7eb !important;
+}
+
+/* hover halaman */
+nav[role="navigation"] a.inline-flex.items-center:hover:not([aria-current]) {
+  background: #FDE2D3 !important;
+  color: #FF6200 !important;
+  border-color: #FF6200 !important;
+}
+
+/* -----------------------
+   DataTables fallback
+   ----------------------- */
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+  background: #fff !important;
+  color: #9CA3AF !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 6px !important;
+  padding: 6px 12px !important;
+  margin: 0 3px !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+  background: #FF6200 !important;
+  color: #fff !important;
+  border-color: #FF6200 !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.previous:not(.disabled),
+.dataTables_wrapper .dataTables_paginate .paginate_button.next:not(.disabled) {
+  background: #FDE2D3 !important;
+  color: #F37022 !important;
+  border-color: #FF6200 !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.disabled {
+  background: #fff !important;
+  color: #9CA3AF !important;
+  border-color: #e5e7eb !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__clear
+ {
+    cursor: pointer;
+    float: right;
+    font-weight: bold;
+    height: 26px;
+    margin-right: 20px;
+    margin-top: -10px;
+    padding-right: 0px;
+}
