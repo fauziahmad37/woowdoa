@@ -11,18 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('merchants', function (Blueprint $table) {
+        Schema::create('merchant_owners', function (Blueprint $table) {
             $table->id();
-            $table->string('merchant_code')->unique();
-            $table->string('merchant_name');
-            $table->string('merchant_category')->nullable();
             $table->string('owner_name')->nullable();
             $table->string('email')->nullable();
             $table->string('phone')->nullable();
-            $table->string('fax')->nullable();
-            $table->string('website')->nullable();
             $table->text('address')->nullable();
 
+            $table->foreignId('merchant_id')->constrained('merchants')->cascadeOnDelete();
 
             $table->foreignId('province_id')->nullable()->constrained('provinces')->nullOnDelete();
             $table->foreignId('city_id')->nullable()->constrained('cities')->nullOnDelete();
@@ -40,6 +36,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('merchants');
+        Schema::dropIfExists('merchant_owners');
     }
 };
