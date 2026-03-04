@@ -10,6 +10,7 @@ use App\Models\Student;
 use App\Models\Notification;
 use App\Models\Parents;
 use App\Models\Transaction;
+use App\Models\TransactionDetail;
 use App\Services\FirebaseService;
 
 use Illuminate\Support\Facades\DB;
@@ -136,22 +137,27 @@ class TransactionController extends BaseApiController
             $saldoBefore = $santri->saldo;
             $saldoAfter  = $saldoBefore - $request->amount;
 
-            // potong saldo
-            $santri->update([
-                'saldo' => $saldoAfter
-            ]);
-
             // buat kode transaksi
             $transactionCode = 'TRX-' . Str::upper(Str::random(10));
 
             $transaction = Transaction::create([
                 'merchant_id' => $user->merchant_id,
-                'transaction_code' => $transactionCode,
                 'student_id' => $santri->id,
+                'transaction_code' => $transactionCode,
+                'virtual_account_number' => $santri->va_number,
+                'total_amount' => $request->amount,
+                'paid_amount' => $request->amount,
+                'status' => 'paid',
+                'paid_at' => now(),
+            ]);
+
+            $transactionDetail = TransactionDetail::create([
+                'transaction_id' => $transaction->id,
+                'type' => 'credit',
                 'amount' => $request->amount,
                 'saldo_before' => $saldoBefore,
                 'saldo_after' => $saldoAfter,
-                'transaction_date' => now(),
+                'description' => 'Pembayaran di merchant ' . $user->merchant->merchant_name,
             ]);
 
 
@@ -170,6 +176,11 @@ class TransactionController extends BaseApiController
                     'transaction_date' => now()->format('Y-m-d H:i:s'),
                 ]
             ];
+
+            // potong saldo
+            $santri->update([
+                'saldo' => $saldoAfter
+            ]);
 
             // Insert ke table notifikasi untuk merchant
             Notification::create($dataInsert);

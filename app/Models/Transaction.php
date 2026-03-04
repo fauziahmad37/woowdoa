@@ -13,17 +13,15 @@ class Transaction extends Model
         'merchant_id',
         'transaction_code',
         'student_id',
-        'amount',
-        'saldo_before',
-        'saldo_after',
+        'total_amount',
+        'paid_amount',
         'transaction_date',
     ];
 
     protected $casts = [
         'transaction_date' => 'datetime:Y-m-d H:i:s',
-        'amount' => 'integer',
-        'saldo_before' => 'integer',
-        'saldo_after' => 'integer',
+        'total_amount' => 'integer',
+        'paid_amount' => 'integer',
     ];
 
     public function student()
