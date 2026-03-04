@@ -19,7 +19,7 @@ class ParentSeeder extends Seeder
             'parent_phone' => '081234567890',
             'address' => 'Jl. Merdeka No. 123, Jakarta',
             'active' => true,
-            'user_id' => 6,
+            'user_id' => 2,
         ]);
 
     }
