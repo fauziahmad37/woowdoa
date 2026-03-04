@@ -21,6 +21,8 @@ class Merchant extends Model
         'district_id',
         'village_id',
         'is_active',
+        'fax',
+        'website',
     ];
 
     function transactions()

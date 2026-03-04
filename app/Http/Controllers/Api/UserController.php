@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Models\Setting;
 
 use App\Models\User;
 
@@ -52,7 +53,12 @@ class UserController extends BaseApiController
     {
         $user = $request->user();
 
-        $merchant = Merchant::where('id', $user->merchant_id)
+        $merchant = Merchant::where('merchants.id', $user->merchant_id)
+            ->join('provinces', 'merchants.province_id', '=', 'provinces.id')
+            ->join('cities', 'merchants.city_id', '=', 'cities.id')
+            ->join('districts', 'merchants.district_id', '=', 'districts.id')
+            ->join('villages', 'merchants.village_id', '=', 'villages.id')
+            ->select('merchants.*', 'provinces.name as province_name', 'cities.name as city_name', 'districts.name as district_name', 'villages.name as village_name')
             ->first();
 
         return $this->success($merchant, 'User profile retrieved successfully');
@@ -62,7 +68,12 @@ class UserController extends BaseApiController
     {
         $user = $request->user();
 
-        $merchant = Merchant::where('id', $user->merchant_id)
+        $merchant = Merchant::where('merchants.id', $user->merchant_id)
+            ->join('provinces', 'merchants.province_id', '=', 'provinces.id')
+            ->join('cities', 'merchants.city_id', '=', 'cities.id')
+            ->join('districts', 'merchants.district_id', '=', 'districts.id')
+            ->join('villages', 'merchants.village_id', '=', 'villages.id')
+            ->select('merchants.*', 'provinces.name as province_name', 'cities.name as city_name', 'districts.name as district_name', 'villages.name as village_name')
             ->first();
 
         $merchantOwner = MerchantUser::where('merchant_id', $merchant->id)
@@ -81,7 +92,12 @@ class UserController extends BaseApiController
     {
         $user = $request->user();
 
-        $merchant = Merchant::where('id', $user->merchant_id)
+        $merchant = Merchant::where('merchants.id', $user->merchant_id)
+            ->join('provinces', 'merchants.province_id', '=', 'provinces.id')
+            ->join('cities', 'merchants.city_id', '=', 'cities.id')
+            ->join('districts', 'merchants.district_id', '=', 'districts.id')
+            ->join('villages', 'merchants.village_id', '=', 'villages.id')
+            ->select('merchants.*', 'provinces.name as province_name', 'cities.name as city_name', 'districts.name as district_name', 'villages.name as village_name')
             ->first();
 
         $merchantLeader = MerchantUser::where('merchant_id', $merchant->id)
@@ -114,5 +130,12 @@ class UserController extends BaseApiController
         ]);
 
         return $this->success(null, 'Password updated successfully');
+    }
+
+    public function policy()
+    {
+        $policy = Setting::where('app_name', 'woowdoa')->where('keywords', 'privacy_policy')->first();
+
+        return $this->success($policy, 'Privacy policy retrieved successfully');
     }
 }
