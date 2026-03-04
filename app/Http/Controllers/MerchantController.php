@@ -2,51 +2,41 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Santri;
 use App\Models\School;
 use App\Models\SchoolClass;
-use App\Models\TahunAjaran;
-use App\Models\StudentParent; 
+use App\Models\Merchant;
+use App\Models\User; 
 use Illuminate\Http\Request;
-use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
 
-class SantriController extends Controller
+
+
+class MerchantController extends Controller
 {
 public function index(Request $request)
 {
-    $query = Santri::where('is_delete', false);
+    $query = Merchant::where('is_active', 't');
 
     if ($request->search) {
         $query->where(function ($q) use ($request) {
-            $q->where('nis', 'ilike', '%'.$request->search.'%')
-              ->orWhere('student_name', 'ilike', '%'.$request->search.'%');
+            $q->where('merchant_code', 'ilike', '%'.$request->search.'%')
+              ->orWhere('merchant_name', 'ilike', '%'.$request->search.'%');
         });
     }
 
-    $student = $query->latest()->paginate(10);
+    $merchant = $query->latest()->paginate(10);
 
-    return view('santri.index', compact('student'));
+    return view('merchant.index', compact('merchant'));
 }
 
 public function create()
 {
-    $santri = null;
+    $merchant = null;
 
-    $schools = School::where('is_active', true)->get();
-    $parents = StudentParent::where('is_delete', false)->get();
-    $tahunAjarans = TahunAjaran::where('is_active', true)->get();
-    $classes = SchoolClass::all();
-
-    return view('santri.create', compact(
-        'santri',
-        'schools',
-        'parents',
-        'tahunAjarans',
-        'classes'
-    ));
+    $schools = School::where('is_active', true)->get(); 
+    return view('merchant.create', compact('schools'));
 }
 
    public function store(Request $request)
@@ -236,6 +226,6 @@ public function destroy(Santri $santri)
         ]);
     }
 
-    return back()->with('success', 'Santri berhasil dihapus');
+    return back()->with('success', 'Merchant berhasil dihapus');
 }
 }
