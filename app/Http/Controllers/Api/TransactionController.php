@@ -26,7 +26,12 @@ class TransactionController extends BaseApiController
     public function index(Request $request)
     {
         $query = Transaction::query()
-            ->with('student:id,student_name,nis');
+            ->join('students', 'transactions.student_id', '=', 'students.id')
+            ->select(
+                'transactions.*',
+                'students.student_name',
+                'students.nis'
+            );
 
         // Filter berdasarkan NIS (optional)
         if ($request->filled('nis')) {
@@ -61,7 +66,7 @@ class TransactionController extends BaseApiController
             ->orderBy('transaction_date', 'desc')
             ->paginate($perPage);
 
-       return $this->successPaginate($transactions, 'List transaksi retrieved successfully', [
+        return $this->successPaginate($transactions, 'List transaksi retrieved successfully', [
             'total_amount' => $totalAmount
         ]);
     }
@@ -112,7 +117,6 @@ class TransactionController extends BaseApiController
         DB::beginTransaction();
 
         try {
-
             $santri = Student::where('nis', $request->nis)->lockForUpdate()->first();
 
             if (!$santri) {
