@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\SantriController;
+use App\Http\Controllers\ParentController;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
@@ -15,7 +16,8 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
  
     // santri
     Route::resource('santri', SantriController::class);
-
+// parent
+Route::resource('parent', ParentController::class);
 Route::middleware('auth')->group(function () {
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

@@ -11,29 +11,32 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-
+use Carbon\Carbon;
 
 class SantriController extends Controller
 {
- public function index(Request $request)
+public function index(Request $request)
 {
-    $query = Santri::query();
+    $query = Santri::where('is_delete', false);
 
     if ($request->search) {
-        $query->where('nis', 'ilike', '%'.$request->search.'%')
+        $query->where(function ($q) use ($request) {
+            $q->where('nis', 'ilike', '%'.$request->search.'%')
               ->orWhere('student_name', 'ilike', '%'.$request->search.'%');
+        });
     }
 
     $student = $query->latest()->paginate(10);
 
     return view('santri.index', compact('student'));
 }
+
 public function create()
 {
     $santri = null;
 
     $schools = School::where('is_active', true)->get();
-    $parents = StudentParent::where('active', true)->get();
+    $parents = StudentParent::where('is_delete', false)->get();
     $tahunAjarans = TahunAjaran::where('is_active', true)->get();
     $classes = SchoolClass::all();
 
@@ -215,10 +218,24 @@ public function update(Request $request, Santri $santri)
         return back()->withErrors($e->getMessage());
     }
 }
-    public function destroy(Santri $santri)
-    {
-        $santri->delete();
+public function destroy(Santri $santri)
+{
+    $now = Carbon::now();
 
-        return back()->with('success', 'Santri berhasil dihapus');
+    // Update santri
+    $santri->update([
+        'is_delete'  => true,
+        'deleted_at' => $now,
+    ]);
+
+    // Update user terkait (jika ada relasi)
+    if ($santri->user) {
+        $santri->user->update([
+            'is_delete'  => true,
+            'deleted_at' => $now,
+        ]);
     }
+
+    return back()->with('success', 'Santri berhasil dihapus');
+}
 }

@@ -10,15 +10,23 @@ class StudentParent extends Model
 
     protected $fillable = [
         'parent_name',
-        'phone',
-        'email',
+        'parent_phone',
         'address',
-        'active'
+        'user_id',
+        'address',
+         'deleted_at',
+        'is_delete',
     ];
 
-    // Relasi ke students
-    public function students()
+    public function user()
     {
-        return $this->hasMany(Santri::class, 'parent_id');
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+
+    
+    public function school()
+    {
+        return $this->belongsTo(School::class, 'school_id');
     }
 }

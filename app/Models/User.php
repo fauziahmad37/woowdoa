@@ -26,6 +26,8 @@ class User extends Authenticatable
     'school_id',
     'password',
     'is_active',
+    'deleted_at',
+        'is_delete'
 ];
 
     /**
@@ -50,4 +52,9 @@ class User extends Authenticatable
             // 'password' => 'hashed',
         ];
     }
+
+    public function parent()
+{
+    return $this->hasOne(StudentParent::class, 'user_id');
+}
 }

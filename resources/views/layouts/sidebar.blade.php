@@ -1,19 +1,4 @@
-<div x-data="{
-        open: true,
-        pinned: true,
-        isMobile: window.innerWidth < 768,
-        toggleSidebar() {
-            if (this.isMobile) {
-                this.open = !this.open;
-                this.pinned = false;
-            } else {
-                this.pinned = !this.pinned;
-                this.open = this.pinned;
-            }
-        }
-    }"
-    x-init="window.addEventListener('resize', () => isMobile = window.innerWidth < 768)"
-    class="flex flex-col md:flex-row">
+
 
     <!-- Sidebar -->
 <aside
@@ -78,6 +63,7 @@
             
             {{-- MENU DENGAN CHILD --}}
             @else
+            
            <div x-data="{ openDropdown: {{ $activeParent ? 'true' : 'false' }} }"
      class="flex flex-col">
 
@@ -175,16 +161,6 @@
       /* 256px = w-64, 80px = w-20 */
   }"
 >
-    <!-- NAVBAR -->
-    <div class="sticky top-0 z-50 bg-white">
-        @include('layouts.navigation')
-    </div>
-
-    <!-- CONTENT -->
-    <div class="flex-1 overflow-auto p-4">
-        @yield('content')
-    </div>
+   
 </div>
 
-
-</div>

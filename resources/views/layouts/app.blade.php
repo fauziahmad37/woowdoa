@@ -29,33 +29,29 @@
 
 {{-- <body class="min-h-screen grid grid-cols-[250px_1fr]"> --}}
 
-
-
 <body 
     x-data="{
         open: true,
-        pinned: true,
         isMobile: window.innerWidth < 768,
         toggleSidebar() {
-            if (this.isMobile) {
-                this.open = !this.open;
-                this.pinned = false;
-            } else {
-                this.pinned = !this.pinned;
-                this.open = this.pinned;
-            }
+            this.open = !this.open
         }
     }"
     x-init="window.addEventListener('resize', () => isMobile = window.innerWidth < 768)"
-    class="min-h-screen flex"
+    class="min-h-screen flex overflow-hidden"
 >
     <!-- Sidebar Menu (full height) -->
-    <aside class="hidden md:block w-[250px] bg-white">
+  <aside 
+    class="hidden md:block bg-white shadow-md transition-all duration-300 overflow-hidden transition-transform duration-300 ease-in-out"
+    :class="open ? 'w-[250px]' : 'w-0'"
+>
+    <div x-show="open" class="w-[250px] h-full">
         @include('layouts.sidebar')
-    </aside>
+    </div>
+</aside>
 
     <!-- Sidebar (Mobile) -->
-    <div class="fixed inset-0 z-40 flex md:hidden" x-show="sidebarOpen"
+    <div class="fixed inset-0 z-40 flex md:hidden" x-show="open"
         x-transition:enter="transition ease-in-out duration-300 transform" x-transition:enter-start="-translate-x-full"
         x-transition:enter-end="translate-x-0" x-transition:leave="transition ease-in-out duration-300 transform"
         x-transition:leave-start="translate-x-0" x-transition:leave-end="-translate-x-full">
@@ -63,16 +59,21 @@
         <div class="fixed inset-0 bg-black bg-opacity-50" @click="sidebarOpen = false"></div>
 
         <!-- Sidebar Content -->
-        <aside class="relative w-[250px] bg-white shadow-xl h-full" style="padding-top: 75px;">
-            @include('layouts.sidebar')
-        </aside>
+       <aside 
+    class="bg-white shadow-md transition-all duration-300 overflow-hidden"
+    :class="open ? 'w-[250px]' : 'w-0'"
+>
+    <div x-show="open" class="w-[250px]">
+        @include('layouts.sidebar')
+    </div>
+</aside>
     </div>
 
     <!-- Konten Wrapper (kolom konten + header + footer) -->
     <div class="flex-1 flex flex-col">
 
         <!-- Header -->
-        <header class="bg-white text-gray-800 p-4 sticky top-0 z-50 shadow flex justify-between items-center">
+        <header class="bg-white text-gray-800 p-4 sticky top-0  shadow flex justify-between items-center">
 
            @include('layouts.navigation')
 
