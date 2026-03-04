@@ -18,7 +18,7 @@ return new class extends Migration
 
             // Foreign Key
             $table->foreign('menu_level_user_level')
-                ->references('id')
+                ->references('user_level_id')
                 ->on('user_levels')
                 ->cascadeOnDelete();
 

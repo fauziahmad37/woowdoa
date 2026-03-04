@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('complete_name');
             $table->string('username')->unique();
-            $table->foreignId('user_level_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('user_level_id')->constrained('user_levels', 'user_level_id')->cascadeOnDelete();
             $table->timestamp('last_login')->nullable();
             $table->boolean('is_active')->default(true);
             $table->string('phone')->nullable();
