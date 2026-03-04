@@ -5,28 +5,21 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Merchant extends Model
+class MerchantLeader extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'merchant_code',
-        'merchant_name',
         'owner_name',
         'email',
         'phone',
         'address',
-        'city_id',
         'province_id',
+        'city_id',
         'district_id',
         'village_id',
         'is_active',
     ];
-
-    function transactions()
-    {
-        return $this->hasMany(Transaction::class);
-    }
 
     public function province()
     {
@@ -48,13 +41,13 @@ class Merchant extends Model
         return $this->belongsTo(Village::class);
     }
 
-    public function owners()
+    public function merchants()
     {
-        return $this->hasMany(MerchantOwner::class);
+        return $this->belongsTo(Merchant::class);
     }
 
-    public function leaders()
+    public function merchant()
     {
-        return $this->hasMany(MerchantLeader::class);
+        return $this->belongsTo(Merchant::class);
     }
 }
