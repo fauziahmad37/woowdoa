@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\NewsController;
 use App\Http\Controllers\Api\EventsController;
 use App\Http\Controllers\Api\TransactionController;
 use App\Http\Controllers\Api\ChatController;
+use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 
@@ -32,6 +33,12 @@ Route::prefix('v1')
 
         // Route::get('/projects/search/{title}', [ProjectController::class, 'search'])
         //     ->name('projects.search');
+
+        // Profile
+        Route::get('/users', [UserController::class, 'index']);
+        Route::get('/users/profile', [UserController::class, 'profile']);
+        Route::get('/users/profile_merchant', [UserController::class, 'profileMerchant']);
+        Route::get('/users/profile_merchant_owner', [UserController::class, 'profileMerchantOwner']);
 
         // Route::apiResource('projects', ProjectController::class);
         Route::apiResource('news', NewsController::class);
