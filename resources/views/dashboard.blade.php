@@ -5,7 +5,7 @@
     <div class="container mx-auto w-full px-4">
 
         {{-- Card Jumlah Mitra --}}
-  
+
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
 
 
@@ -229,11 +229,11 @@ Untuk Maps
 </div>
 
 <div class="grid grid-cols-12 gap-4 mt-4">
- 
+
   <div class="col-span-12 md:col-span-6">
     <div class="bg-white rounded-xl p-4 shadow">
         <h4 class="font-bold text-gray-700">Distribusi Motor Wilayah Jakarta</h4>
-      
+
       <div id="distribusi-motor-jakarta" class="w-full relative mt-4"></div>
     </div>
   </div>
@@ -241,7 +241,7 @@ Untuk Maps
   <div class="col-span-12 md:col-span-6">
     <div class="bg-white rounded-xl p-4 shadow">
         <h4 class="font-bold text-gray-700">Disrtibusi Motor Wilayah Luar Jakarta</h4>
-      
+
       <div id="distribusi-motor-luar-jakarta" class="w-full relative mt-4"></div>
     </div>
   </div>
@@ -253,8 +253,8 @@ Untuk Maps
   <!-- Kolom 1 -->
  <div class="col-span-12 md:col-span-6 lg:col-span-4">
   <div class="relative rounded-xl overflow-hidden w-full min-h-[200px] sm:min-h-[250px] lg:min-h-[200px]">
-    <img src="{{ asset('images/mybaterai.png') }}" 
-         class="w-full h-full object-cover" 
+    <img src="{{ asset('images/mybaterai.png') }}"
+         class="w-full h-full object-cover"
          alt="Card Motor" style="margin-left:-20px;margin-top:-30px;">
 
     <div class="absolute inset-0 flex flex-col items-start justify-center px-6 py-6">
@@ -271,7 +271,7 @@ Untuk Maps
       <h4 class="font-bold text-gray-700">Distribusi Motor Wilayah Luar Jakarta 1</h4>
     </div>
   </div>
-  
+
   <!-- Kolom 3 -->
   <div class="col-span-12 md:col-span-6 lg:col-span-4">
     <div class="bg-white rounded-xl p-4 shadow min-h-[230px]">
@@ -293,8 +293,8 @@ Untuk Maps
   <!-- Kolom kiri -->
   <div class="col-span-12 md:col-span-6 lg:col-span-4">
     <div class="relative rounded-xl overflow-hidden w-full min-h-[250px] sm:min-h-[280px] lg:min-h-[300px]">
-      <img src="{{ asset('images/mymitra.png') }}" 
-           class="w-full h-full object-cover" 
+      <img src="{{ asset('images/mymitra.png') }}"
+           class="w-full h-full object-cover"
            alt="Card Motor" style="margin-left:-20px;margin-top:-30px;">
 
       <div class="absolute inset-0 flex flex-col items-start justify-center px-6 py-6">
@@ -329,8 +329,8 @@ Untuk Maps
   <!-- Kolom kiri -->
   <div class="col-span-12 md:col-span-6 lg:col-span-4">
     <div class="relative rounded-xl overflow-hidden w-full min-h-[250px] sm:min-h-[280px] lg:min-h-[300px]">
-      <img src="{{ asset('images/mitra-berenti.png') }}" 
-           class="w-full h-full object-cover" 
+      <img src="{{ asset('images/mitra-berenti.png') }}"
+           class="w-full h-full object-cover"
            alt="Card Motor" style="margin-left:-20px;margin-top:-30px;">
 
       <div class="absolute inset-0 flex flex-col items-start justify-center px-6 py-6">
@@ -477,7 +477,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
-// end chart motor 
+// end chart motor
 
 
 // chart status motor
@@ -544,7 +544,7 @@ document.addEventListener("DOMContentLoaded", function () {
         borderRadius: 5,
         allowPointSelect: true,
         dataLabels: [{
-            enabled: false 
+            enabled: false
         }, {
             enabled: true,
             distance: '-30%',
@@ -605,7 +605,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
-   
+
 // end kesehatan baterai
 
 // pendaftaran mitra baru
@@ -694,9 +694,9 @@ Highcharts.chart('jumlah-mitra-berenti', {
     plotOptions: {
         bar: {
             dataLabels: { enabled: true },
-            groupPadding: 0.3, 
-            pointPadding: 0.4, 
-            pointWidth: 28,    
+            groupPadding: 0.3,
+            pointPadding: 0.4,
+            pointWidth: 28,
             showInLegend: false
         }
     },

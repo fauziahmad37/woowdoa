@@ -21,8 +21,10 @@ class MerchantSeeder extends Seeder
             'email' => 'kantin.ibusiti@gmail.com',
             'phone' => '081234567890',
             'address' => 'Jl. Merdeka No. 123, Jakarta',
-            'city' => 'Jakarta',
-            'province' => 'DKI Jakarta',
+            'village_id' => 3674061001,
+            'district_id' => 367406,
+            'city_id' => 3674,
+            'province_id' => 36,
             'is_active' => true,
         ]);
 
@@ -33,8 +35,10 @@ class MerchantSeeder extends Seeder
             'email' => 'kantin.pakbudi@gmail.com',
             'phone' => '081234567891',
             'address' => 'Jl. Merdeka No. 124, Jakarta',
-            'city' => 'Jakarta',
-            'province' => 'DKI Jakarta',
+            'village_id' => 3674061001,
+            'district_id' => 367406,
+            'city_id' => 3674,
+            'province_id' => 36,
             'is_active' => true,
         ]);
     }

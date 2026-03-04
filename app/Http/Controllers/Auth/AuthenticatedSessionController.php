@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\RedirectResponse;
 use App\Models\User;
+use App\Http\Requests\Auth\LoginRequest;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -16,28 +18,28 @@ class AuthenticatedSessionController extends Controller
      */
     public function create()
     {
-        return view('auth.login'); 
+        return view('auth.login');
     }
 
     /**
      * Kirim OTP ke nomor HP
      */
-  public function store(Request $request)
-{
-    $credentials = $request->validate([
-        'username' => ['required', 'string'],
-        'password' => ['required', 'string'],
-    ]);
+    public function store(Request $request)
+    {
+        $credentials = $request->validate([
+            'username' => ['required', 'string'],
+            'password' => ['required', 'string'],
+        ]);
 
-    if (Auth::attempt($credentials)) {
-        $request->session()->regenerate();
-        return redirect()->route('dashboard');
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
+            return redirect()->route('dashboard');
+        }
+
+        return back()->withErrors([
+            'username' => 'Username atau password salah.',
+        ])->onlyInput('username');
     }
-
-    return back()->withErrors([
-        'username' => 'Username atau password salah.',
-    ])->onlyInput('username');
-}
     /**
      * Verifikasi OTP dan login user yang sudah ada
      */
@@ -89,13 +91,13 @@ class AuthenticatedSessionController extends Controller
     /**
      * Logout
      */
-public function destroy(Request $request): RedirectResponse
-{
-    Auth::logout(); // tidak perlu guard('web') kalau default
+    public function destroy(Request $request): RedirectResponse
+    {
+        Auth::logout(); // tidak perlu guard('web') kalau default
 
-    $request->session()->invalidate();
-    $request->session()->regenerateToken();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
-    return redirect()->route('login');
-}
+        return redirect()->route('login');
+    }
 }

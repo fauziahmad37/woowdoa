@@ -21,7 +21,7 @@ class TeacherSeeder extends Seeder
             'phone' => '081234567890',
             'address' => 'Jl. Merdeka No. 123, Jakarta',
             'active' => true,
-            'user_id' => 5,
+            'user_id' => 7,
             'school_id' => 1,
         ]);
 

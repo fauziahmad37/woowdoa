@@ -29,7 +29,7 @@
 
 {{-- <body class="min-h-screen grid grid-cols-[250px_1fr]"> --}}
 
-<body 
+<body
     x-data="{
         open: true,
         isMobile: window.innerWidth < 768,
@@ -41,7 +41,7 @@
     class="min-h-screen flex "
 >
     <!-- Sidebar Menu (full height) -->
-  <aside 
+  <aside
     class="hidden md:block bg-white shadow-md transition-all duration-300 overflow-hidden transition-transform duration-300 ease-in-out"
     :class="open ? 'w-[250px]' : 'w-0'"
 >
@@ -59,7 +59,7 @@
         <div class="fixed inset-0 bg-black bg-opacity-50" @click="sidebarOpen = false"></div>
 
         <!-- Sidebar Content -->
-       <aside 
+       <aside
     class="bg-white shadow-md transition-all duration-300 overflow-hidden"
     :class="open ? 'w-[250px]' : 'w-0'"
 >

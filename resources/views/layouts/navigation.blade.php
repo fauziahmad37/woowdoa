@@ -9,7 +9,7 @@
                 <!-- Hamburger -->
               <button @click="open = !open" class="p-2">
 
-                    
+
              <i class="fa-solid fa-lock"></i>
                 </button>
 
@@ -32,9 +32,9 @@
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <button class="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-600 bg-white rounded-md hover:text-gray-800 focus:outline-none transition">
-                            
-                            <img src="{{ session('url_photo') 
-                                ? asset('storage/' . session('url_photo')) 
+
+                            <img src="{{ session('url_photo')
+                                ? asset('storage/' . session('url_photo'))
                                 : asset('users/admin.png') }}"
                                  class="w-8 h-8 rounded-full mr-2">
 
@@ -65,7 +65,6 @@
                         </form>
                     </x-slot>
                 </x-dropdown>
-
             </div>
         </div>
     </div>

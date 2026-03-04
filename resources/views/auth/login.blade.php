@@ -2,8 +2,8 @@
 
 @section('left')
 @section('left')
-<!-- <img src="{{ asset('images/login-ecoride.png') }}" 
-     alt="Electric Motorcycle" 
+<!-- <img src="{{ asset('images/login-ecoride.png') }}"
+     alt="Electric Motorcycle"
      class="w-full mb-6"> -->
 
 <!-- <h2 class="text-white text-2xl font-bold mb-2">Electric Motorcycle Technology</h2>
@@ -33,7 +33,7 @@
        required
        autofocus
        placeholder="Username" />
-       
+
 @error('username')
 <div class="mt-2 p-2 bg-red-100 border border-red-400 text-red-700 rounded">
     {{ $message }}
@@ -47,7 +47,7 @@
         <label for="login" class="block text-gray-700 mb-2">
             Password  <span class="text-red-500">*</span>
         </label>
-      
+
 <input id="password"
        class="block mt-1 w-full rounded-lg border @error('password') border-red-500 @enderror"
        type="password"
@@ -63,7 +63,7 @@
 
     </div>
 
-    <button type="submit" 
+    <button type="submit"
             class="w-full text-white py-2 rounded-lg transition hover:brightness-90"
             style="background: linear-gradient(203.18deg, #01AB14 11.82%,#085410 85.47%);">
         Masuk

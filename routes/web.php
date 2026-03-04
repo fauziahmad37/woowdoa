@@ -13,7 +13,7 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
- 
+
     // santri
     Route::resource('santri', SantriController::class);
 // parent
@@ -26,7 +26,7 @@ Route::middleware('auth')->group(function () {
 
     // logout
 
-    
+
 
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
     ->name('logout');

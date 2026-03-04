@@ -9,11 +9,11 @@ use App\Services\ImageUploadService;
 use App\Http\Controllers\Controller;
 use App\Models\Merchant;
 use App\Models\MerchantUser;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 use App\Models\User;
 
@@ -46,7 +46,8 @@ class UserController extends BaseApiController
 
     /**
      * Get Profile by auth
-     */
+     * @return \Illuminate\Http\JsonResponse
+    */
     public function profileMerchant(Request $request)
     {
         $user = $request->user();
