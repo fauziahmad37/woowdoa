@@ -20,8 +20,12 @@ return new class extends Migration
             $table->string('phone', 20)->nullable();
             $table->string('email')->nullable();
             $table->boolean('active')->default(true);
+            $table->integer('saldo')->default(0);
+            $table->string('pin')->nullable();
+
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->foreignId('tahun_ajaran_id')->constrained('tahun_ajaran')->cascadeOnDelete();
+
             $table->timestamps();
             $table->softDeletes();
 

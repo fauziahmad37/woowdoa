@@ -1,5 +1,5 @@
-<nav x-data="{ open: false }" class="bg-white border-b border-gray-200 w-full">
-
+<!-- <nav x-data="{ open: false }" class="bg-white border-b border-gray-200 w-full"> -->
+<nav class="bg-white border-b border-gray-200 w-full">
    <div class="w-full px-6">
         <div class="flex justify-between h-16 items-center">
 
@@ -7,16 +7,10 @@
             <div class="flex items-center gap-4">
 
                 <!-- Hamburger -->
-                <button 
-                    @click="toggleSidebar()" 
-                    class="p-2 rounded hover:bg-gray-100">
+              <button @click="open = !open" class="p-2">
+
                     
-                    <svg width="22" height="22" viewBox="0 0 20 20" fill="none">
-                        <path d="M4 6h12M4 10h12M4 14h12"
-                              stroke="#7E7E7E"
-                              stroke-width="2"
-                              stroke-linecap="round"/>
-                    </svg>
+             <i class="fa-solid fa-lock"></i>
                 </button>
 
                 <!-- Greeting -->

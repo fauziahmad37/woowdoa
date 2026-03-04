@@ -9,23 +9,27 @@ class School extends Model
 {
     use HasFactory;
 
-    protected $table = 'schools'; // opsional kalau nama tabel sesuai
-
     protected $fillable = [
         'school_name',
         'address',
-        'is_active'
+        'phone',
+        'email',
+        'is_active',
+        'logo',
     ];
 
-    // Relasi ke students
-    public function students()
+    function teachers()
     {
-        return $this->hasMany(Santri::class, 'school_id');
+        return $this->hasMany(Teacher::class, 'school_id', 'id');
     }
 
-    // Relasi ke users (kalau user juga punya school_id)
-    public function users()
+    function students()
     {
-        return $this->hasMany(User::class, 'school_id');
+        return $this->hasMany(Student::class, 'school_id', 'id');
+    }
+
+    function users()
+    {
+        return $this->hasMany(User::class, 'school_id', 'id');
     }
 }

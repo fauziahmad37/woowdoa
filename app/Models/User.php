@@ -6,27 +6,26 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
+
+use App\Traits\Auditable;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use Auditable;
+    use HasApiTokens, HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
-   protected $fillable = [
-    'complete_name',
-    'username',
-    'user_level_id',
-    'phone',
-    'email',
-    'profile_photo',
-    'school_id',
-    'password',
-    'is_active',
-];
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+        'device_token',
+    ];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -34,8 +33,8 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $hidden = [
-        // 'password',
-        // 'remember_token',
+        'password',
+        'remember_token',
     ];
 
     /**
@@ -47,7 +46,27 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            // 'password' => 'hashed',
+            'password' => 'hashed',
         ];
+    }
+
+    public function student()
+    {
+        return $this->hasOne(Student::class, 'user_id', 'id');
+    }
+
+    public function teacher()
+    {
+        return $this->hasOne(Teacher::class, 'user_id', 'id');
+    }
+
+    public function school()
+    {
+        return $this->belongsTo(School::class, 'school_id', 'id');
+    }
+
+    function notifications()
+    {
+        return $this->hasMany(Notification::class, 'user_id', 'id');
     }
 }

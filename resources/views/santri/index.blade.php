@@ -170,26 +170,53 @@
 
 @section('scripts')
 <script>
-    const searchInput = document.getElementById("searchInput");
-    const searchBtn = document.getElementById("searchBtn");
+    const deleteModal = document.getElementById('deleteModal');
+    const deleteModalContent = document.getElementById('deleteModalContent');
+    const deleteForm = document.getElementById('deleteForm');
 
-    function toggleSearchButton() {
-        if (!searchInput || !searchBtn) return;
+    function openDeleteModal(id) {
+        // Set action form
+        deleteForm.action = `/santri/${id}`;
 
-        if (searchInput.value.trim() !== "") {
-            searchBtn.disabled = false;
-            searchBtn.classList.remove("bg-gray-200", "cursor-not-allowed");
-            searchBtn.classList.add("bg-green-600", "hover:bg-green-700", "text-white");
-        } else {
-            searchBtn.disabled = true;
-            searchBtn.classList.add("bg-gray-200", "cursor-not-allowed");
-            searchBtn.classList.remove("bg-green-600", "hover:bg-green-700", "text-white");
-        }
+        // Tampilkan modal
+        deleteModal.classList.remove('hidden');
+        deleteModal.classList.add('flex');
+
+        // Animasi muncul
+        setTimeout(() => {
+            deleteModalContent.classList.remove('scale-95', 'opacity-0');
+            deleteModalContent.classList.add('scale-100', 'opacity-100');
+        }, 10);
     }
 
-    if (searchInput) {
-        toggleSearchButton();
-        searchInput.addEventListener("input", toggleSearchButton);
+    function closeDeleteModal() {
+        // Animasi keluar
+        deleteModalContent.classList.remove('scale-100', 'opacity-100');
+        deleteModalContent.classList.add('scale-95', 'opacity-0');
+
+        setTimeout(() => {
+            deleteModal.classList.add('hidden');
+            deleteModal.classList.remove('flex');
+        }, 200);
     }
+
+
+    // untuk dropdown
+      document.addEventListener("DOMContentLoaded", function () {
+        const allDetails = document.querySelectorAll("details");
+
+        allDetails.forEach((detail) => {
+            detail.addEventListener("toggle", function () {
+                if (detail.open) {
+                    allDetails.forEach((otherDetail) => {
+                        if (otherDetail !== detail) {
+                            otherDetail.removeAttribute("open");
+                        }
+                    });
+                }
+            });
+        });
+    });
 </script>
 @endsection
+

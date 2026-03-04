@@ -22,18 +22,18 @@ class BaseApiController extends Controller
     /**
      * Success response with pagination
      */
-    protected function successPaginate($paginated, string $message = 'Success'): JsonResponse
+    protected function successPaginate($paginated, string $message = 'Success', $extraMeta = []): JsonResponse
     {
         return response()->json([
             'success' => true,
             'message' => $message,
             'data' => $paginated->items(),
+            'current_page' => $paginated->currentPage(),
+            'last_page' => $paginated->lastPage(),
+            'per_page' => $paginated->perPage(),
+            'total' => $paginated->total(),
             'meta' => [
-                'current_page' => $paginated->currentPage(),
-                'last_page' => $paginated->lastPage(),
-                'per_page' => $paginated->perPage(),
-                'total' => $paginated->total(),
-            ]
+            ] + $extraMeta
         ]);
     }
 

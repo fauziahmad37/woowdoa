@@ -25,6 +25,8 @@ protected $table = 'students';
         'school_id',
         'password',
         'parent_id',
+        'deleted_at',
+        'is_delete'
     ];
 
     protected $casts = [

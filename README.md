@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+# woowdoa
+Aplikasi wakaf santri
+=======
 <p align="center"><a href="https://nazmulrobin.com" target="_blank"><img src="https://nazmulrobin.com/images/nhrblog-logo-white.png" width="200"></a></p>
 
 <p align="center">
@@ -68,3 +72,4 @@ The Laravel 11 Crud is open-sourced software licensed under the [MIT license](ht
 
 Feel free to contact:  
 <a href="https://www.nazmulrobin.com/">nazmulrobin.com</a> | <a href="https://twitter.com/nhr_rob">Twitter</a> | <a href="https://www.linkedin.com/in/nhrrob/">Linkedin</a> | <a href="mailto:robin.sust08@gmail.com">Email</a>
+>>>>>>> 8f6ce1a (Initial commit)

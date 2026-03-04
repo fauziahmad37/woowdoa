@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Services\FirebaseService;
+
 use App\Http\Controllers\Api\BaseApiController;
 use App\Services\ImageUploadService;
 use App\Http\Controllers\Controller;
@@ -61,6 +63,14 @@ class NewsController extends BaseApiController
         }
 
         $news = News::create($data);
+
+        $firebase = new FirebaseService();
+
+        $firebase->sendToTopic(
+            'all_users',
+            'Berita Baru 📰',
+            $news->title
+        );
 
         return $this->success($news, 'News created successfully', 201);
     }
