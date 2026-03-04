@@ -48,13 +48,8 @@ class Merchant extends Model
         return $this->belongsTo(Village::class);
     }
 
-    public function owners()
+    public function merchantUser()
     {
-        return $this->hasMany(MerchantOwner::class);
-    }
-
-    public function leaders()
-    {
-        return $this->hasMany(MerchantLeader::class);
+        return $this->hasMany(MerchantUser::class);
     }
 }

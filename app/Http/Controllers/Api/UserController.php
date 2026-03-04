@@ -8,8 +8,12 @@ use App\Http\Controllers\Api\BaseApiController;
 use App\Services\ImageUploadService;
 use App\Http\Controllers\Controller;
 use App\Models\Merchant;
+use App\Models\MerchantUser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules\Password;
 
 use App\Models\User;
 
@@ -41,8 +45,8 @@ class UserController extends BaseApiController
     }
 
     /**
-    * Get Profile by auth
-    */
+     * Get Profile by auth
+     */
     public function profileMerchant(Request $request)
     {
         $user = $request->user();
@@ -60,9 +64,54 @@ class UserController extends BaseApiController
         $merchant = Merchant::where('id', $user->merchant_id)
             ->first();
 
-        $merchantOwner = $merchant->owners()->first();
+        $merchantOwner = MerchantUser::where('merchant_id', $merchant->id)
+            ->where('user_type', 1)
+            ->join('provinces', 'merchant_users.province_id', '=', 'provinces.id')
+            ->join('cities', 'merchant_users.city_id', '=', 'cities.id')
+            ->join('districts', 'merchant_users.district_id', '=', 'districts.id')
+            ->join('villages', 'merchant_users.village_id', '=', 'villages.id')
+            ->select('merchant_users.*', 'provinces.name as province_name', 'cities.name as city_name', 'districts.name as district_name', 'villages.name as village_name')
+            ->first();
 
         return $this->success($merchantOwner, 'User profile retrieved successfully');
     }
 
+    public function profileMerchantLeader(Request $request)
+    {
+        $user = $request->user();
+
+        $merchant = Merchant::where('id', $user->merchant_id)
+            ->first();
+
+        $merchantLeader = MerchantUser::where('merchant_id', $merchant->id)
+            ->where('user_type', 2)
+            ->join('provinces', 'merchant_users.province_id', '=', 'provinces.id')
+            ->join('cities', 'merchant_users.city_id', '=', 'cities.id')
+            ->join('districts', 'merchant_users.district_id', '=', 'districts.id')
+            ->join('villages', 'merchant_users.village_id', '=', 'villages.id')
+            ->select('merchant_users.*', 'provinces.name as province_name', 'cities.name as city_name', 'districts.name as district_name', 'villages.name as village_name')
+            ->first();
+
+        return $this->success($merchantLeader, 'User profile retrieved successfully');
+    }
+
+    public function resetPassword(Request $request)
+    {
+        $user = $request->user();
+
+        $request->validate([
+            'current_password' => ['required', 'current_password'],
+            'new_password' => [
+                'required',
+                'confirmed',
+                Password::min(6)
+            ],
+        ]);
+
+        $user->update([
+            'password' => Hash::make($request->new_password),
+        ]);
+
+        return $this->success(null, 'Password updated successfully');
+    }
 }

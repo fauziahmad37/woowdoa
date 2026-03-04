@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class MerchantOwner extends Model
+class MerchantUser extends Model
 {
     use HasFactory;
 
@@ -19,6 +19,8 @@ class MerchantOwner extends Model
         'district_id',
         'village_id',
         'is_active',
+        'merchant_id',
+        'user_type'
     ];
 
     public function province()
@@ -39,5 +41,10 @@ class MerchantOwner extends Model
     public function village()
     {
         return $this->belongsTo(Village::class);
+    }
+
+    public function merchant()
+    {
+        return $this->belongsTo(Merchant::class);
     }
 }

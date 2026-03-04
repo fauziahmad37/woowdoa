@@ -9,8 +9,9 @@ class UserLevel extends Model
 {
     use HasFactory;
 
+    protected $primaryKey = 'user_level_id';
+
     protected $fillable = [
-        'user_level_id',
         'user_level_name',
     ];
 }
