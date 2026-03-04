@@ -1,5 +1,5 @@
 <!-- <nav x-data="{ open: false }" class="bg-white border-b border-gray-200 w-full"> -->
-<nav class="bg-white border-b border-gray-200 w-full">
+<nav class="bg-white  border-gray-200 w-full">
    <div class="w-full px-6">
         <div class="flex justify-between h-16 items-center">
 

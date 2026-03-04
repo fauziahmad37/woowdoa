@@ -38,7 +38,7 @@
         }
     }"
     x-init="window.addEventListener('resize', () => isMobile = window.innerWidth < 768)"
-    class="min-h-screen flex overflow-hidden"
+    class="min-h-screen flex "
 >
     <!-- Sidebar Menu (full height) -->
   <aside 
