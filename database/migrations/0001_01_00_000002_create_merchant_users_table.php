@@ -1,0 +1,42 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('merchant_users', function (Blueprint $table) {
+            $table->id();
+            $table->string('owner_name')->nullable();
+            $table->string('email')->nullable();
+            $table->string('phone')->nullable();
+            $table->text('address')->nullable();
+            $table->integer('user_type')->default(1); // 1: Owner, 2: leader, 3: cashier
+
+            $table->foreignId('merchant_id')->constrained('merchants')->cascadeOnDelete();
+
+            $table->foreignId('province_id')->nullable()->constrained('provinces')->nullOnDelete();
+            $table->foreignId('city_id')->nullable()->constrained('cities')->nullOnDelete();
+            $table->foreignId('district_id')->nullable()->constrained('districts')->nullOnDelete();
+            $table->foreignId('village_id')->nullable()->constrained('villages')->nullOnDelete();
+
+            $table->boolean('is_active')->default(true);
+            $table->timestamps();
+            $table->softDeletes();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('merchant_users');
+    }
+};

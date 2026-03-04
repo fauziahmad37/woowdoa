@@ -12,8 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('user_levels', function (Blueprint $table) {
-            $table->id();
-            $table->integer('user_level_id');
+            $table->integer('user_level_id')->primary();
             $table->string('user_level_name');
             $table->timestamps();
         });
@@ -24,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('user_level');
+        Schema::dropIfExists('user_levels');
     }
 };
