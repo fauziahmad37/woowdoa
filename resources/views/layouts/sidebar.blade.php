@@ -116,7 +116,7 @@
 
     </nav>
  <div class="p-4 mb-10 border-t">
-            <div class="text-white p-3 rounded-lg text-center" style="background: linear-gradient(203.18deg, #01AB14 11.82%, #085410 85.47%);">
+            <!-- <div class="text-white p-3 rounded-lg text-center" style="background: linear-gradient(203.18deg, #01AB14 11.82%, #085410 85.47%);">
                 <template x-if="open">
                     <div>
                        <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg" class="mx-auto w-8 mb-2">
@@ -139,14 +139,12 @@
                     <a href="https://wa.me/628998808839" target="_blank" class="mt-2 bg-white text-green-600 w-full py-2 rounded-lg border border-green-600 hover:bg-green-50 text-center block">
     Hubungi Kami
 </a>
-
-
                     </div>
                 </template>
                 <template x-if="!open">
                     <button class="text-white w-full py-2 rounded-lg" style="background: linear-gradient(203.18deg, #FF8F00 11.82%, #FF6200 85.47%);">?</button>
                 </template>
-            </div>
+            </div> -->
 </aside>
 
 

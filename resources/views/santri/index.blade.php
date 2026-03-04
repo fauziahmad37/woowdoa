@@ -39,11 +39,21 @@
 </form>
 
             <!-- Tombol Tambah -->
-            <a href="{{ route('santri.create') }}"
-               class="px-4 py-2 rounded-lg text-white text-center sm:w-auto w-full"
-               style="background: linear-gradient(203.18deg, #01AB14 11.82%, #085410 85.47%);">
-                + Tambah Santri
-            </a>
+           <div class="flex gap-2 w-full sm:w-auto">
+
+<a href="{{ route('santri.import.form') }}"
+class="px-4 py-2 rounded-lg text-white text-center"
+style="background: linear-gradient(203.18deg, #2563eb 11.82%, #1e40af 85.47%);">
+Import Excel
+</a>
+
+<a href="{{ route('santri.create') }}"
+class="px-4 py-2 rounded-lg text-white text-center"
+style="background: linear-gradient(203.18deg, #01AB14 11.82%, #085410 85.47%);">
++ Tambah Santri
+</a>
+
+</div>
         </div>
 
         <!-- Table -->
@@ -59,7 +69,6 @@
                                 <th class="px-4 py-2 border">NIS</th>
                                 <th class="px-4 py-2 border">Nama</th>
                                 <th class="px-4 py-2 border">Gender</th>
-                                <th class="px-4 py-2 border">Saldo</th>
                                 <th class="px-4 py-2 border">Status</th>
                                 <th class="px-4 py-2 border text-center">Aksi</th>
                             </tr>
@@ -74,9 +83,6 @@
                                     <td class="px-4 py-3">{{ $santri->nis }}</td>
                                     <td class="px-4 py-3">{{ $santri->student_name }}</td>
                                     <td class="px-4 py-3">{{ $santri->gender }}</td>
-                                    <td class="px-4 py-3">
-                                        Rp {{ number_format($santri->saldo,0,',','.') }}
-                                    </td>
                                     <td class="px-4 py-3">
                                         @if($santri->active)
                                             <span class="px-2 py-1 text-xs rounded bg-green-100 text-green-600">Aktif</span>
