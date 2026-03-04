@@ -20,7 +20,10 @@ class Transaction extends Model
     ];
 
     protected $casts = [
-        'transaction_date' => 'datetime',
+        'transaction_date' => 'datetime:Y-m-d H:i:s',
+        'amount' => 'integer',
+        'saldo_before' => 'integer',
+        'saldo_after' => 'integer',
     ];
 
     public function student()
