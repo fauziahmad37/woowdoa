@@ -44,12 +44,12 @@ class TransactionController extends BaseApiController
 
         // Filter start date
         if ($request->filled('start_date')) {
-            $query->whereDate('transaction_date', '>=', $request->start_date);
+            $query->whereDate('paid_at', '>=', $request->start_date);
         }
 
         // Filter end date
         if ($request->filled('end_date')) {
-            $query->whereDate('transaction_date', '<=', $request->end_date);
+            $query->whereDate('paid_at', '<=', $request->end_date);
         }
 
         // Filter berdasarkan merchant_id dari user yang login
