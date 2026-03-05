@@ -16,6 +16,7 @@ class Transaction extends Model
         'total_amount',
         'paid_amount',
         'transaction_date',
+        'paid_at',
     ];
 
     protected $casts = [

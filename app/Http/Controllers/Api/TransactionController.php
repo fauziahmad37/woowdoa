@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Mockery\Matcher\Not;
+use Illuminate\Support\Facades\Http;
 
 class TransactionController extends BaseApiController
 {
@@ -151,6 +152,15 @@ class TransactionController extends BaseApiController
                 'paid_at' => now(),
             ]);
 
+            $response = Http::post('http://172.16.10.8:8000/api/bank/callback', [
+                'transaction_code' => $transactionCode,
+                'amount' => $request->amount,
+                'status' => 'PAID'
+            ]);
+
+            dd($response->json());
+
+            // Simpan detail transaksi
             $transactionDetail = TransactionDetail::create([
                 'transaction_id' => $transaction->id,
                 'type' => 'credit',
@@ -160,7 +170,7 @@ class TransactionController extends BaseApiController
                 'description' => 'Pembayaran di merchant ' . $user->merchant->merchant_name,
             ]);
 
-
+            // Siapkan data notifikasi
             $dataInsert = [
                 'title' => 'Pembayaran Berhasil',
                 'body' => "Pembayaran sebesar Rp {$request->amount} berhasil. Sisa saldo Anda sekarang Rp {$saldoAfter}.",
@@ -170,7 +180,7 @@ class TransactionController extends BaseApiController
                 'data' => [
                     'transaction_id' => $transaction->id,
                     'transaction_code' => $transactionCode,
-                    'amount' => $request->amount,
+                    'amount' => $request->paid_amount,
                     'saldo_before' => $saldoBefore,
                     'saldo_after' => $saldoAfter,
                     'transaction_date' => now()->format('Y-m-d H:i:s'),
@@ -215,8 +225,8 @@ class TransactionController extends BaseApiController
             return $this->success([
                 'transaction_id' => $transaction->id,
                 'transaction_code' => $transaction->transaction_code,
-                'tanggal' => $transaction->transaction_date->format('d-m-Y, H:i'),
-                'total_pembayaran' => $transaction->amount,
+                'tanggal' => $transaction->paid_at->format('d-m-Y, H:i'),
+                'total_pembayaran' => $transaction->paid_amount,
                 'nama' => $santri->student_name,
                 'nis' => $santri->nis,
                 'sisa_saldo' => $saldoAfter

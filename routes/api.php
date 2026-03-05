@@ -48,6 +48,7 @@ Route::prefix('v1')
         Route::post('transactions/scan', [TransactionController::class, 'scan'])->name('transactions.scan');
         Route::post('transactions/pay', [TransactionController::class, 'pay'])->name('transactions.pay');
         Route::get('transactions/code/{code}', [TransactionController::class, 'showByCode'])->name('transactions.showByCode');
+        Route::post('/bank/callback', [BankController::class, 'callback']);
 
         // Contacts
         Route::get('/contacts', [ChatController::class, 'contacts']);

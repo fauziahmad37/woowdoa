@@ -57,4 +57,9 @@ class Merchant extends Model
     {
         return $this->hasMany(MerchantLeader::class);
     }
+
+    public function user()
+    {
+        return $this->hasOne(User::class, 'merchant_id');
+    }
 }

@@ -18,19 +18,19 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
-   protected $fillable = [
-    'complete_name',
-    'username',
-    'user_level_id',
-    'phone',
-    'email',
-    'profile_photo',
-    'school_id',
-    'password',
-    'is_active',
-    'deleted_at',
+    protected $fillable = [
+        'complete_name',
+        'username',
+        'user_level_id',
+        'phone',
+        'email',
+        'profile_photo',
+        'school_id',
+        'password',
+        'is_active',
+        'deleted_at',
         'is_delete'
-];
+    ];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -56,7 +56,12 @@ class User extends Authenticatable
     }
 
     public function parent()
-{
-    return $this->hasOne(StudentParent::class, 'user_id');
-}
+    {
+        return $this->hasOne(StudentParent::class, 'user_id');
+    }
+
+    public function merchant()
+    {
+        return $this->hasOne(Merchant::class, 'id', 'merchant_id');
+    }
 }
