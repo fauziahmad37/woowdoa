@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\SantriController;
 use App\Http\Controllers\ParentController;
+use App\Http\Controllers\MerchantController;
 use App\Http\Controllers\ReportTransactionController;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request;
@@ -14,6 +15,8 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
+// merchant
+Route::resource('merchant', MerchantController::class);
 
     // santri
 Route::get('/santri/import', [SantriController::class,'importForm'])->name('santri.import.form');
