@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\BaseApiController;
 use App\Services\ImageUploadService;
 use App\Http\Controllers\Controller;
 use App\Models\Merchant;
+use App\Models\MerchantUser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -57,10 +58,14 @@ class UserController extends BaseApiController
     {
         $user = $request->user();
 
-        $merchant = Merchant::where('id', $user->merchant_id)
+        $merchantOwner = MerchantUser::where('merchant_id', $user->merchant_id)
+            ->where('user_type', 1)
             ->first();
 
-        $merchantOwner = $merchant->owners()->first();
+        $merchantOwner->province_name = $merchantOwner->province ? $merchantOwner->province->name : null;
+        $merchantOwner->city_name = $merchantOwner->city ? $merchantOwner->city->name : null;
+        $merchantOwner->district_name = $merchantOwner->district ? $merchantOwner->district->name : null;
+        $merchantOwner->village_name = $merchantOwner->village ? $merchantOwner->village->name : null;
 
         return $this->success($merchantOwner, 'User profile retrieved successfully');
     }

@@ -4,6 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Province;
+use App\Models\City;
+use App\Models\District;
+use App\Models\Village;
+use App\Models\Merchant;
 
 class MerchantUser extends Model
 {
@@ -25,26 +30,26 @@ class MerchantUser extends Model
 
     public function province()
     {
-        return $this->belongsTo(Province::class);
+        return $this->belongsTo(Province::class, 'province_id');
     }
 
     public function city()
     {
-        return $this->belongsTo(City::class);
+        return $this->belongsTo(City::class, 'city_id');
     }
 
     public function district()
     {
-        return $this->belongsTo(District::class);
+        return $this->belongsTo(District::class, 'district_id');
     }
 
     public function village()
     {
-        return $this->belongsTo(Village::class);
+        return $this->belongsTo(Village::class, 'village_id');
     }
 
     public function merchant()
     {
-        return $this->belongsTo(Merchant::class);
+        return $this->belongsTo(Merchant::class, 'merchant_id');
     }
 }

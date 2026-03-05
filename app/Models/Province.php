@@ -4,15 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Provinsi extends Model
+class Province extends Model
 {
-    protected $table = 'provinsi';
+    protected $table = 'provinces';
     protected $primaryKey = 'id';
     public $incrementing = false; // karena id CHAR
     protected $keyType = 'string';
 
-    public function kota()
+    public function cities()
     {
-        return $this->hasMany(Kota::class, 'province_id', 'id');
+        return $this->hasMany(City::class, 'province_id', 'id');
     }
 }

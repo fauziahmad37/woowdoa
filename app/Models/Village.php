@@ -4,16 +4,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Kelurahan extends Model
+class Village extends Model
 {
-    protected $table = 'kelurahan';
+    protected $table = 'villages';
     protected $primaryKey = 'id';
     public $incrementing = false;
     protected $keyType = 'string';
 
-    public function kecamatan()
+    public function district()
     {
-        return $this->belongsTo(Kecamatan::class, 'district_id', 'id');
+        return $this->belongsTo(District::class, 'district_id', 'id');
     }
 }
 
