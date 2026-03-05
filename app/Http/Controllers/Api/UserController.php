@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\BaseApiController;
 use App\Services\ImageUploadService;
 use App\Http\Controllers\Controller;
 use App\Models\Merchant;
+use App\Models\MerchantUser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -57,12 +58,51 @@ class UserController extends BaseApiController
     {
         $user = $request->user();
 
-        $merchant = Merchant::where('id', $user->merchant_id)
+        $merchantOwner = MerchantUser::where('merchant_id', $user->merchant_id)
+            ->where('user_type', 1)
             ->first();
 
-        $merchantOwner = $merchant->owners()->first();
+        $merchantOwner->province_name = $merchantOwner->province ? $merchantOwner->province->name : null;
+        $merchantOwner->city_name = $merchantOwner->city ? $merchantOwner->city->name : null;
+        $merchantOwner->district_name = $merchantOwner->district ? $merchantOwner->district->name : null;
+        $merchantOwner->village_name = $merchantOwner->village ? $merchantOwner->village->name : null;
 
         return $this->success($merchantOwner, 'User profile retrieved successfully');
+    }
+
+    public function profileMerchantLeader(Request $request)
+    {
+        $user = $request->user();
+
+        $merchantLeader = MerchantUser::where('merchant_id', $user->merchant_id)
+            ->where('user_type', 2)
+            ->first();
+
+        $merchantLeader->province_name = $merchantLeader->province ? $merchantLeader->province->name : null;
+        $merchantLeader->city_name = $merchantLeader->city ? $merchantLeader->city->name : null;
+        $merchantLeader->district_name = $merchantLeader->district ? $merchantLeader->district->name : null;
+        $merchantLeader->village_name = $merchantLeader->village ? $merchantLeader->village->name : null;
+
+        return $this->success($merchantLeader, 'User profile retrieved successfully');
+    }
+
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'current_password' => 'required',
+            'new_password' => 'required|min:8|confirmed',
+        ]);
+
+        $user = $request->user();
+
+        if (!\Hash::check($request->current_password, $user->password)) {
+            return $this->error('Current password is incorrect', 422);
+        }
+
+        $user->password = \Hash::make($request->new_password);
+        $user->save();
+
+        return $this->success(null, 'Password updated successfully');
     }
 
 }

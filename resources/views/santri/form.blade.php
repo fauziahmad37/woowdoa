@@ -200,14 +200,6 @@
                                class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500">
                     </div>
 
-                    <!-- Saldo -->
-                    <div>
-                        <label class="block text-gray-700 font-medium mb-1">Saldo</label>
-                        <input type="number" name="saldo"
-                               value="{{ old('saldo', $santri->saldo ?? 0) }}"
-                               class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500">
-                    </div>
-
                     <!-- PIN -->
                     <div>
                         <label class="block text-gray-700 font-medium mb-1">PIN</label>
@@ -224,7 +216,9 @@
                     </div>
 
                     <!-- Status -->
-                    <div>
+                 
+                </div>
+   <div class="mt-4">
                         <label class="block text-gray-700 font-medium mb-1">Status</label>
    @php
     $selectedActive = old(
@@ -250,13 +244,13 @@
                     </div>
 
 
-                    <div>
+                     <div class="mt-4">
     <label class="block text-gray-700 font-medium mb-1">Alamat</label>
  <textarea name="address"
     class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500"
     rows="3">{{ old('address', $santri->address ?? '') }}</textarea>
 </div>
-<div>
+ <div class="mt-4">
                         <label class="block text-gray-700 font-medium mb-1">Profil Foto</label>
                     @if(isset($santri) && optional($santri->user)->profile_photo)
    <img src="{{ $santri->user && $santri->user->profile_photo
@@ -268,8 +262,6 @@
 <input type="file" name="profile_photo"
        class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500">
                     </div>
-                </div>
-
                 <!-- Tombol -->
                 <div class="flex justify-end mt-6">
                     <button type="submit"

@@ -14,12 +14,26 @@ return new class extends Migration
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('merchant_id')->constrained()->cascadeOnDelete();
-            $table->string('transaction_code')->unique();
             $table->foreignId('student_id')->constrained()->cascadeOnDelete();
-            $table->decimal('amount', 15, 2);
-            $table->decimal('saldo_before', 15, 2);
-            $table->decimal('saldo_after', 15, 2);
-            $table->timestamp('transaction_date');
+
+            $table->string('transaction_code')->unique();
+            $table->string('virtual_account_number')->nullable();
+
+            $table->decimal('total_amount', 15, 2);
+            $table->decimal('paid_amount', 15, 2)->default(0);
+
+            $table->enum('status', [
+                'pending',
+                'partial',
+                'paid',
+                'expired',
+                'cancelled'
+            ])->default('pending');
+
+
+            $table->timestamp('expired_at')->nullable();
+            $table->timestamp('paid_at')->nullable();
+
             $table->timestamps();
         });
     }

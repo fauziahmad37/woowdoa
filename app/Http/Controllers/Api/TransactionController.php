@@ -10,12 +10,14 @@ use App\Models\Student;
 use App\Models\Notification;
 use App\Models\Parents;
 use App\Models\Transaction;
+use App\Models\TransactionDetail;
 use App\Services\FirebaseService;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Mockery\Matcher\Not;
+use Illuminate\Support\Facades\Http;
 
 class TransactionController extends BaseApiController
 {
@@ -42,12 +44,12 @@ class TransactionController extends BaseApiController
 
         // Filter start date
         if ($request->filled('start_date')) {
-            $query->whereDate('transaction_date', '>=', $request->start_date);
+            $query->whereDate('paid_at', '>=', $request->start_date);
         }
 
         // Filter end date
         if ($request->filled('end_date')) {
-            $query->whereDate('transaction_date', '<=', $request->end_date);
+            $query->whereDate('paid_at', '<=', $request->end_date);
         }
 
         // Filter berdasarkan merchant_id dari user yang login
@@ -57,13 +59,13 @@ class TransactionController extends BaseApiController
         }
 
         // 🔹 Clone query untuk hitung total
-        $totalAmount = (clone $query)->sum('amount');
+        $totalAmount = (clone $query)->sum('total_amount');
 
         // perpage
         $perPage = $request->input('per_page', 10);
 
         $transactions = $query
-            ->orderBy('transaction_date', 'desc')
+            ->orderBy('paid_at', 'desc')
             ->paginate($perPage);
 
         return $this->successPaginate($transactions, 'List transaksi retrieved successfully', [
@@ -136,25 +138,31 @@ class TransactionController extends BaseApiController
             $saldoBefore = $santri->saldo;
             $saldoAfter  = $saldoBefore - $request->amount;
 
-            // potong saldo
-            $santri->update([
-                'saldo' => $saldoAfter
-            ]);
-
             // buat kode transaksi
             $transactionCode = 'TRX-' . Str::upper(Str::random(10));
 
             $transaction = Transaction::create([
                 'merchant_id' => $user->merchant_id,
-                'transaction_code' => $transactionCode,
                 'student_id' => $santri->id,
+                'transaction_code' => $transactionCode,
+                'virtual_account_number' => $santri->va_number,
+                'total_amount' => $request->amount,
+                'paid_amount' => $request->amount,
+                'status' => 'paid',
+                'paid_at' => now(),
+            ]);
+
+            // Simpan detail transaksi
+            $transactionDetail = TransactionDetail::create([
+                'transaction_id' => $transaction->id,
+                'type' => 'credit',
                 'amount' => $request->amount,
                 'saldo_before' => $saldoBefore,
                 'saldo_after' => $saldoAfter,
-                'transaction_date' => now(),
+                'description' => 'Pembayaran di merchant ' . $user->merchant->merchant_name,
             ]);
 
-
+            // Siapkan data notifikasi
             $dataInsert = [
                 'title' => 'Pembayaran Berhasil',
                 'body' => "Pembayaran sebesar Rp {$request->amount} berhasil. Sisa saldo Anda sekarang Rp {$saldoAfter}.",
@@ -164,12 +172,17 @@ class TransactionController extends BaseApiController
                 'data' => [
                     'transaction_id' => $transaction->id,
                     'transaction_code' => $transactionCode,
-                    'amount' => $request->amount,
+                    'amount' => $request->paid_amount,
                     'saldo_before' => $saldoBefore,
                     'saldo_after' => $saldoAfter,
                     'transaction_date' => now()->format('Y-m-d H:i:s'),
                 ]
             ];
+
+            // potong saldo
+            $santri->update([
+                'saldo' => $saldoAfter
+            ]);
 
             // Insert ke table notifikasi untuk merchant
             Notification::create($dataInsert);
@@ -204,8 +217,8 @@ class TransactionController extends BaseApiController
             return $this->success([
                 'transaction_id' => $transaction->id,
                 'transaction_code' => $transaction->transaction_code,
-                'tanggal' => $transaction->transaction_date->format('d-m-Y, H:i'),
-                'total_pembayaran' => $transaction->amount,
+                'tanggal' => $transaction->paid_at->format('d-m-Y, H:i'),
+                'total_pembayaran' => $transaction->paid_amount,
                 'nama' => $santri->student_name,
                 'nis' => $santri->nis,
                 'sisa_saldo' => $saldoAfter

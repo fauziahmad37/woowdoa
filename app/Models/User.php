@@ -6,14 +6,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
-
-use App\Traits\Auditable;
+use Laravel\Sanctum\HasApiTokens; // ⬅️ pastikan ini ada
 
 class User extends Authenticatable
 {
-    use Auditable;
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable; // ⬅️ tambahkan HasApiTokens
+    use HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -21,10 +19,17 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
+        'complete_name',
+        'username',
+        'user_level_id',
+        'phone',
         'email',
+        'profile_photo',
+        'school_id',
         'password',
-        'device_token',
+        'is_active',
+        'deleted_at',
+        'is_delete'
     ];
 
     /**
@@ -33,8 +38,8 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $hidden = [
-        'password',
-        'remember_token',
+        // 'password',
+        // 'remember_token',
     ];
 
     /**
@@ -46,27 +51,17 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+            // 'password' => 'hashed',
         ];
     }
 
-    public function student()
+    public function parent()
     {
-        return $this->hasOne(Student::class, 'user_id', 'id');
+        return $this->hasOne(StudentParent::class, 'user_id');
     }
 
-    public function teacher()
+    public function merchant()
     {
-        return $this->hasOne(Teacher::class, 'user_id', 'id');
-    }
-
-    public function school()
-    {
-        return $this->belongsTo(School::class, 'school_id', 'id');
-    }
-
-    function notifications()
-    {
-        return $this->hasMany(Notification::class, 'user_id', 'id');
+        return $this->hasOne(Merchant::class, 'id', 'merchant_id');
     }
 }

@@ -12,6 +12,8 @@ use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
+use App\Imports\SantriImport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class SantriController extends Controller
 {
@@ -98,7 +100,7 @@ public function create()
             'address' => $request->address,
             'phone' => $request->phone,
             'email' => $request->email,
-            'saldo' => $request->saldo ?? 0,
+            // 'saldo' => $request->saldo ?? 0,
             'school_id' => $request->school_id,
             'active' => $request->active,
             'parent_id' => $request->parent_id,
@@ -124,7 +126,7 @@ public function edit(Santri $santri)
     $santri->load('user');
 
     $schools = School::where('is_active', true)->get();
-    $parents = StudentParent::where('active', true)->get();
+   $parents = StudentParent::where('is_delete', false)->get();
     $tahunAjarans = TahunAjaran::where('is_active', true)->get();
     $classes = SchoolClass::all();
 
@@ -192,7 +194,7 @@ public function update(Request $request, Santri $santri)
             'address' => $request->address,
             'phone' => $request->phone,
             'email' => $request->email,
-            'saldo' => $request->saldo ?? 0,
+            // 'saldo' => $request->saldo ?? 0,
             'active' => $request->active,
             'school_id' => $request->school_id,
             'parent_id' => $request->parent_id,
@@ -238,4 +240,23 @@ public function destroy(Santri $santri)
 
     return back()->with('success', 'Santri berhasil dihapus');
 }
+
+
+public function importForm()
+{
+    return view('santri.import');
+}
+
+public function import(Request $request)
+{
+    $request->validate([
+        'file' => 'required|mimes:xlsx,xls'
+    ]);
+
+    Excel::import(new SantriImport, $request->file('file'));
+
+    return redirect()->route('santri.index')
+        ->with('success','Data santri berhasil diimport');
+}
+
 }
