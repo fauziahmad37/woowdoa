@@ -22,7 +22,7 @@ class AuthenticatedSessionController extends Controller
     /**
      * Kirim OTP ke nomor HP
      */
-  public function store(Request $request)
+public function store(Request $request)
 {
     $credentials = $request->validate([
         'username' => ['required', 'string'],
@@ -30,7 +30,12 @@ class AuthenticatedSessionController extends Controller
     ]);
 
     if (Auth::attempt($credentials)) {
+
         $request->session()->regenerate();
+
+        // ambil school_id user yang login
+        session(['school_id' => Auth::user()->school_id]);
+
         return redirect()->route('dashboard');
     }
 
@@ -38,53 +43,7 @@ class AuthenticatedSessionController extends Controller
         'username' => 'Username atau password salah.',
     ])->onlyInput('username');
 }
-    /**
-     * Verifikasi OTP dan login user yang sudah ada
-     */
-    public function verifyOtp(Request $request)
-    {
-        $request->validate([
-            'otp' => 'required|string',
-        ]);
-
-        $phone = $request->session()->get('phone');
-
-        if (!$phone) {
-            return redirect()->route('login')->withErrors([
-                'phone' => 'Sesi nomor HP tidak ditemukan, silakan login ulang.',
-            ]);
-        }
-
-        // Kirim OTP ke service eksternal untuk validasi
-        $response = Http::post('http://103.181.243.156:3001/api/user-verify-otp', [
-            'no_hp' => $phone,
-            'otp'   => $request->otp,
-        ]);
-
-        $data = $response->json();
-
-        if (isset($data['success']) && $data['success'] === true) {
-            // Cari user berdasarkan nomor HP
-            $user = User::where('phone', $phone)->first();
-
-            if (!$user) {
-                return redirect()->route('login')->withErrors([
-                    'phone' => 'Nomor ini belum terdaftar di sistem.',
-                ]);
-            }
-
-            // ✅ Login user lama, tanpa create baru
-            Auth::login($user);
-
-            // Bersihkan session phone
-            $request->session()->forget('phone');
-
-            return redirect()->route('dashboard');
-        }
-
-        $errorMessage = $data['message'] ?? 'OTP tidak valid';
-        return back()->withErrors(['otp' => $errorMessage]);
-    }
+  
 
     /**
      * Logout

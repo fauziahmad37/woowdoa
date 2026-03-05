@@ -8,6 +8,8 @@ use App\Http\Controllers\SantriController;
 use App\Http\Controllers\ParentController;
 use App\Http\Controllers\MerchantController;
 use App\Http\Controllers\ReportTransactionController;
+use App\Http\Controllers\DashboardTransaksiSiswaController;
+
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
@@ -32,6 +34,11 @@ Route::resource('parent', ParentController::class);
 // report transaksi santri
 Route::get('/transaksi_santri', [ReportTransactionController::class,'index'])
     ->name('report.transaksi_santri');
+
+    // dashboard
+Route::get('/dashboard-transaksi-siswa', [DashboardTransaksiSiswaController::class, 'index'])
+    ->name('dashboard.transaksi.siswa');
+
 Route::middleware('auth')->group(function () {
 
 Route::get('/transaksi/detail/{id}', [ReportTransactionController::class, 'detail'])

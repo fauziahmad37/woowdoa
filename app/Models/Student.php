@@ -34,7 +34,8 @@ class Student extends Authenticatable
         'active',
         'saldo',
         'user_id',
-        'pin'
+        'pin',
+       
     ];
 
     /**

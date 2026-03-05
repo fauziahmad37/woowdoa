@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class TransactionDetail extends Model
 {
+     protected $table = 'transaction_details';
     use HasFactory;
 
     protected $fillable = [
@@ -22,5 +23,6 @@ class TransactionDetail extends Model
     {
         return $this->belongsTo(Transaction::class);
     }
+    
 
 }

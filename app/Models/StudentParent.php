@@ -16,6 +16,7 @@ class StudentParent extends Model
         'address',
          'deleted_at',
         'is_delete',
+        'school_id'
     ];
 
     public function user()

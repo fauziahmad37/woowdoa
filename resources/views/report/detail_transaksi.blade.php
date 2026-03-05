@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="py-6">
-    <div class="container mx-auto max-w-4xl">
+    <div class="container mx-auto">
 
         <!-- Header -->
         <h2 class="text-xl font-semibold text-gray-600">Detail Transaksi</h2>
@@ -46,6 +46,7 @@
                         </p>
                     </div>
 
+                   
                     <div>
                         <p class="text-gray-500">Merchant</p>
                         <p class="font-semibold">
@@ -53,33 +54,45 @@
                         </p>
                     </div>
 
-                    <div>
-                        <p class="text-gray-500">Jumlah Transaksi</p>
-                        <p class="font-semibold text-green-600">
-                            Rp {{ number_format($transaction->amount,0,',','.') }}
+               @php
+$detail = $transaction->details->first();
+@endphp
+
+ <div>
+                        <p class="text-gray-500">Jenis Transaksi</p>
+                        <p class="font-semibold">
+                           {{ $detail->type }}
                         </p>
                     </div>
 
-                    <div>
-                        <p class="text-gray-500">Tanggal</p>
+<div>
+    <p class="text-gray-500">Jumlah Transaksi</p>
+    <p class="font-semibold text-green-600">
+        Rp {{ number_format($detail->amount ?? 0,0,',','.') }}
+    </p>
+</div>
+
+<div>
+    <p class="text-gray-500">Saldo Sebelum</p>
+    <p class="font-semibold">
+        Rp {{ number_format($detail->saldo_before ?? 0,0,',','.') }}
+    </p>
+</div>
+
+<div>
+    <p class="text-gray-500">Saldo Sesudah</p>
+    <p class="font-semibold">
+        Rp {{ number_format($detail->saldo_after ?? 0,0,',','.') }}
+    </p>
+</div>
+
+ <div>
+                        <p class="text-gray-500">Keterangan</p>
                         <p class="font-semibold">
-                            {{ $transaction->transaction_date->format('d M Y H:i') }}
+                           {{ $detail->description }}
                         </p>
                     </div>
 
-                    <div>
-                        <p class="text-gray-500">Saldo Sebelum</p>
-                        <p class="font-semibold">
-                            Rp {{ number_format($transaction->saldo_before,0,',','.') }}
-                        </p>
-                    </div>
-
-                    <div>
-                        <p class="text-gray-500">Saldo Sesudah</p>
-                        <p class="font-semibold">
-                            Rp {{ number_format($transaction->saldo_after,0,',','.') }}
-                        </p>
-                    </div>
 
                 </div>
             </div>
@@ -87,7 +100,7 @@
             <!-- Tombol Kembali -->
             <div class="mt-6">
                 <a href="{{ route('report.transaksi_santri') }}"
-                   class="inline-block px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300">
+                   class="inline-block px-4 py-2 bg-green-600 text-white rounded hover:bg-gray-300">
                     Kembali
                 </a>
             </div>

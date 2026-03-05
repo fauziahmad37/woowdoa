@@ -7,8 +7,14 @@ import L from 'leaflet';
 import Alpine from 'alpinejs';
 import { createIcons } from 'lucide';
 
+import Highcharts from 'highcharts';
+
+
 window.Alpine = Alpine;
+window.Highcharts = Highcharts;
+
 Alpine.start();
+
 
 window.L = L;
 

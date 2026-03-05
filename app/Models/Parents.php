@@ -26,6 +26,7 @@ class Parents extends Authenticatable
         'address',
         'active',
         'user_id',
+        'school_id'
     ];
 
     /**

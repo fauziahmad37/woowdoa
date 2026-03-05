@@ -15,12 +15,11 @@ class Transaction extends Model
         'student_id',
         'total_amount',
         'paid_amount',
-        'transaction_date',
         'paid_at',
     ];
 
     protected $casts = [
-        'transaction_date' => 'datetime:Y-m-d H:i:s',
+        'paid_at' => 'datetime:Y-m-d H:i:s',
         'total_amount' => 'integer',
         'paid_amount' => 'integer',
     ];
@@ -34,4 +33,10 @@ class Transaction extends Model
     {
         return $this->belongsTo(Merchant::class);
     }
+
+    public function details()
+    {
+        return $this->hasMany(TransactionDetail::class, 'transaction_id');
+    }
+    
 }

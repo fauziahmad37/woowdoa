@@ -87,6 +87,7 @@ class="flex flex-col sm:flex-row items-center gap-2 w-full sm:w-auto"
                             <th class="px-4 py-2 border">Merchant</th>
                             <th class="px-4 py-2 border">Jumlah</th>
                             <th class="px-4 py-2 border">Tanggal Transaksi</th>
+                              <th class="px-4 py-2 border">Status Transaksi</th>
                              <th class="px-4 py-2 border text-center">Aksi</th>
                         </tr>
                     </thead>
@@ -112,13 +113,26 @@ class="flex flex-col sm:flex-row items-center gap-2 w-full sm:w-auto"
                                 {{ $trx->merchant->merchant_name ?? '-' }}
                             </td>
 
-                            <td class="px-4 py-3">
-                                Rp {{ number_format($trx->amount,0,',','.') }}
+                            <td class="px-4 py-3 text-center">
+                                Rp {{ number_format($trx->total_amount,0,',','.') }}
                             </td>
 
                             <td class="px-4 py-3">
-                                {{ $trx->transaction_date->format('d-m-Y H:i') }}
+                                {{ $trx->paid_at->format('d-m-Y H:i') }}
                             </td>
+                            <td class="px-4 py-3 text-center">
+    @if($trx->status == 'pending')
+        <span class="px-3 py-1 text-sm text-red-600 bg-red-200 rounded-full">
+    Pending
+</span>
+    @elseif($trx->status == 'paid')
+        <span class="px-3 py-1 text-sm text-green-600 bg-green-200 rounded-full">
+    Berhasil
+</span>
+    @else
+        {{ $trx->status ?? '-' }}
+    @endif
+</td>
                             <td class="px-4 py-4 text-center">
     <details class="inline-block text-left">
 

@@ -14,12 +14,14 @@ use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
 use App\Imports\SantriImport;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Auth;
 
 class SantriController extends Controller
 {
 public function index(Request $request)
 {
-    $query = Santri::where('is_delete', false);
+    $query = Santri::where('is_delete', false)
+        ->where('school_id', Auth::user()->school_id);
 
     if ($request->search) {
         $query->where(function ($q) use ($request) {
@@ -38,9 +40,12 @@ public function create()
     $santri = null;
 
     $schools = School::where('is_active', true)->get();
-    $parents = StudentParent::where('is_delete', false)->get();
+  $parents = StudentParent::where('is_delete', false)
+    ->where('school_id', Auth::user()->school_id)
+    ->get();
     $tahunAjarans = TahunAjaran::where('is_active', true)->get();
-    $classes = SchoolClass::all();
+    $classes = SchoolClass::where('school_id', Auth::user()->school_id)
+    ->get();
 
     return view('santri.create', compact(
         'santri',
@@ -126,9 +131,13 @@ public function edit(Santri $santri)
     $santri->load('user');
 
     $schools = School::where('is_active', true)->get();
-   $parents = StudentParent::where('is_delete', false)->get();
+  $parents = StudentParent::where('is_delete', false)
+    ->where('school_id', Auth::user()->school_id)
+    ->get();
     $tahunAjarans = TahunAjaran::where('is_active', true)->get();
-    $classes = SchoolClass::all();
+    $classes = SchoolClass::where('school_id', Auth::user()->school_id)
+    ->get();
+
 
     return view('santri.edit', compact(
         'santri',

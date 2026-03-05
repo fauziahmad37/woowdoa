@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class ParentController extends Controller
 {
@@ -19,7 +20,8 @@ class ParentController extends Controller
 public function index(Request $request)
 {
     $query = StudentParent::with('user', 'school')
-                ->where('is_delete', false); // ⬅ tambahkan ini
+                ->where('is_delete', false)
+                ->where('school_id', Auth::user()->school_id); // filter sekolah
 
     if ($request->search) {
         $query->where(function ($q) use ($request) {
@@ -91,6 +93,7 @@ public function create()
         StudentParent::create([
             'parent_name' => $request->parent_name,
              'parent_phone'  => $request->phone,
+              'school_id' => $request->school_id,
             'address' => $request->address,
             'user_id' => $user->id,
             'active' => $request->active,
@@ -174,6 +177,7 @@ public function create()
         $parent->update([
             'parent_name' => $request->parent_name,
             'parent_phone'  => $request->phone,
+             'school_id' => $request->school_id,
             'address' => $request->address,
             'active' => $request->active,
         ]);
