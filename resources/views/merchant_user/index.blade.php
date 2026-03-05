@@ -5,7 +5,7 @@
     <div class="container mx-auto w-full">
 
         <!-- Header -->
-        <h2 class="text-xl font-semibold text-gray-600">Kelola Merchant</h2>
+        <h2 class="text-xl font-semibold text-gray-600">Kelola User Merchant</h2>
         <p class="text-gray-500 mb-10">Pendataan Data Merchant</p>
 
         <!-- Top Bar -->
