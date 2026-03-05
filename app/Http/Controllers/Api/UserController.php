@@ -70,4 +70,20 @@ class UserController extends BaseApiController
         return $this->success($merchantOwner, 'User profile retrieved successfully');
     }
 
+    public function profileMerchantLeader(Request $request)
+    {
+        $user = $request->user();
+
+        $merchantLeader = MerchantUser::where('merchant_id', $user->merchant_id)
+            ->where('user_type', 2)
+            ->first();
+
+        $merchantLeader->province_name = $merchantLeader->province ? $merchantLeader->province->name : null;
+        $merchantLeader->city_name = $merchantLeader->city ? $merchantLeader->city->name : null;
+        $merchantLeader->district_name = $merchantLeader->district ? $merchantLeader->district->name : null;
+        $merchantLeader->village_name = $merchantLeader->village ? $merchantLeader->village->name : null;
+
+        return $this->success($merchantLeader, 'User profile retrieved successfully');
+    }
+
 }

@@ -39,6 +39,7 @@ Route::prefix('v1')
         Route::get('/users/profile', [UserController::class, 'profile']);
         Route::get('/users/profile_merchant', [UserController::class, 'profileMerchant']);
         Route::get('/users/profile_merchant_owner', [UserController::class, 'profileMerchantOwner']);
+        Route::get('/users/profile_merchant_leader', [UserController::class, 'profileMerchantLeader']);
 
         // Route::apiResource('projects', ProjectController::class);
         Route::apiResource('news', NewsController::class);
