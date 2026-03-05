@@ -152,14 +152,6 @@ class TransactionController extends BaseApiController
                 'paid_at' => now(),
             ]);
 
-            $response = Http::post('http://172.16.10.8:8000/api/bank/callback', [
-                'transaction_code' => $transactionCode,
-                'amount' => $request->amount,
-                'status' => 'PAID'
-            ]);
-
-            dd($response->json());
-
             // Simpan detail transaksi
             $transactionDetail = TransactionDetail::create([
                 'transaction_id' => $transaction->id,
