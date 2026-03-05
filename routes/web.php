@@ -40,7 +40,7 @@ Route::get('/transaksi/detail/{id}', [ReportTransactionController::class, 'detai
 
     // logout
 
-
+ 
 
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
     ->name('logout');
