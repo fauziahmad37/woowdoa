@@ -81,8 +81,9 @@ class UserController extends BaseApiController
         return $this->success($merchant, 'User profile updated successfully');
     }
 
-
-
+    /**
+     * Get Profile Merchant Owner by auth
+     */
     public function profileMerchantOwner(Request $request)
     {
         $user = $request->user();
@@ -99,6 +100,9 @@ class UserController extends BaseApiController
         return $this->success($merchantOwner, 'User profile retrieved successfully');
     }
 
+    /**
+     * Get Profile Merchant Leader by auth
+     */
     public function profileMerchantLeader(Request $request)
     {
         $user = $request->user();
@@ -115,6 +119,9 @@ class UserController extends BaseApiController
         return $this->success($merchantLeader, 'User profile retrieved successfully');
     }
 
+    /**
+     * Reset Password by auth
+     */
     public function resetPassword(Request $request)
     {
         $request->validate([

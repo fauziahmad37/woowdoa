@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\EventsController;
 use App\Http\Controllers\Api\TransactionController;
 use App\Http\Controllers\Api\ChatController;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\RegionController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 
@@ -67,6 +68,12 @@ Route::prefix('v1')
         // Notifications
         Route::get('/notifications', [NotificationController::class, 'index']);
         Route::patch('/notifications/{id}/status', [NotificationController::class, 'updateStatus']);
+
+        // Regions / Locations
+        Route::get('/provinces', [RegionController::class, 'provinces']);
+        Route::get('/cities/{provinceId}', [RegionController::class, 'cities']);
+        Route::get('/districts/{cityId}', [RegionController::class, 'districts']);
+        Route::get('/villages/{districtId}', [RegionController::class, 'villages']);
     });
 
 Route::group(
