@@ -86,4 +86,23 @@ class UserController extends BaseApiController
         return $this->success($merchantLeader, 'User profile retrieved successfully');
     }
 
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'current_password' => 'required',
+            'new_password' => 'required|min:8|confirmed',
+        ]);
+
+        $user = $request->user();
+
+        if (!\Hash::check($request->current_password, $user->password)) {
+            return $this->error('Current password is incorrect', 422);
+        }
+
+        $user->password = \Hash::make($request->new_password);
+        $user->save();
+
+        return $this->success(null, 'Password updated successfully');
+    }
+
 }
