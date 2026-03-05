@@ -65,7 +65,7 @@ class TransactionController extends BaseApiController
         $perPage = $request->input('per_page', 10);
 
         $transactions = $query
-            ->orderBy('transaction_date', 'desc')
+            ->orderBy('paid_at', 'desc')
             ->paginate($perPage);
 
         return $this->successPaginate($transactions, 'List transaksi retrieved successfully', [
