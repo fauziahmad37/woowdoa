@@ -40,7 +40,7 @@ Route::prefix('v1')
         Route::get('/users/profile_merchant', [UserController::class, 'profileMerchant']);
         Route::get('/users/profile_merchant_owner', [UserController::class, 'profileMerchantOwner']);
         Route::get('/users/profile_merchant_leader', [UserController::class, 'profileMerchantLeader']);
-        Route::post('/users/reset-password', [UserController::class, 'resetPassword']);
+        Route::post('/users/reset_password', [UserController::class, 'resetPassword']);
 
         // Route::apiResource('projects', ProjectController::class);
         Route::apiResource('news', NewsController::class);
