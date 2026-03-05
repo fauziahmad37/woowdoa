@@ -51,8 +51,37 @@ class UserController extends BaseApiController
         $merchant = Merchant::where('id', $user->merchant_id)
             ->first();
 
+        $merchant->province_name = $merchant->province ? $merchant->province->name : null;
+        $merchant->city_name = $merchant->city ? $merchant->city->name : null;
+        $merchant->district_name = $merchant->district ? $merchant->district->name : null;
+        $merchant->village_name = $merchant->village ? $merchant->village->name : null;
+
         return $this->success($merchant, 'User profile retrieved successfully');
     }
+
+    /**
+     * Edit Profil Merchant by auth
+     */
+    public function profileMerchantEdit(Request $request)
+    {
+        $user = $request->user();
+
+        $merchant = Merchant::where('id', $user->merchant_id)
+            ->first();
+
+        $merchant->update([
+            'merchant_name' => $request->merchant_name,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'address' => $request->address,
+            'fax' => $request->fax,
+            'website' => $request->website,
+        ]);
+
+        return $this->success($merchant, 'User profile updated successfully');
+    }
+
+
 
     public function profileMerchantOwner(Request $request)
     {

@@ -38,6 +38,7 @@ Route::prefix('v1')
         Route::get('/users', [UserController::class, 'index']);
         Route::get('/users/profile', [UserController::class, 'profile']);
         Route::get('/users/profile_merchant', [UserController::class, 'profileMerchant']);
+        Route::post('/users/profile_merchant', [UserController::class, 'profileMerchantEdit']);
         Route::get('/users/profile_merchant_owner', [UserController::class, 'profileMerchantOwner']);
         Route::get('/users/profile_merchant_leader', [UserController::class, 'profileMerchantLeader']);
         Route::post('/users/reset_password', [UserController::class, 'resetPassword']);
