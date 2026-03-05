@@ -5,8 +5,8 @@
     <div class="container mx-auto w-full">
 
         <!-- Header -->
-        <h2 class="text-xl font-semibold text-gray-600">Kelola Merchant</h2>
-        <p class="text-gray-500 mb-10">Pendataan Data Merchant</p>
+        <h2 class="text-xl font-semibold text-gray-600">Kelola User Merchant</h2>
+        <p class="text-gray-500 mb-10">Pendataan User Merchant</p>
 
         <!-- Top Bar -->
         <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-4 w-full">
