@@ -59,7 +59,7 @@ class TransactionController extends BaseApiController
         }
 
         // 🔹 Clone query untuk hitung total
-        $totalAmount = (clone $query)->sum('amount');
+        $totalAmount = (clone $query)->sum('total_amount');
 
         // perpage
         $perPage = $request->input('per_page', 10);
