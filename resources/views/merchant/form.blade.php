@@ -56,76 +56,107 @@
                 @endif
 
 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+	<!-- Kode Merchant -->
+	<div>
+			<label class="block text-gray-700 font-medium mb-1">
+					Kode Merchant <span class="text-red-500">*</span>
+			</label>
+			<input type="text" name="merchant_code"
+						 value="{{ old('merchant_code', $merchant->merchant_code ?? '') }}"
+						 class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500">
+			@error('merchant_code')
+					<p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+			@enderror
+	</div>
+	<div>
+    <!-- Provinsi -->
+    <label class="block font-medium mb-1">Provinsi<span class="text-red-500">*</span></label>
+    <select id="provinsi" name="merchant_id_provinsi" class="form-control form-select input-form select2">
+        <option value="">-- Pilih Provinsi --</option>
+        @foreach($provinsi as $prov)
+            <option value="{{ $prov->id }}">{{ $prov->name }}</option>
+        @endforeach
+    </select>
+	</div>
+	
+	<!-- Nama -->
+	<div>
+			<label class="block text-gray-700 font-medium mb-1">
+					Nama Merchant <span class="text-red-500">*</span>
+			</label>
+			<input type="text" name="merchant_name"
+						 value="{{ old('merchant_name', $merchant->merchant_name ?? '') }}"
+						 class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500">
+			@error('merchant_name')
+					<p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+			@enderror
+	</div>
+	
+	
+	<div>
+    <!-- Kota -->
+    <label class="block font-medium mb-1">Kota/Kabupaten<span class="text-red-500">*</span></label>
+    <select id="kota" name="merchant_id_kota" class="form-control form-select input-form select2">
+        <option value="">-- Pilih Kota --</option>
+    </select>
+	</div>	
+ 
+	<!-- No HP -->
+	<div>
+			<label class="block text-gray-700 font-medium mb-1">No HP</label>
+			<input type="text" name="phone"
+						 value="{{ old('phone', $santri->phone ?? '') }}"
+						 class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500">
+	</div> 
+ 
+ 
+ 	<div>
+    <!-- Kecamatan -->
+    <label class="block font-medium mb-1">Kecamatan<span class="text-red-500">*</span></label>
+    <select id="kecamatan" name="merchant_id_kecamatan" class="form-control form-select input-form select2">
+        <option value="">-- Pilih Kecamatan --</option>
+    </select>
+	</div>
 
-                    <!-- Kode Merchant -->
-                    <div>
-                        <label class="block text-gray-700 font-medium mb-1">
-                            Kode Merchant <span class="text-red-500">*</span>
-                        </label>
-                        <input type="text" name="merchant_code"
-                               value="{{ old('merchant_code', $merchant->merchant_code ?? '') }}"
-                               class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500">
-                        @error('merchant_code')
-                            <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
-                        @enderror
-                    </div>
 
-                    <!-- Nama -->
-                    <div>
-                        <label class="block text-gray-700 font-medium mb-1">
-                            Nama Merchant <span class="text-red-500">*</span>
-                        </label>
-                        <input type="text" name="merchant_name"
-                               value="{{ old('merchant_name', $merchant->merchant_name ?? '') }}"
-                               class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500">
-                        @error('merchant_name')
-                            <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
-                        @enderror
-                    </div>
+	<!-- Email -->
+	<div>
+			<label class="block text-gray-700 font-medium mb-1">Email</label>
+			<input type="email" name="email"
+						 value="{{ old('email', $santri->email ?? '') }}"
+						 class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500">
+	</div>
+
+	<div>
+    <!-- Kelurahan -->
+    <label class="block font-medium mb-1">Kelurahan/Desa<span class="text-red-500">*</span></label>
+    <select id="kelurahan" name="merchant_id_kelurahan" class="form-control form-select input-form select2">
+        <option value="">-- Pilih Kelurahan --</option>
+    </select>
+	</div> 
+	<!-- sekolah -->
+
+	<div>
+		<label class="block text-gray-700 font-medium mb-1">Sekolah</label>
+			<select name="school_id" class="w-full border rounded-lg px-3 py-2" required>
+			<option value="">Pilih Sekolah</option>
+			@foreach($schools as $school)
+			<option value="{{ $school->id }}"
+			{{ old('school_id', $santri->school_id ?? '') == $school->id ? 'selected' : '' }}>
+			{{ $school->school_name }}
+			</option>
+			@endforeach
+			</select>
+	</div>
+	<!-- sekolah -->
+
  
 
-<!-- sekolah -->
 
-<div>
-	<label class="block text-gray-700 font-medium mb-1">Sekolah</label>
-		<select name="school_id" class="w-full border rounded-lg px-3 py-2" required>
-		<option value="">Pilih Sekolah</option>
-		@foreach($schools as $school)
-		<option value="{{ $school->id }}"
-		{{ old('school_id', $santri->school_id ?? '') == $school->id ? 'selected' : '' }}>
-		{{ $school->school_name }}
-		</option>
-		@endforeach
-		</select>
-</div>
-<!-- sekolah -->
 
- 
-<!-- No HP -->
-<div>
-		<label class="block text-gray-700 font-medium mb-1">No HP</label>
-		<input type="text" name="phone"
-					 value="{{ old('phone', $santri->phone ?? '') }}"
-					 class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500">
-</div>
+  
 
-<!-- Email -->
-<div>
-		<label class="block text-gray-700 font-medium mb-1">Email</label>
-		<input type="email" name="email"
-					 value="{{ old('email', $santri->email ?? '') }}"
-					 class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500">
-</div>
-
- 
-
-<div>
-	<label class="block text-gray-700 font-medium mb-1">Password</label>
-	<input type="password" name="password"
-	class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500"
-	placeholder="Kosongkan jika tidak ingin mengubah password">
-</div>
- 
+	
 <div>
 	<label class="block text-gray-700 font-medium mb-1">Alamat</label>
 	<textarea name="address"
@@ -202,6 +233,14 @@
 
 <!-- end modal -->
 
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Select2 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+
+<!-- Select2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
 document.addEventListener("DOMContentLoaded", function () {
     let modal = document.getElementById("successModalContent");
@@ -211,7 +250,31 @@ document.addEventListener("DOMContentLoaded", function () {
             modal.classList.add("scale-100", "opacity-100");
         }, 100);
     }
+ 
+    $('.select2').select2({ width: '100%' });
+
+    $('#provinsi').on('change', function () {
+        $('#kota').html('<option value="">-- Pilih Kota --</option>');
+        $.get('/merchant/kota/' + this.value, res => {
+            res.forEach(r => $('#kota').append(`<option value="${r.id}">${r.name}</option>`));
+        });
+    });
+
+    $('#kota').on('change', function () {
+        $('#kecamatan').html('<option value="">-- Pilih Kecamatan --</option>');
+        $.get('/merchant/kecamatan/' + this.value, res => {
+            res.forEach(r => $('#kecamatan').append(`<option value="${r.id}">${r.name}</option>`));
+        });
+    });
+
+    $('#kecamatan').on('change', function () {
+        $('#kelurahan').html('<option value="">-- Pilih Kelurahan --</option>');
+        $.get('/merchant/kelurahan/' + this.value, res => {
+            res.forEach(r => $('#kelurahan').append(`<option value="${r.id}">${r.name}</option>`));
+        });
+    });
 });
+
 
 function reloadForm() {
     window.location.href = "{{ route('merchant.create') }}";

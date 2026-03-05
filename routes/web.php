@@ -17,6 +17,9 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
 
 // merchant
 Route::resource('merchant', MerchantController::class);
+Route::get('/merchant/kota/{province_id}', [MerchantController::class, 'getKota']);
+Route::get('/merchant/kecamatan/{regency_id}', [MerchantController::class, 'getKecamatan']);
+Route::get('/merchant/kelurahan/{district_id}', [MerchantController::class, 'getKelurahan']);
 
     // santri
 Route::get('/santri/import', [SantriController::class,'importForm'])->name('santri.import.form');
