@@ -14,29 +14,35 @@ class UserLevelSeeder extends Seeder
      */
     public function run(): void
     {
+
         UserLevel::create([
             'user_level_id' => '1',
             'user_level_name' => 'Admin',
         ]);
 
         UserLevel::create([
-            'user_level_id' => '2',
-            'user_level_name' => 'Merchant',
-        ]);
-
-        UserLevel::create([
-            'user_level_id' => '3',
-            'user_level_name' => 'Orang Tua',
-        ]);
-
-        UserLevel::create([
             'user_level_id' => '4',
-            'user_level_name' => 'Siswa',
+            'user_level_name' => 'Guru',
         ]);
 
         UserLevel::create([
             'user_level_id' => '5',
-            'user_level_name' => 'Guru',
+            'user_level_name' => 'Orang Tua',
+        ]);
+
+        UserLevel::create([
+            'user_level_id' => '6',
+            'user_level_name' => 'Siswa',
+        ]);
+
+        UserLevel::create([
+            'user_level_id' => '2',
+            'user_level_name' => 'Merchant Owner',
+        ]);
+
+        UserLevel::create([
+            'user_level_id' => '3',
+            'user_level_name' => 'Merchant User',
         ]);
     }
 }
