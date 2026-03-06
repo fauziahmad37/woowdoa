@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\SantriLimit;
 use Illuminate\Http\Request;
-
+ 
 class SantriLimitController extends Controller
 {
     /**

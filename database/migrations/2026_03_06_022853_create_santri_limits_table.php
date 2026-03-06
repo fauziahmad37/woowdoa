@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('santri_limits', function (Blueprint $table) {
             $table->id();
             $table->string('nis',20);
-            $table->integer('daily_limit');
+            $table->integer('daily_limit'); 
             $table->integer('monthly_limit'); 
             $table->timestamps();
         });
