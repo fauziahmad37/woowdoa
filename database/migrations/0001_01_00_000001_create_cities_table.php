@@ -11,19 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('user_levels', function (Blueprint $table) {
+        Schema::create('cities', function (Blueprint $table) {
             $table->id();
-            $table->integer('user_level_id');
-            $table->string('user_level_name');
-            $table->timestamps();
+            $table->foreignId('province_id')
+                ->constrained('provinces')
+                ->restrictOnDelete()
+                ->cascadeOnUpdate();
+            $table->string('name');
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        Schema::dropIfExists('user_level');
+        Schema::dropIfExists('cities');
     }
 };

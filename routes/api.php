@@ -41,7 +41,9 @@ Route::prefix('v1')
         Route::get('/users/profile_merchant', [UserController::class, 'profileMerchant']);
         Route::post('/users/profile_merchant', [UserController::class, 'profileMerchantEdit']);
         Route::get('/users/profile_merchant_owner', [UserController::class, 'profileMerchantOwner']);
+        Route::post('/users/profile_merchant_owner', [UserController::class, 'profileMerchantOwnerEdit']);
         Route::get('/users/profile_merchant_leader', [UserController::class, 'profileMerchantLeader']);
+        Route::post('/users/profile_merchant_leader', [UserController::class, 'profileMerchantLeaderEdit']);
         Route::post('/users/reset_password', [UserController::class, 'resetPassword']);
 
         // Route::apiResource('projects', ProjectController::class);

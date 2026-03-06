@@ -42,8 +42,8 @@ class UserController extends BaseApiController
     }
 
     /**
-    * Get Profile by auth
-    */
+     * Get Profile by auth
+     */
     public function profileMerchant(Request $request)
     {
         $user = $request->user();
@@ -66,6 +66,11 @@ class UserController extends BaseApiController
     {
         $user = $request->user();
 
+        // jika user level selain merchant owner / 2 maka tidak bisa edit profil merchant
+        if ($user->user_level_id != 2) {
+            return $this->error('Unauthorized', 403);
+        }
+
         $merchant = Merchant::where('id', $user->merchant_id)
             ->first();
 
@@ -76,6 +81,10 @@ class UserController extends BaseApiController
             'address' => $request->address,
             'fax' => $request->fax,
             'website' => $request->website,
+            'province_id' => $request->province_id,
+            'city_id' => $request->city_id,
+            'district_id' => $request->district_id,
+            'village_id' => $request->village_id,
         ]);
 
         return $this->success($merchant, 'User profile updated successfully');
@@ -101,6 +110,33 @@ class UserController extends BaseApiController
     }
 
     /**
+     * Edit Profil Merchant Owner by auth
+     */
+    public function profileMerchantOwnerEdit(Request $request)
+    {
+        $user = $request->user();
+        // jika user level selain merchant owner / 1 maka tidak bisa edit profil merchant owner
+        if ($user->user_level_id != 2) {
+            return $this->error('Unauthorized', 403);
+        }
+        $merchantOwner = MerchantUser::where('merchant_id', $user->merchant_id)
+            ->where('user_type', 1)
+            ->first();
+        $merchantOwner->update([
+            'owner_name' => $request->name,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'address' => $request->address,
+            'province_id' => $request->province_id,
+            'city_id' => $request->city_id,
+            'district_id' => $request->district_id,
+            'village_id' => $request->village_id,
+        ]);
+
+        return $this->success($merchantOwner, 'User profile updated successfully');
+    }
+
+    /**
      * Get Profile Merchant Leader by auth
      */
     public function profileMerchantLeader(Request $request)
@@ -117,6 +153,34 @@ class UserController extends BaseApiController
         $merchantLeader->village_name = $merchantLeader->village ? $merchantLeader->village->name : null;
 
         return $this->success($merchantLeader, 'User profile retrieved successfully');
+    }
+
+    /**
+     * Edit merchant leader
+     */
+    public function profileMerchantLeaderEdit(Request $request)
+    {
+        $user = $request->user();
+        // jika user level selain merchant owner / 1 maka tidak bisa edit profil merchant leader
+        if ($user->user_level_id != 2) {
+            return $this->error('Unauthorized', 403);
+        }
+        $merchantLeader = MerchantUser::where('merchant_id', $user->merchant_id)
+            ->where('user_type', 2)
+            ->first();
+
+        $merchantLeader->update([
+            'leader_name' => $request->name,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'address' => $request->address,
+            'province_id' => $request->province_id,
+            'city_id' => $request->city_id,
+            'district_id' => $request->district_id,
+            'village_id' => $request->village_id,
+        ]);
+
+        return $this->success($merchantLeader, 'User profile updated successfully');
     }
 
     /**
@@ -140,5 +204,4 @@ class UserController extends BaseApiController
 
         return $this->success(null, 'Password updated successfully');
     }
-
 }
