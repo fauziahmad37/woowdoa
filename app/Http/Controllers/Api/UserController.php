@@ -202,6 +202,9 @@ class UserController extends BaseApiController
         $user->password = \Hash::make($request->new_password);
         $user->save();
 
-        return $this->success(null, 'Password updated successfully');
+        return response()->json([
+            'success' => true,
+            'message' => 'Password updated successfully',
+        ], 200);
     }
 }
