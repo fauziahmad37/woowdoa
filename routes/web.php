@@ -7,6 +7,9 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\SantriController;
 use App\Http\Controllers\ParentController;
 use App\Http\Controllers\MerchantController;
+use App\Http\Controllers\MerchantCategoryController;
+use App\Http\Controllers\LimitBelanjaController;
+use App\Http\Controllers\ShortcutNominalController;
 use App\Http\Controllers\ReportTransactionController;
 use App\Http\Controllers\DashboardTransaksiSiswaController;
 
@@ -17,11 +20,21 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
+// shortcut nominal
+Route::resource('shortcutnominal', ShortcutNominalController::class);
+
+// merchant category
+Route::resource('merchantcategory', MerchantCategoryController::class); 
+
 // merchant
 Route::resource('merchant', MerchantController::class);
 Route::get('/merchant/kota/{province_id}', [MerchantController::class, 'getKota']);
 Route::get('/merchant/kecamatan/{regency_id}', [MerchantController::class, 'getKecamatan']);
 Route::get('/merchant/kelurahan/{district_id}', [MerchantController::class, 'getKelurahan']);
+
+//Limit Belanja
+Route::resource('limitbelanja', LimitBelanjaController::class);
+
 
     // santri
 Route::get('/santri/import', [SantriController::class,'importForm'])->name('santri.import.form');
