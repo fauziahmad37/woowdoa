@@ -8,6 +8,8 @@ use App\Http\Controllers\Api\BaseApiController;
 use App\Services\ImageUploadService;
 use App\Http\Controllers\Controller;
 use App\Models\Merchant;
+use App\Models\Parents;
+use App\Models\Student;
 use App\Models\MerchantUser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -194,7 +196,52 @@ class UserController extends BaseApiController
     public function profileFather(Request $request)
     {
         $user = $request->user();
-        return $this->success($user, 'User profile retrieved successfully');
+
+        // JIKA USER LEVEL BUKAN SEBAGAI PARENT / 5 MAKA TIDAK BISA AKSES PROFIL FATHER
+        if ($user->user_level_id != 5) {
+            return $this->error('Anda tidak diizinkan mengakses profil ayah', 403);
+        }
+
+        $parent = Parents::where('user_id', $user->id)->first(); // ambil id parent
+        $children = Student::where('parent_id', $parent->id)->get(); // ambil data anak berdasarkan id parent
+        $parentFather = Parents::where('student_id', $children->pluck('id'))->where('gender', 'laki-laki')->first(); // ambil data ayah berdasarkan
+
+        $parentFather->children = $children; // tambahkan data anak ke dalam response
+
+        $parentFather->province_name = $parentFather->province ? $parentFather->province->name : null;
+        $parentFather->city_name = $parentFather->city ? $parentFather->city->name : null;
+        $parentFather->district_name = $parentFather->district ? $parentFather->district->name : null;
+        $parentFather->village_name = $parentFather->village ? $parentFather->village->name : null;
+
+
+        return $this->success($parentFather, 'User profile retrieved successfully');
+    }
+
+    /**
+     * Get Profile Mother by auth
+     */
+    public function profileMother(Request $request)
+    {
+        $user = $request->user();
+
+        // JIKA USER LEVEL BUKAN SEBAGAI PARENT / 5 MAKA TIDAK BISA AKSES PROFIL MOTHER
+        if ($user->user_level_id != 5) {
+            return $this->error('Anda tidak diizinkan mengakses profil ibu', 403);
+        }
+
+        $parent = Parents::where('user_id', $user->id)->first(); // ambil id parent
+        $children = Student::where('parent_id', $parent->id)->get(); // ambil data anak berdasarkan id parent
+        $parentMother = Parents::where('student_id', $children->pluck('id'))->where('gender', 'perempuan')->first(); // ambil data ibu berdasarkan
+
+        $parentMother->children = $children; // tambahkan data anak ke dalam response
+
+        $parentMother->province_name = $parentMother->province ? $parentMother->province->name : null;
+        $parentMother->city_name = $parentMother->city ? $parentMother->city->name : null;
+        $parentMother->district_name = $parentMother->district ? $parentMother->district->name : null;
+        $parentMother->village_name = $parentMother->village ? $parentMother->village->name : null;
+
+
+        return $this->success($parentMother, 'User profile retrieved successfully');
     }
 
     /**
