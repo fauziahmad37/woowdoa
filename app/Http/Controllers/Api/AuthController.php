@@ -42,9 +42,16 @@ class AuthController extends Controller
             return response(['message' => 'Username atau password tidak sesuai'], 400);
         }
 
+        // JIKA USER MERCHANT, TAMBAHKAN URL LOGO KE PROFILE_PHOTO
         if (auth()->user()->merchant && auth()->user()->merchant->logo) {
             auth()->user()->profile_photo = url(auth()->user()->merchant->logo);
         }
+
+        // JIKA USER SELAIN MERCHANT, TAMBAHKAN URL LOGO KE PROFILE_PHOTO
+        if (!auth()->user()->merchant && auth()->user()->profile_photo) {
+            auth()->user()->profile_photo = url(auth()->user()->profile_photo);
+        }
+
         // $accessToken = auth()->user()->createToken('authToken')->accessToken;
         $accessToken = auth()->user()->createToken('authToken')->plainTextToken;
         // $user = User::where('email', $request->email)->first();

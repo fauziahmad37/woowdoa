@@ -97,6 +97,11 @@ class UserController extends BaseApiController
     {
         $user = $request->user();
 
+        // jika user level selain merchant owner / 1 maka tidak bisa akses profil merchant owner
+        if ($user->user_level_id != 2) {
+            return $this->error('User login anda tidak diizinkan', 403);
+        }
+
         $merchantOwner = MerchantUser::where('merchant_id', $user->merchant_id)
             ->where('user_type', 1)
             ->first();
@@ -181,6 +186,15 @@ class UserController extends BaseApiController
         ]);
 
         return $this->success($merchantLeader, 'User profile updated successfully');
+    }
+
+    /**
+     * Get Profile Father by auth
+     */
+    public function profileFather(Request $request)
+    {
+        $user = $request->user();
+        return $this->success($user, 'User profile retrieved successfully');
     }
 
     /**
