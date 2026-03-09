@@ -86,7 +86,7 @@
 
         <!-- Footer -->
         <footer class="bg-white text-gray-800 text-center p-4">
-            <p>&copy; 2025 Semua Hak Dilindungi</p>
+            <p>&copy; 2026 Copyright</p>
         </footer>
 
     </div>

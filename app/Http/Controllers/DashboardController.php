@@ -45,18 +45,10 @@ class DashboardController extends Controller
             ->whereYear('transactions.created_at', now()->year)
             ->sum('transaction_details.amount');
 
-        // transaksi per bulan
-        // $transaksiPerBulan = DB::table('transactions')
-        //     ->join('students', 'students.id', '=', 'transactions.student_id')
-        //     ->where('students.school_id', $schoolId)
-        //     ->selectRaw('EXTRACT(MONTH FROM transactions.created_at) as bulan, COUNT(*) as total')
-        //     ->groupBy('bulan')
-        //     ->orderBy('bulan')
-        //     ->get();
 
-        // $bulan = $transaksiPerBulan->pluck('bulan');
-        // $jumlahPerBulan = $transaksiPerBulan->pluck('total');
 
+
+     
 // transaksi per hari (bulan berjalan)
 
 $start = Carbon::now()->startOfMonth();
@@ -84,6 +76,7 @@ for ($i = 1; $i <= $today; $i++) {
 
 
 
+// dashboarad pesantren
 // untuk filter santri
 
 
@@ -116,10 +109,35 @@ $santriPerTingkat = DB::table('students')
     ->groupByRaw("SUBSTRING(classes.class_name FROM '^[0-9]+')")
     ->orderByRaw("SUBSTRING(classes.class_name FROM '^[0-9]+')")
     ->get();
+    
 
     $tingkat = [];
 $laki = [];
 $perempuan = [];
+
+
+// ======================
+// DATA TEACHER
+// ======================
+
+$totalTeacher = DB::table('teachers')
+    ->where('school_id', $schoolId)
+    ->count();
+
+$teacherLaki = DB::table('teachers')
+    ->where('school_id', $schoolId)
+    ->where('gender', 'Laki-Laki')
+    ->count();
+
+$teacherPerempuan = DB::table('teachers')
+    ->where('school_id', $schoolId)
+    ->where('gender', 'Perempuan')
+    ->count();
+
+$teacherAktif = DB::table('teachers')
+    ->where('school_id', $schoolId)
+    ->where('active', true)
+    ->count();
 
 foreach ($santriPerTingkat as $row) {
     $tingkat[] = "Kelas ".$row->tingkat;
@@ -127,7 +145,7 @@ foreach ($santriPerTingkat as $row) {
     $perempuan[] = (int) $row->perempuan;
 }
 
-     return view('dashboard', compact(
+   return view('dashboard', compact(
     'totalTransaksi',
     'totalValue',
     'transaksiBulanIni',
@@ -139,9 +157,15 @@ foreach ($santriPerTingkat as $row) {
     'santriPerempuan',
     'santriAktif',
     'santriPerTingkat',
-       'tingkat',
+    'tingkat',
     'laki',
-    'perempuan'
+    'perempuan',
+
+    // teacher
+    'totalTeacher',
+    'teacherLaki',
+    'teacherPerempuan',
+    'teacherAktif'
 ));
     }
 }
