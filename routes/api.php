@@ -49,8 +49,7 @@ Route::prefix('v1')
         Route::get('/users/profile_merchant_leader', [UserController::class, 'profileMerchantLeader']);
         Route::post('/users/profile_merchant_leader', [UserController::class, 'profileMerchantLeaderEdit']);
 
-        Route::get('/users/profile_father', [UserController::class, 'profileFather']);
-        Route::get('/users/profile_mother', [UserController::class, 'profileMother']);
+        Route::get('/users/profile_parents', [UserController::class, 'profileParents']);
 
         // ======================= Reset Password =======================
         Route::post('/users/reset_password', [UserController::class, 'resetPassword']);

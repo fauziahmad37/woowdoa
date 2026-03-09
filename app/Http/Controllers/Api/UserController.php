@@ -191,15 +191,15 @@ class UserController extends BaseApiController
     }
 
     /**
-     * Get Profile Father by auth
+     * Get Profile Parents by auth
      */
-    public function profileFather(Request $request)
+    public function profileParents(Request $request)
     {
         $user = $request->user();
 
-        // JIKA USER LEVEL BUKAN SEBAGAI PARENT / 5 MAKA TIDAK BISA AKSES PROFIL FATHER
+        // JIKA USER LEVEL BUKAN SEBAGAI PARENT / 5 MAKA TIDAK BISA AKSES PROFIL PARENTS
         if ($user->user_level_id != 5) {
-            return $this->error('Anda tidak diizinkan mengakses profil ayah', 403);
+            return $this->error('Anda tidak diizinkan mengakses profil orang tua', 403);
         }
 
         $parent = Parents::where('user_id', $user->id)->first(); // ambil id parent
@@ -213,26 +213,8 @@ class UserController extends BaseApiController
         $parentFather->district_name = $parentFather->district ? $parentFather->district->name : null;
         $parentFather->village_name = $parentFather->village ? $parentFather->village->name : null;
 
-
-        return $this->success($parentFather, 'User profile retrieved successfully');
-    }
-
-    /**
-     * Get Profile Mother by auth
-     */
-    public function profileMother(Request $request)
-    {
-        $user = $request->user();
-
-        // JIKA USER LEVEL BUKAN SEBAGAI PARENT / 5 MAKA TIDAK BISA AKSES PROFIL MOTHER
-        if ($user->user_level_id != 5) {
-            return $this->error('Anda tidak diizinkan mengakses profil ibu', 403);
-        }
-
-        $parent = Parents::where('user_id', $user->id)->first(); // ambil id parent
-        $children = Student::where('parent_id', $parent->id)->get(); // ambil data anak berdasarkan id parent
+        // ambil data ibu berdasarkan id anak yang sama dengan id anak yang dimiliki oleh ayah
         $parentMother = Parents::where('student_id', $children->pluck('id'))->where('gender', 'perempuan')->first(); // ambil data ibu berdasarkan
-
         $parentMother->children = $children; // tambahkan data anak ke dalam response
 
         $parentMother->province_name = $parentMother->province ? $parentMother->province->name : null;
@@ -240,8 +222,13 @@ class UserController extends BaseApiController
         $parentMother->district_name = $parentMother->district ? $parentMother->district->name : null;
         $parentMother->village_name = $parentMother->village ? $parentMother->village->name : null;
 
+        $data = [
+            'father' => $parentFather,
+            'mother' => $parentMother,
+            'children' => $children
+        ];
 
-        return $this->success($parentMother, 'User profile retrieved successfully');
+        return $this->success($data, 'User profile retrieved successfully');
     }
 
     /**
