@@ -11,10 +11,11 @@ use App\Http\Controllers\MerchantCategoryController;
 use App\Http\Controllers\LimitBelanjaController;
 use App\Http\Controllers\ShortcutNominalController;
 use App\Http\Controllers\ReportTransactionController;
+use App\Http\Controllers\ReportReconcileController;
 use App\Http\Controllers\DashboardTransaksiSiswaController;
-
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request;
+
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])
@@ -39,14 +40,43 @@ Route::resource('limitbelanja', LimitBelanjaController::class);
     // santri
 Route::get('/santri/import', [SantriController::class,'importForm'])->name('santri.import.form');
 Route::post('/santri/import', [SantriController::class,'import'])->name('santri.import');
-
 Route::resource('santri', SantriController::class);
+
 // parent
+Route::get('/parent/import', [ParentController::class,'importForm'])->name('parent.import.form');
+Route::post('/parent/import', [ParentController::class,'import'])->name('parent.import');
 Route::resource('parent', ParentController::class);
 
 // report transaksi santri
 Route::get('/transaksi_santri', [ReportTransactionController::class,'index'])
     ->name('report.transaksi_santri');
+Route::get('/transaksi/detail/{id}', [ReportTransactionController::class, 'detail'])
+    ->name('transaksi.detail');
+Route::get('/transaksi_santri/export/excel', [ReportTransactionController::class,'exportExcel'])
+    ->name('transaksi.export.excel');
+
+Route::get('/transaksi_santri/export/pdf', [ReportTransactionController::class,'exportPdf'])
+    ->name('transaksi.export.pdf');
+
+    
+    // report reconcile
+Route::get('/reconcile', [ReportReconcileController::class,'index'])
+    ->name('report.reconcile');
+
+    Route::get('/report/reconcile/export/excel',[ReportReconcileController::class,'exportExcel'])
+    ->name('reconcile.export.excel');
+
+Route::get('/report/reconcile/export/pdf',[ReportReconcileController::class,'exportPdf'])
+    ->name('reconcile.export.pdf');
+// Route::get('/reconcile/{merchant}', [ReportReconcileController::class,'detail'])
+//     ->name('report.reconcile.detail');
+
+
+
+Route::get(
+    '/report/reconcile/detail/{merchantId}',
+    [ReportReconcileController::class, 'detail']
+)->name('report.reconcile.detail');
 
     // dashboard
 Route::get('/dashboard-transaksi-siswa', [DashboardTransaksiSiswaController::class, 'index'])
@@ -54,8 +84,7 @@ Route::get('/dashboard-transaksi-siswa', [DashboardTransaksiSiswaController::cla
 
 Route::middleware('auth')->group(function () {
 
-Route::get('/transaksi/detail/{id}', [ReportTransactionController::class, 'detail'])
-    ->name('transaksi.detail');
+
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

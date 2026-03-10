@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\ParentImport;
 
 class ParentController extends Controller
 {
@@ -218,5 +220,25 @@ public function create()
     });
 
     return back()->with('success', 'Orangtua berhasil dihapus');
+}
+
+
+// import
+
+public function importForm()
+{
+    return view('parent.import');
+}
+
+public function import(Request $request)
+{
+    $request->validate([
+        'file' => 'required|mimes:xlsx,xls'
+    ]);
+
+    Excel::import(new ParentImport, $request->file('file'));
+
+    return redirect()->route('parent.index')
+        ->with('success','Data orang tua berhasil diimport');
 }
 }

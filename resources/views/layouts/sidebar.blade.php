@@ -116,35 +116,7 @@
 
     </nav>
  <div class="p-4 mb-10 border-t">
-            <!-- <div class="text-white p-3 rounded-lg text-center" style="background: linear-gradient(203.18deg, #01AB14 11.82%, #085410 85.47%);">
-                <template x-if="open">
-                    <div>
-                       <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg" class="mx-auto w-8 mb-2">
-<rect width="30" height="30" rx="8" fill="white"/>
-<g clip-path="url(#clip0_1922_646)">
-<path d="M21.75 12C22.5785 12 23.25 12.6716 23.25 13.5V16.5C23.25 17.3285 22.5785 18 21.75 18H20.9536C20.5845 20.9597 18.0597 23.25 15 23.25V21.75C17.4853 21.75 19.5 19.7353 19.5 17.25V12.75C19.5 10.2647 17.4853 8.25 15 8.25C12.5147 8.25 10.5 10.2647 10.5 12.75V18H8.25C7.42157 18 6.75 17.3285 6.75 16.5V13.5C6.75 12.6716 7.42157 12 8.25 12H9.04642C9.41549 9.04027 11.9403 6.75 15 6.75C18.0597 6.75 20.5845 9.04027 20.9536 12H21.75ZM11.8196 17.8387L12.6147 16.5665C13.3062 16.9997 14.1238 17.25 15 17.25C15.8762 17.25 16.6938 16.9997 17.3853 16.5665L18.1805 17.8387C17.2584 18.4162 16.1682 18.75 15 18.75C13.8318 18.75 12.7416 18.4162 11.8196 17.8387Z" fill="url(#paint0_linear_1922_646)"/>
-</g>
-<defs>
-<linearGradient id="paint0_linear_1922_646" x1="16.7417" y1="6.75" x2="10.4625" y2="21.4167" gradientUnits="userSpaceOnUse">
-<stop stop-color="#01AB14"/>
-<stop offset="1" stop-color="#085410"/>
-</linearGradient>
-<clipPath id="clip0_1922_646">
-<rect width="18" height="18" fill="white" transform="translate(6 6)"/>
-</clipPath>
-</defs>
-</svg>
-
-                        <p>Ada kendala dalam proses anda?</p>
-                    <a href="https://wa.me/628998808839" target="_blank" class="mt-2 bg-white text-green-600 w-full py-2 rounded-lg border border-green-600 hover:bg-green-50 text-center block">
-    Hubungi Kami
-</a>
-                    </div>
-                </template>
-                <template x-if="!open">
-                    <button class="text-white w-full py-2 rounded-lg" style="background: linear-gradient(203.18deg, #FF8F00 11.82%, #FF6200 85.47%);">?</button>
-                </template>
-            </div> -->
+           
 </aside>
 
 

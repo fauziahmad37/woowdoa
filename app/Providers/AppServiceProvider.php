@@ -1,46 +1,41 @@
 <?php
-
 namespace App\Providers;
-
 use Illuminate\Support\Facades\View;
 use App\Models\Menu;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
-    public function register(): void
-    {
-        //
-    }
 
-    /**
-     * Bootstrap any application services.
-     */
     public function boot()
     {
         View::composer('*', function ($view) {
+
             $user = Auth::user();
 
-            // ➤ Test role_id dulu
             if ($user) {
 
-                $menusRaw = Menu::where('role_id', $user->user_level_id)
-                    ->where('menu_status', true)
-                    ->orderBy('menu_sort')
+                // Ambil menu berdasarkan role user melalui tabel menu_level
+                $menusRaw = DB::table('menus')
+                    ->join('menu_level', 'menu_level.menu_level_menu', '=', 'menus.menu_id')
+                    ->where('menu_level.menu_level_user_level', $user->user_level_id)
+                    ->where('menus.menu_status', 1)
+                    ->orderBy('menus.menu_parent')
+                    ->orderBy('menus.menu_sort')
+                    ->select('menus.*')
+                    ->distinct()
                     ->get();
-                // dd($user->user_level_id);
-                // dd(Menu::select('menu_id','menu_name','menu_parent')->get()->toArray());
-                // // Buat tree
+
+                // Membuat struktur parent-child menu
                 $menus = [];
 
-                foreach ($menusRaw as $m) {
-                    $menus[$m->menu_parent][] = $m;
+                foreach ($menusRaw as $menu) {
+                    $menus[$menu->menu_parent][] = $menu;
                 }
 
+                // Kirim ke semua view
                 $view->with('menus', $menus);
             }
         });
