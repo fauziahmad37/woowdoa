@@ -41,6 +41,8 @@ Route::get('/student-card/{nis}',[CardRequestController::class,'getStudentCard']
 Route::post('/cardrequest/{id}/approve',[CardRequestController::class,'approve'])->name('cardrequest.approve');
 Route::post('/cardrequest/{id}/reject',[CardRequestController::class,'reject'])->name('cardrequest.reject');
 
+Route::get('/card-print/{id}',[CardController::class,'print'])->name('cards.print');
+
 // shortcut nominal
 Route::resource('shortcutnominal', ShortcutNominalController::class);
 

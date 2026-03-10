@@ -23,4 +23,11 @@ class Card extends Model
 				'nis'
 		);
 	}
+	public function user()
+	{
+		return $this->belongsTo(
+				User::class,'nis','username'
+				
+		);
+	}	
 }

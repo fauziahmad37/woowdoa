@@ -50,9 +50,11 @@ class CardController extends Controller
 
 	public function print($id)
 	{
-		$card = Card::with('student')->findOrFail($id);
+		$card = Card::with('user')->findOrFail($id);
 		$design = CardDesign::first();
-		return view('card.print',compact('card','design'));
+		$elements = json_decode($design->elements, true);
+ 
+		return view('cards.print',compact('card','design','elements'));
 	}
 	 
 }
