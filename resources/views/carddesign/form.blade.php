@@ -6,30 +6,17 @@
 		<!-- Breadcrumb -->
 		<nav class="text-gray-700 text-sm mb-6" aria-label="Breadcrumb">
 				<ol class="list-reset flex flex-wrap items-center">
-						<li class="flex items-center">
-								<a href="{{ route('merchantcategory.index') }}" 
-									 class="text-green-600 hover:text-green-800">
-										Data Merchant Category
-								</a>
-								<span class="mx-2">
-										<svg width="8" height="14" viewBox="0 0 8 14" fill="none">
-												<path fill-rule="evenodd" clip-rule="evenodd"
-														d="M0.646447 0.646447C0.841709 0.451184 1.15829 0.451184 1.35355 0.646447L7.35355 6.64645C7.54882 6.84171 7.54882 7.15829 7.35355 7.35355L1.35355 13.3536C1.15829 13.5488 0.841709 13.5488 0.646447 13.3536C0.451184 13.1583 0.451184 12.8417 0.646447 12.6464L6.29289 7L0.646447 1.35355C0.451184 1.15829 0.451184 0.841709 0.646447 0.646447Z"
-														fill="#1A2130"/>
-										</svg>
-								</span>
+						<li class="flex items-center"> 
+							Limit Belanja
 						</li>
-						<li>
-								<span class="text-gray-500">
-										{{ isset($merchantcategory) ? 'Edit Merchant Category' : 'Tambah Merchant Category Baru' }}
-								</span>
+						<li> 
 						</li>
 				</ol>
 		</nav>
 
 		<!-- Judul -->
 		<h2 class="text-xl font-semibold text-gray-700">
-			Merchant Category
+			Limit Belanja Santri
 		</h2>
 		<p class="text-gray-500 mb-6">
 				Silakan isi data   dengan lengkap.
@@ -47,44 +34,70 @@
     </div>
 	 @endif
 
- 
- 
-	<form action="{{ isset($merchantcategory) ? route('merchantcategory.update', $merchantcategory->id) : route('merchantcategory.store') }}" 
+	<form action="{{ isset($limitbelanja) ? route('limitbelanja.update', $limitbelanja->id) : route('limitbelanja.store') }}" 
     method="POST"  enctype="multipart/form-data" >
             
                 @csrf
-                @if(isset($merchantcategory))
+                @if(isset($limitbelanja))
                     @method('PUT')
                 @endif
 
 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 
- 
 	<div>
 			<label class="block text-gray-700 font-medium mb-1">
-				Nama Kategory <span class="text-red-500">*</span>
+					Tingkat Kelas <span class="text-red-500">*</span>
 			</label>
-			
-			<input type="text" name="mc_name"
-						 value="{{ old('mc_name', $merchantcategory->mc_name ?? '') }}"
+		 
+    <select id="class_level" name="class_level" 
 						 class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500">
-			@error('mc_name')
+        <option value="">-- Pilih Kelas --</option>
+        @foreach($classlevel as $rec)
+            <option value="{{ $rec->class_level}}" 
+						@if(isset($limitbelanja))
+            {{ $rec->class_level == $limitbelanja->class_level ? 'selected' : '' }}
+						@endif
+						>{{ $rec->class_level }}</option>
+        @endforeach
+    </select>
+	</div> 
+	
+	
+	<div>
+			<label class="block text-gray-700 font-medium mb-1">
+					Belanja Harian <span class="text-red-500">*</span>
+			</label>
+			<input type="text" name="daily_limit"
+						 value="{{ old('daily_limit', $limitbelanja->daily_limit ?? '') }}"
+						 class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500">
+			@error('daily_limit')
 					<p class="text-sm text-red-600 mt-1">{{ $message }}</p>
 			@enderror
 	</div> 
 	
- 
+	<div>
+			<label class="block text-gray-700 font-medium mb-1">
+					Belanja Bulanan <span class="text-red-500">*</span>
+			</label>
+			<input type="text" name="monthly_limit"
+						 value="{{ old('monthly_limit', $limitbelanja->monthly_limit ?? '') }}"
+						 class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500">
+			@error('monthly_limit')
+					<p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+			@enderror
+	</div> 	
+	 
 		
 </div>
 
-	<!-- Tombol -->
-	<div class="flex justify-end mt-6">
-			<button type="submit"
-					class="text-white px-6 py-2 rounded-lg"
-					style="background: linear-gradient(203.18deg, #01AB14 11.82%, #085410 85.47%);">
-					Simpan Data
-			</button>
-	</div>
+                <!-- Tombol -->
+                <div class="flex justify-end mt-6">
+                    <button type="submit"
+                        class="text-white px-6 py-2 rounded-lg"
+                        style="background: linear-gradient(203.18deg, #01AB14 11.82%, #085410 85.47%);">
+                        Simpan Data
+                    </button>
+                </div>
 
             </form>
         </div>
@@ -116,14 +129,14 @@
         </h2>
 
         <p class="mt-2 text-sm text-gray-600 text-center">
-            Data merchant category berhasil ditambahkan.
+            Data limit belanja berhasil ditambahkan.
         </p>
 
         <div class="mt-6 flex flex-col sm:flex-row justify-center gap-3">
 
   
             <!-- Selesai -->
-            <a href="{{ route('merchantcategory.index') }}"
+            <a href="{{ route('limitbelanja.index') }}"
                 class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700">
                 Selesai
             </a>

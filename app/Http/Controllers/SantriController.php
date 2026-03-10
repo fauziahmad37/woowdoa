@@ -268,4 +268,23 @@ public function import(Request $request)
         ->with('success','Data santri berhasil diimport');
 }
 
+	public function search(Request $request)
+	{
+		$search = $request->q;
+		$students = Santri::where('nis','like',"%$search%")
+				->orWhere('student_name','like',"%$search%")
+				->limit(10)
+				->get();
+		$data = [];
+		foreach($students as $s){
+				$data[] = [
+						'id'=>$s->nis,
+						'text'=>$s->nis.' - '.$s->student_name
+				];
+		}
+		return response()->json([
+				'results'=>$data
+		]);
+
+	}
 }

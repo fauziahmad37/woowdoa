@@ -7,9 +7,9 @@
 		<nav class="text-gray-700 text-sm mb-6" aria-label="Breadcrumb">
 				<ol class="list-reset flex flex-wrap items-center">
 						<li class="flex items-center">
-								<a href="{{ route('merchantcategory.index') }}" 
+								<a href="{{ route('card.index') }}" 
 									 class="text-green-600 hover:text-green-800">
-										Data Merchant Category
+										Data Kartu Santri
 								</a>
 								<span class="mx-2">
 										<svg width="8" height="14" viewBox="0 0 8 14" fill="none">
@@ -21,7 +21,7 @@
 						</li>
 						<li>
 								<span class="text-gray-500">
-										{{ isset($merchantcategory) ? 'Edit Merchant Category' : 'Tambah Merchant Category Baru' }}
+										{{ isset($card) ? 'Edit Data Kartu' : 'Tambah Kartu' }}
 								</span>
 						</li>
 				</ol>
@@ -29,7 +29,7 @@
 
 		<!-- Judul -->
 		<h2 class="text-xl font-semibold text-gray-700">
-			Merchant Category
+			Data Kartu Santri
 		</h2>
 		<p class="text-gray-500 mb-6">
 				Silakan isi data   dengan lengkap.
@@ -47,38 +47,51 @@
     </div>
 	 @endif
 
- 
- 
-	<form action="{{ isset($merchantcategory) ? route('merchantcategory.update', $merchantcategory->id) : route('merchantcategory.store') }}" 
+	<form action="{{ isset($card) ? route('card.update', $card->id) : route('card.store') }}" 
     method="POST"  enctype="multipart/form-data" >
             
                 @csrf
-                @if(isset($merchantcategory))
+                @if(isset($card))
                     @method('PUT')
                 @endif
 
 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-
  
 	<div>
 			<label class="block text-gray-700 font-medium mb-1">
-				Nama Kategory <span class="text-red-500">*</span>
+					NIS Santri <span class="text-red-500">*</span>
 			</label>
-			
-			<input type="text" name="mc_name"
-						 value="{{ old('mc_name', $merchantcategory->mc_name ?? '') }}"
-						 class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500">
-			@error('mc_name')
-					<p class="text-sm text-red-600 mt-1">{{ $message }}</p>
-			@enderror
+		 
+    <select id="studentSelect" name="nis" 
+						 class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500" required>
+				@if(isset($card))
+				<option value="{{ $card->nis }}" selected>
+				{{ $card->student->nis }} - {{ $card->student->student_name }}
+				</option>
+				@endif						 
+    </select>
 	</div> 
 	
+	<div>
+			<label class="block text-gray-700 font-medium mb-1">
+					NIS Santri <span class="text-red-500">*</span>
+			</label>
+		 
+    <select id="studentSelect" name="nis" 
+						 class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500" required>
+				@if(isset($card))
+				<option value="{{ $card->nis }}" selected>
+				{{ $card->student->nis }} - {{ $card->student->student_name }}
+				</option>
+				@endif						 
+    </select>
+	</div> 	
  
 		
 </div>
 
 	<!-- Tombol -->
-	<div class="flex justify-end mt-6">
+	<div class="flex justify-end mt-6"> 
 			<button type="submit"
 					class="text-white px-6 py-2 rounded-lg"
 					style="background: linear-gradient(203.18deg, #01AB14 11.82%, #085410 85.47%);">
@@ -116,14 +129,14 @@
         </h2>
 
         <p class="mt-2 text-sm text-gray-600 text-center">
-            Data merchant category berhasil ditambahkan.
+            Data limit belanja berhasil ditambahkan.
         </p>
 
         <div class="mt-6 flex flex-col sm:flex-row justify-center gap-3">
 
   
             <!-- Selesai -->
-            <a href="{{ route('merchantcategory.index') }}"
+            <a href="{{ route('limitbelanja.index') }}"
                 class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700">
                 Selesai
             </a>
@@ -136,27 +149,39 @@
 
 
 <!-- end modal -->
-
+   
+<!-- Select2 CSS --> 
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<!-- Select2 CSS -->
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-
-
-<!-- Select2 JS -->
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-    let modal = document.getElementById("successModalContent");
-    if (modal) {
-        setTimeout(() => {
-            modal.classList.remove("scale-95", "opacity-0");
-            modal.classList.add("scale-100", "opacity-100");
-        }, 100);
-    } 
-});
-
-
  
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/css/select2.min.css" rel="stylesheet"/>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/js/select2.min.js"></script>
+<script> 
+$(document).ready(function(){ 
+	$('#studentSelect').select2({ 
+    width:'100%',
+    dropdownParent: $('body'),   // PENTING
+    placeholder:'Ketik NIS / Nama siswa',
+    minimumInputLength:1,
+    ajax:{
+			url:"{{ route('students.search') }}",
+			dataType:'json',
+			delay:250,
+			data:function(params){
+					return {
+							q:params.term
+					};
+			},
+			processResults:function(data){
+				return {
+						results: data.results
+				};
+			}
+    }
+	});
+ 
+}); 
 </script>
-@endsection@extends('layouts.app')
+@endsection 
