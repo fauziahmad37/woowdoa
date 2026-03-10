@@ -75,6 +75,28 @@ for ($i = 1; $i <= $today; $i++) {
 }
 
 
+// ======================
+// SISWA TOPUP BULAN INI
+// ======================
+
+// total siswa
+$totalSantri = DB::table('students')
+    ->where('school_id', $schoolId)
+    ->count();
+
+
+// siswa yang sudah topup bulan ini
+$santriTopup = DB::table('transactions')
+    ->join('students', 'students.id', '=', 'transactions.student_id')
+    ->where('students.school_id', $schoolId)
+    ->whereMonth('transactions.created_at', now()->month)
+    ->whereYear('transactions.created_at', now()->year)
+    ->distinct('transactions.student_id')
+    ->count('transactions.student_id');
+
+
+// siswa yang belum topup
+$santriBelumTopup = $totalSantri - $santriTopup;
 
 // dashboarad pesantren
 // untuk filter santri
@@ -145,6 +167,119 @@ foreach ($santriPerTingkat as $row) {
     $perempuan[] = (int) $row->perempuan;
 }
 
+
+
+// ======================
+// DATA MERCHANT
+// ======================
+
+// total merchant
+$totalMerchant = DB::table('merchants')
+    ->where('school_id', $schoolId)
+    ->count();
+
+
+// merchant hari ini
+$merchantHariIni = DB::table('merchants')
+    ->where('school_id', $schoolId)
+    ->whereDate('created_at', Carbon::today())
+    ->count();
+
+
+// merchant aktif
+$merchantAktif = DB::table('merchants')
+    ->where('school_id', $schoolId)
+    ->where('is_active', true)
+    ->count();
+
+
+    // ======================
+// MERCHANT HARIAN
+// ======================
+
+$merchantPerHari = DB::table('merchants')
+    ->where('school_id', $schoolId)
+    ->whereBetween('created_at', [Carbon::now()->startOfMonth(), Carbon::now()->endOfDay()])
+    ->selectRaw('EXTRACT(DAY FROM created_at)::int as hari, COUNT(*) as total')
+    ->groupByRaw('EXTRACT(DAY FROM created_at)')
+    ->orderByRaw('EXTRACT(DAY FROM created_at)')
+    ->pluck('total','hari');
+
+$merchantDays = [];
+$merchantJumlah = [];
+
+$today = Carbon::now()->day;
+
+for ($i = 1; $i <= $today; $i++) {
+    $merchantDays[] = $i;
+    $merchantJumlah[] = $merchantPerHari[$i] ?? 0;
+}
+
+
+// ======================
+// TOP MERCHANT TRANSAKSI
+// ======================
+
+$merchantNames = [];
+$merchantTotals = [];
+
+$topMerchant = DB::table('transactions')
+    ->join('merchants', 'merchants.id', '=', 'transactions.merchant_id')
+    ->where('merchants.school_id', $schoolId)
+    ->select(
+        'merchants.merchant_name',
+        DB::raw('COUNT(transactions.id) as total')
+    )
+    ->groupBy('merchants.merchant_name')
+    ->orderByDesc('total')
+    ->limit(5)
+    ->get();
+
+foreach ($topMerchant as $row) {
+    $merchantNames[] = $row->merchant_name;
+    $merchantTotals[] = (int) $row->total;
+}
+
+
+// pendapatan merchant
+
+// ======================
+// PENDAPATAN MERCHANT
+// ======================
+
+$merchantRevenueNames = [];
+$merchantRevenueTotals = [];
+
+$merchantRevenue = DB::table('transactions')
+    ->join('transaction_details', 'transactions.id', '=', 'transaction_details.transaction_id')
+    ->join('merchants', 'merchants.id', '=', 'transactions.merchant_id')
+    ->where('merchants.school_id', $schoolId)
+    ->whereNotNull('transactions.paid_at')
+    ->select(
+        'merchants.merchant_name',
+        DB::raw('SUM(transaction_details.amount) as total_revenue')
+    )
+    ->groupBy('merchants.merchant_name')
+    ->orderByDesc('total_revenue')
+    ->limit(5)
+    ->get();
+
+foreach ($merchantRevenue as $row) {
+    $merchantRevenueNames[] = $row->merchant_name;
+    $merchantRevenueTotals[] = (float) $row->total_revenue;
+}
+
+// ======================
+// TOTAL MERCHANT
+// ======================
+
+$totalMerchant = DB::table('merchants')
+    ->where('school_id', $schoolId)
+    ->count();
+
+$merchantTotalLabel = ['Total Merchant'];
+$merchantTotalData = [$totalMerchant];
+
    return view('dashboard', compact(
     'totalTransaksi',
     'totalValue',
@@ -160,12 +295,28 @@ foreach ($santriPerTingkat as $row) {
     'tingkat',
     'laki',
     'perempuan',
+    'santriTopup',
+'santriBelumTopup',
 
     // teacher
     'totalTeacher',
     'teacherLaki',
     'teacherPerempuan',
-    'teacherAktif'
+    'teacherAktif',
+
+       // merchant
+    'totalMerchant',
+    'merchantHariIni',
+    'merchantAktif',
+    'merchantDays',
+ 'merchantTotalLabel',
+    'merchantTotalData',
+    'merchantDays',
+    'merchantJumlah',
+    'merchantNames',
+    'merchantTotals',
+'merchantRevenueNames',
+'merchantRevenueTotals'
 ));
     }
 }

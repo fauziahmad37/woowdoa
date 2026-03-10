@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\RegionController;
 use App\Http\Controllers\Api\JadwalKegiatanController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\ReportCardController;
+use App\Http\Controllers\Api\AttendanceController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 
 Route::post('register', '\App\Http\Controllers\Api\AuthController@register');
@@ -92,6 +93,9 @@ Route::prefix('v1')
 
         // Report Card
         Route::get('/report_cards', [ReportCardController::class, 'index']);
+
+        // Attendance
+        Route::get('/attendances', [AttendanceController::class, 'index']);
     });
 
 Route::group(

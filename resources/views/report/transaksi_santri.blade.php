@@ -66,8 +66,33 @@ class="flex flex-col sm:flex-row items-center gap-2 w-full sm:w-auto"
 </a>
 
 </form>
+<div x-data="{ open: false }" class="relative inline-block text-left">
 
-            <!-- Tombol Tambah -->
+<button
+@click="open = !open"
+class="px-4 py-2 rounded-lg text-white"
+style="background: linear-gradient(203.18deg, #01AB14 11.82%, #085410 85.47%);">
+Export Excel/PDF
+</button>
+
+<div 
+x-show="open"
+@click.outside="open = false"
+class="absolute mt-2 w-40 bg-white border rounded-lg shadow z-50">
+
+<a href="{{ route('transaksi.export.excel', request()->query()) }}"
+class="block px-4 py-2 text-sm hover:bg-gray-100">
+Export Excel
+</a>
+
+<a href="{{ route('transaksi.export.pdf', request()->query()) }}"
+class="block px-4 py-2 text-sm hover:bg-gray-100">
+Export PDF
+</a>
+
+</div>
+
+</div>
       
         </div>
 

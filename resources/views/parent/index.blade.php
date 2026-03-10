@@ -38,13 +38,20 @@
                     Atur Ulang
                 </a>
             </form>
+  <div class="flex gap-2 w-full sm:w-auto">
 
             <!-- Tombol Tambah -->
+             <a href="{{ route('parent.import.form') }}"
+class="px-4 py-2 rounded-lg text-white text-center"
+style="background: linear-gradient(203.18deg, #2563eb 11.82%, #1e40af 85.47%);">
+Import Excel
+</a>
             <a href="{{ route('parent.create') }}"
                class="px-4 py-2 rounded-lg text-white text-center sm:w-auto w-full"
                style="background: linear-gradient(203.18deg, #01AB14 11.82%, #085410 85.47%);">
                 + Tambah Orangtua
             </a>
+</div>
         </div>
 
         <!-- Table -->
