@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\PasswordResetOtp;
+use App\Models\Student;
+use App\Models\Parents;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -42,28 +44,40 @@ class AuthController extends Controller
             return response(['message' => 'Username atau password tidak sesuai'], 400);
         }
 
+        $user = auth()->user();
+
         // JIKA USER MERCHANT, TAMBAHKAN URL LOGO KE PROFILE_PHOTO
-        if (auth()->user()->merchant && auth()->user()->merchant->logo) {
-            auth()->user()->profile_photo = url(auth()->user()->merchant->logo);
+        if ($user->merchant && $user->merchant->logo) {
+            $user->profile_photo = url($user->merchant->logo);
         }
-
-        // JIKA USER SELAIN MERCHANT, TAMBAHKAN URL LOGO KE PROFILE_PHOTO
-        if (!auth()->user()->merchant && auth()->user()->profile_photo) {
-            auth()->user()->profile_photo = url(auth()->user()->profile_photo);
-        }
-
-        // $accessToken = auth()->user()->createToken('authToken')->accessToken;
-        $accessToken = auth()->user()->createToken('authToken')->plainTextToken;
-        // $user = User::where('email', $request->email)->first();
-        // $accessToken = $user->createToken('auth-token')->plainTextToken;
 
         // STORE DEVICE TOKEN
         if ($request->has('device_token')) {
             $deviceToken = $request->input('device_token');
-            auth()->user()->update(['device_token' => $deviceToken]);
+            $user->update(['device_token' => $deviceToken]);
         }
 
-        return response(['user' => auth()->user(), 'access_token' => $accessToken]);
+        // JIKA USER SELAIN MERCHANT, TAMBAHKAN URL LOGO KE PROFILE_PHOTO
+        if (!$user->merchant && $user->profile_photo) {
+            $user->profile_photo = url($user->profile_photo);
+
+            // get nis anak
+            $user_id = $user->id;
+            $parent = Parents::where('user_id', $user_id)->first(); // ambil parent
+            if ($parent) {
+                $student = Student::where('parent_id', $parent->id)->first(); // ambil student
+                if ($student) {
+                    $user->nis = $student->nis; // tambahkan nis ke response
+                }
+            }
+        }
+
+        // $accessToken = auth()->user()->createToken('authToken')->accessToken;
+        $accessToken = $user->createToken('authToken')->plainTextToken;
+        // $user = User::where('email', $request->email)->first();
+        // $accessToken = $user->createToken('auth-token')->plainTextToken;
+
+        return response(['user' => $user, 'access_token' => $accessToken]);
     }
 
     public function logout(Request $request)
