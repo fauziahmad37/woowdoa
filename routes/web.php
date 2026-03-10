@@ -13,6 +13,12 @@ use App\Http\Controllers\ShortcutNominalController;
 use App\Http\Controllers\ReportTransactionController;
 use App\Http\Controllers\ReportReconcileController;
 use App\Http\Controllers\DashboardTransaksiSiswaController;
+//Card
+use App\Http\Controllers\CardController;
+use App\Http\Controllers\CardRequestController;
+use App\Http\Controllers\CardDesignController;
+use App\Http\Controllers\CardLossReportController;
+
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request;
 
@@ -20,6 +26,20 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
+
+
+
+// Card Management
+Route::resource('card', CardController::class);
+Route::resource('cardrequest', CardRequestController::class);
+Route::resource('carddesign', CardDesignController::class);
+Route::resource('cardlossreport', CardLossReportController::class);
+
+Route::get('/search-student',[SantriController::class,'search'])->name('students.search');
+Route::get('/student-card/{nis}',[CardRequestController::class,'getStudentCard']);
+
+Route::post('/cardrequest/{id}/approve',[CardRequestController::class,'approve'])->name('cardrequest.approve');
+Route::post('/cardrequest/{id}/reject',[CardRequestController::class,'reject'])->name('cardrequest.reject');
 
 // shortcut nominal
 Route::resource('shortcutnominal', ShortcutNominalController::class);
