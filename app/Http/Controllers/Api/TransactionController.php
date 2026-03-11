@@ -3,13 +3,17 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Api\BaseApiController;
+use App\Models\Classes;
 use Illuminate\Http\Request;
 
 use App\Models\User;
 use App\Models\Student;
 use App\Models\Notification;
 use App\Models\Parents;
+use App\Models\Ewallet;
+use App\Models\WalletMovement;
 use App\Models\Transaction;
+use App\Models\LimitBelanja;
 use App\Models\TransactionDetail;
 use App\Services\FirebaseService;
 
@@ -86,15 +90,16 @@ class TransactionController extends BaseApiController
             return $this->error('Hanya merchant yang dapat mengakses endpoint ini', 403);
         }
 
-        $santri = Student::select('id', 'student_name', 'nis', 'saldo')
+        $santri = Student::select('id', 'student_name', 'nis', 'user_id')
             ->where('nis', $nis)
             ->first();
+        
+        $ewallet = Ewallet::where('user_id', $santri->user_id)->first();
+        $santri->saldo = $ewallet ? $ewallet->balance : 0;
 
         if (!$santri) {
             return $this->error('Santri tidak ditemukan', 404);
         }
-
-
 
         return $this->success($santri, 'Data santri retrieved successfully');
     }
@@ -121,6 +126,7 @@ class TransactionController extends BaseApiController
         try {
             $santri = Student::where('nis', $request->nis)->lockForUpdate()->first();
 
+            // cek santri
             if (!$santri) {
                 return $this->error('Santri tidak ditemukan', 404);
             }
@@ -130,12 +136,40 @@ class TransactionController extends BaseApiController
                 return $this->error('PIN salah', 401);
             }
 
-            // cek saldo
-            if ($santri->saldo < $request->amount) {
+            // cek limit pembayaran harian
+            $totalPaidToday = Transaction::where('student_id', $santri->id)
+                ->whereDate('paid_at', now()->toDateString())
+                ->sum('paid_amount');
+
+            $santriClass = Classes::where('id', $santri->class_id)->first();
+            $dailyLimit = LimitBelanja::where('school_id', $santri->school_id)
+                ->where('class_level', $santriClass->class_level)
+                ->first();
+            
+            // Jika ada limit harian, cek apakah total pembayaran hari ini + jumlah pembayaran melebihi limit
+            if ($dailyLimit && ($totalPaidToday + $request->amount) > $dailyLimit->daily_limit) {
+                return $this->error('Pembayaran melebihi limit harian', 400);
+            }
+
+            // cek limit pembayaran bulanan
+            $totalPaidThisMonth = Transaction::where('student_id', $santri->id)
+                ->whereYear('paid_at', now()->year)
+                ->whereMonth('paid_at', now()->month)
+                ->sum('paid_amount');
+            if ($dailyLimit && ($totalPaidThisMonth + $request->amount) > $dailyLimit->monthly_limit) {
+                return $this->error('Pembayaran melebihi limit bulanan', 400);
+            }
+
+
+
+            // =================== cek saldo ===================
+            // GET Wallet Santri
+            $ewallet = Ewallet::where('user_id', $santri->user_id)->first();
+            if (!$ewallet || $ewallet->balance < $request->amount) {
                 return $this->error('Saldo tidak cukup', 400);
             }
 
-            $saldoBefore = $santri->saldo;
+            $saldoBefore = $ewallet->balance;
             $saldoAfter  = $saldoBefore - $request->amount;
 
             // buat kode transaksi
@@ -162,6 +196,22 @@ class TransactionController extends BaseApiController
                 'description' => 'Pembayaran di merchant ' . $user->merchant->merchant_name,
             ]);
 
+            // Simpan ke wallet movement
+            $ewalletMovement = WalletMovement::create([
+                'ewallet_id' => $ewallet->id,
+                'transaction_id' => $transaction->id,
+                'type' => 'debit',
+                'amount' => $request->amount,
+                'balance_before' => $saldoBefore,
+                'balance_after' => $saldoAfter,
+                'description' => 'Pembayaran di merchant ' . $user->merchant->merchant_name,
+            ]);
+
+            // potong saldo
+            $ewallet->update([
+                'balance' => $saldoAfter
+            ]);
+
             // Siapkan data notifikasi
             $dataInsert = [
                 'title' => 'Pembayaran Berhasil',
@@ -172,17 +222,14 @@ class TransactionController extends BaseApiController
                 'data' => [
                     'transaction_id' => $transaction->id,
                     'transaction_code' => $transactionCode,
-                    'amount' => $request->paid_amount,
+                    'amount' => $request->amount,
                     'saldo_before' => $saldoBefore,
                     'saldo_after' => $saldoAfter,
                     'transaction_date' => now()->format('Y-m-d H:i:s'),
                 ]
             ];
 
-            // potong saldo
-            $santri->update([
-                'saldo' => $saldoAfter
-            ]);
+            
 
             // Insert ke table notifikasi untuk merchant
             Notification::create($dataInsert);
@@ -236,7 +283,7 @@ class TransactionController extends BaseApiController
      */
     public function showByCode($code)
     {
-        $transaction = Transaction::with('student:id,student_name,nis,saldo')
+        $transaction = Transaction::with('student:id,student_name,nis,class_id,user_id', 'student.ewallet:id,user_id,balance')
             ->where('transaction_code', $code)
             ->first();
 
@@ -244,15 +291,51 @@ class TransactionController extends BaseApiController
             return $this->error('Transaksi tidak ditemukan', 404);
         }
 
+        $ewallet = Ewallet::where('user_id', $transaction->student->user_id)->first();
+
         return $this->success([
             'transaction_code' => $transaction->transaction_code,
-            'tanggal' => $transaction->transaction_date->format('d-m-Y H:i'),
+            'tanggal' => $transaction->created_at->format('d-m-Y H:i'),
             'nama' => $transaction->student->student_name,
             'nis' => $transaction->student->nis,
-            'total_pembayaran' => $transaction->amount,
-            'saldo_sebelum' => $transaction->saldo_before,
-            'saldo_sesudah' => $transaction->saldo_after,
-            'saldo_terakhir_santri' => $transaction->student->saldo
+            'total_pembayaran' => $transaction->wallet_movements[0]->amount,
+            'saldo_sebelum' => $transaction->wallet_movements[0]->balance_before,
+            'saldo_sesudah' => $transaction->wallet_movements[0]->balance_after,
+            'saldo_terakhir_santri' => $ewallet->balance ?? 0
         ]);
+    }
+
+    /**
+     * settlement
+     */
+    public function settlement(Request $request){
+        $request->validate([
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+        ]);
+
+        $user = auth()->user();
+        if ($user->user_level_id != '2') {
+            return $this->error('Unauthorized', 403);
+        }
+
+        $transactions = Transaction::where('merchant_id', $user->merchant_id)
+            ->whereDate('paid_at', '>=', $request->start_date)
+            ->whereDate('paid_at', '<=', $request->end_date)
+            ->get();
+
+        $totalSettlement = $transactions->sum('paid_amount');
+        return $this->success([
+            'total_settlement' => $totalSettlement,
+            'transactions' => $transactions->map(function($transaction) {
+                return [
+                    'transaction_code' => $transaction->transaction_code,
+                    'paid_at' => $transaction->paid_at->format('d-m-Y H:i'),
+                    'amount' => $transaction->paid_amount,
+                    'student_name' => $transaction->student->student_name,
+                    'nis' => $transaction->student->nis,
+                ];
+            })
+        ], 'Settlement data retrieved successfully');
     }
 }
