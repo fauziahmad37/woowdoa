@@ -1,0 +1,25 @@
+<?php
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::table('settlements', function (Blueprint $table) {
+            $table->dropColumn('settlement_date');
+            $table->date('period_start')->nullable();
+            $table->date('period_end')->nullable();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::table('settlements', function (Blueprint $table) {
+            $table->date('settlement_date')->nullable();
+            $table->dropColumn('period_start');
+            $table->dropColumn('period_end');
+        });
+    }
+};
