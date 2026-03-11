@@ -35,7 +35,7 @@ class Student extends Authenticatable
         'saldo',
         'user_id',
         'pin',
-       
+
     ];
 
     /**
@@ -51,5 +51,35 @@ class Student extends Authenticatable
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
+    public function ewallet()
+    {
+        return $this->hasOne(Ewallet::class, 'user_id', 'user_id');
+    }
+
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class, 'student_id');
+    }
+
+    public function parent()
+    {
+        return $this->belongsTo(Parent::class, 'parent_id');
+    }
+
+    public function class()
+    {
+        return $this->belongsTo(ClassModel::class, 'class_id');
+    }
+
+    public function school()
+    {
+        return $this->belongsTo(School::class, 'school_id');
+    }
+
+    public function tahun_ajaran()
+    {
+        return $this->belongsTo(TahunAjaran::class, 'tahun_ajaran_id');
     }
 }

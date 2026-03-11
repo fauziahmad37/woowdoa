@@ -38,5 +38,10 @@ class Transaction extends Model
     {
         return $this->hasMany(TransactionDetail::class, 'transaction_id');
     }
+
+    public function wallet_movements()
+    {
+        return $this->hasMany(WalletMovement::class, 'transaction_id');
+    }
     
 }
