@@ -16,6 +16,7 @@ class Transaction extends Model
         'total_amount',
         'paid_amount',
         'paid_at',
+        'status',
     ];
 
     protected $casts = [
@@ -43,5 +44,10 @@ class Transaction extends Model
     {
         return $this->hasMany(WalletMovement::class, 'transaction_id');
     }
-    
+
+    public function settlement()
+    {
+        return $this->belongsTo(Settlement::class, 'settlement_id', 'id');
+    }
+
 }

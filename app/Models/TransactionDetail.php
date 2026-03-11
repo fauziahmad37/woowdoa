@@ -12,17 +12,19 @@ class TransactionDetail extends Model
 
     protected $fillable = [
         'transaction_id',
-        'type',
-        'amount',
-        'saldo_before',
-        'saldo_after',
         'description',
+        'reference',
+        'product_type',
+        'product_name',
+        'quantity',
+        'price',
+        'sub_total',
     ];
 
     public function transaction()
     {
         return $this->belongsTo(Transaction::class);
     }
-    
+
 
 }
