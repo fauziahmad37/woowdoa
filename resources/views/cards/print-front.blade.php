@@ -8,8 +8,8 @@ body{
 }
 
 .card{
-	width:{{$design->width}}px;
-	height:{{$design->height}}px;
+	width:85.6mm;
+	height:54mm;
 	position:relative;
 	margin-bottom:30px;
 }
@@ -87,7 +87,6 @@ font-size:{{$front['nis']['font_size']}}px;
 ">
 
 NIS : {{$card->user->username}}
-
 </div>
 @endif 
 
@@ -102,61 +101,12 @@ top:{{$front['card_number']['top']}}px;
 font-size:{{$front['card_number']['font_size']}}px;
 ">
 
-{{$card->card_number}}
+{!! DNS1D::getBarcodeHTML($card->card_number, 'C128',2,40) !!}
+ 
 </div>
 @endif 
 </div>
- 
- 
-{{-- ================= BACK CARD ================= --}}
-
-<div class="card">
-
-<img src="{{asset($design->back_background)}}" class="bg">
-
-
-{{-- QR CODE --}}
-@if(isset($back['qr_code']))
-<img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data={{$card->card_number}}"
-style="
-position:absolute;
-left:{{$back['qr_code']['left']}}px;
-top:{{$back['qr_code']['top']}}px;
-width:{{$back['qr_code']['width']}}px;
-">
-@endif
-
-
-{{-- SCHOOL ADDRESS --}}
-@if(isset($back['school_address']))
-<div style="
-position:absolute;
-left:{{$back['school_address']['left']}}px;
-top:{{$back['school_address']['top']}}px;
-font-size:{{$back['school_address']['font_size']}}px;
-">
-
-Jl. Pendidikan No 10 Bandung
-
-</div>
-@endif
-
-
-{{-- VALID UNTIL --}}
-@if(isset($back['valid_until']))
-<div style="
-position:absolute;
-left:{{$back['valid_until']['left']}}px;
-top:{{$back['valid_until']['top']}}px;
-font-size:{{$back['valid_until']['font_size']}}px;
-">
-
-Berlaku sampai : 2027
-
-</div>
-@endif
-
-</div> 
+  
 <script>
 window.print();
 </script>

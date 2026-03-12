@@ -42,6 +42,10 @@ Route::post('/cardrequest/{id}/approve',[CardRequestController::class,'approve']
 Route::post('/cardrequest/{id}/reject',[CardRequestController::class,'reject'])->name('cardrequest.reject');
 
 Route::get('/card-print/{id}',[CardController::class,'print'])->name('cards.print');
+Route::get('/card/{id}/print-front',[CardController::class,'printFront'])->name('cards.printfront');
+Route::get('/card/{id}/print-back',[CardController::class,'printBack'])->name('cards.printback');
+
+Route::get('/card-design/{id}/preview',[CardDesignController::class,'preview'])->name('carddesign.preview');
 
 // shortcut nominal
 Route::resource('shortcutnominal', ShortcutNominalController::class);

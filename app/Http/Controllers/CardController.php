@@ -52,9 +52,27 @@ class CardController extends Controller
 	{
 		$card = Card::with('user')->findOrFail($id);
 		$design = CardDesign::first();
-		$elements = json_decode($design->elements, true);
+		$front = json_decode($design->front_elements, true);
+		$back = json_decode($design->back_elements, true);
  
-		return view('cards.print',compact('card','design','elements'));
+		return view('cards.print',compact('card','design','front','back'));
+	}
+	 
+	 
+	public function printFront($id)
+	{ 
+		$card = Card::with('user')->findOrFail($id);
+		$design = CardDesign::first(); 
+		$front = json_decode($design->front_elements, true);
+		return view('cards.print-front',compact('card','design','front')); 
+	}
+
+	public function printBack($id)
+	{ 
+		$card = Card::with('user')->findOrFail($id);
+		$design = CardDesign::first(); 
+		$back = json_decode($design->back_elements, true);
+		return view('cards.print-back',compact('card','design','back')); 
 	}
 	 
 }

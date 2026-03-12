@@ -5,7 +5,7 @@
     <div class="container mx-auto w-full">
 
         <!-- Header -->
-        <h2 class="text-xl font-semibold text-gray-600">Limit Belanja Santri</h2> 
+        <h2 class="text-xl font-semibold text-gray-600">Design Kartu Santri</h2> 
 
         <!-- Top Bar -->
         <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-4 w-full">
@@ -17,7 +17,7 @@
         type="text"
         name="search"
         x-model="search"
-        placeholder="Cari Kelas / Nilai"
+        placeholder="Cari Kartu"
         class="w-full sm:w-64 border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
     >
 
@@ -30,7 +30,7 @@
     >
         Cari
     </button>
-      <a href="{{ route('limitbelanja.index') }}"
+      <a href="{{ route('carddesign.index') }}"
                    class="w-full sm:w-auto text-green-600 border border-green-600 px-4 py-2 rounded-md text-center hover:bg-green-50 transition">
                     Atur Ulang
                 </a>
@@ -38,39 +38,43 @@
 </form>
 
             <!-- Tombol Tambah -->
-            <a href="{{ route('limitbelanja.create') }}"
+            <a href="{{ route('carddesign.create') }}"
                class="px-4 py-2 rounded-lg text-white text-center sm:w-auto w-full"
                style="background: linear-gradient(203.18deg, #01AB14 11.82%, #085410 85.47%);">
-                + Tambah Limit Belanja
+                + Buat Design Kartu
             </a>
         </div>
 
         <!-- Table -->
         <div class="overflow-x-auto">
 
-            @if($limitbelanja->count() > 0)
+            @if($carddesign->count() > 0)
 
                 <div class="w-full overflow-x-auto p-4">
                     <table class="min-w-full bg-white border border-gray-200 divide-y divide-gray-200 table-auto">
                         <thead class="text-xs text-gray-700 bg-gray-50">
                             <tr>
                                 <th class="px-4 py-2 border">No</th>
-                                <th class="px-4 py-2 border">Kelas Level</th>
-                                <th class="px-4 py-2 border">Limit Harian</th>
-                                <th class="px-4 py-2 border">Limit Bulanan</th> 
+                                <th class="px-4 py-2 border">Nama</th>
+                                <th class="px-4 py-2 border">Background Depan</th>
+                                <th class="px-4 py-2 border">Background Belakang</th> 
                                 <th class="px-4 py-2 border text-center">Aksi</th>
                             </tr>
                         </thead>
 
                         <tbody>
-                            @foreach($limitbelanja as $i => $rec)
+                            @foreach($carddesign as $i => $rec)
                                 <tr class="border-b hover:bg-gray-50">
                                     <td class="px-4 py-3">
-                                        {{ ($limitbelanja->currentPage() - 1) * $limitbelanja->perPage() + $i + 1 }}
+                                        {{ ($carddesign->currentPage() - 1) * $carddesign->perPage() + $i + 1 }}
                                     </td>
-                                    <td class="px-4 py-3 text-right">{{ $rec->class_level }}</td>
-                                    <td class="px-4 py-3 text-right">{{ $rec->daily_limit }}</td>
-                                    <td class="px-4 py-3 text-right">{{ $rec->monthly_limit }}</td> 
+                                    <td class="px-4 py-3 text-center">{{ $rec->name }}</td>
+                                    <td class="px-4 py-3 text-center">
+																		<img src="{{asset($rec->front_background)}}" width="120"> 
+																		</td>
+                                    <td class="px-4 py-3 text-center">
+																		<img  src="{{asset($rec->back_background)}}"  width="120"> 
+																		</td>																		 
 
                                     <!-- Dropdown Aksi -->
                                     <td class="px-4 py-4 text-center">
@@ -88,7 +92,7 @@
                                             <div class="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-xl shadow-lg z-50 overflow-hidden">
 
                                                 <!-- Edit -->
-                                                <a href="{{ route('limitbelanja.edit', $rec->id) }}"
+                                                <a href="{{ route('carddesign.edit', $rec->id) }}"
                                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                                     Ubah Data
                                                 </a>
@@ -109,7 +113,7 @@
                     </table>
 
                     <div class="mt-4">
-                        {{ $limitbelanja->links() }}
+                        {{ $carddesign->links() }}
                     </div>
                 </div>
 
@@ -163,7 +167,7 @@
 
     function openDeleteModal(id) {
         // Set action form
-        deleteForm.action = `/limitbelanja/${id}`;
+        deleteForm.action = `/carddesign/${id}`;
 
         // Tampilkan modal
         deleteModal.classList.remove('hidden');
