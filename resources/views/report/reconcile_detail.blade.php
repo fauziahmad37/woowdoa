@@ -55,7 +55,7 @@ Kembali
 </td>
 
 <td class="px-4 py-3 text-right">
-Rp {{ number_format($trx->amount,0,',','.') }}
+Rp {{ number_format($trx->total_amount,0,',','.') }}
 </td>
 
 <td class="px-4 py-3">

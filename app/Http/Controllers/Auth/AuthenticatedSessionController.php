@@ -33,8 +33,13 @@ public function store(Request $request)
 
         $request->session()->regenerate();
 
-        // ambil school_id user yang login
-        session(['school_id' => Auth::user()->school_id]);
+        $user = Auth::user()->load('level');
+
+        session([
+            'school_id' => $user->school_id,
+            'profile_photo' => $user->profile_photo,
+            'hak_akses' => $user->level->user_level_name ?? 'User'
+        ]);
 
         return redirect()->route('dashboard');
     }
@@ -43,7 +48,6 @@ public function store(Request $request)
         'username' => 'Username atau password salah.',
     ])->onlyInput('username');
 }
-  
 
     /**
      * Logout

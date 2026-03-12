@@ -2,20 +2,19 @@
 
 @section('left')
 @section('left')
-<!-- <img src="{{ asset('images/login-ecoride.png') }}" 
+<img src="{{ asset('images/e-Fulus-White.png') }}" 
      alt="Electric Motorcycle" 
-     class="w-full mb-6"> -->
-
-<!-- <h2 class="text-white text-2xl font-bold mb-2">Electric Motorcycle Technology</h2>
+     class="w-full mb-6">
+<h2 class="text-white text-2xl font-bold mb-2">Sistem Pembayaran Santri</h2>
 <p class="text-white text-center">
-    Transforming electric motorcycles that redefine riding sport design for all lifestyles.
-</p> -->
+    Platform manajemen pembayaran santri yang memudahkan pengelolaan transaksi, dan laporan keuangan pesantren secara cepat.
+</p>
 @endsection
 <!--  -->
 @section('right')
-<img src="{{ asset('images/logo-ecoride-login.png') }}" alt="Logo Ecoride" class="mx-auto mb-10">
+<img src="{{ asset('images/e-Fulus-green.png') }}" alt="Logo E-Fulus" class="mx-auto mb-10 w-48">
 <h2 class="text-3xl font-medium text-gray-800 mb-6">Masuk Akun Admin</h2>
-<p class="text-gray-500 mb-6">Kelola segala aktivitas yang terdapat pada WooWEcoRide dan lihat perkembangannya</p>
+<p class="text-gray-500 mb-6">Kelola segala aktivitas yang terdapat pada WooWDoa dan lihat perkembangannya</p>
 
 <form action="{{ route('login') }}" method="POST" class="space-y-4">
     @csrf
@@ -71,28 +70,28 @@
 </form>
 
 
-<div class="my-4 flex items-center text-gray-400">
+<!-- <div class="my-4 flex items-center text-gray-400">
     <div class="flex-grow border-t border-gray-300"></div>
     <span class="px-3 text-sm">Atau masuk dengan</span>
     <div class="flex-grow border-t border-gray-300"></div>
-</div>
+</div> -->
 
 
-<button class="w-full rounded-lg border border-gray-300  py-2 flex items-center justify-center  hover:bg-gray-100 transition">
+<!-- <button class="w-full rounded-lg border border-gray-300  py-2 flex items-center justify-center  hover:bg-gray-100 transition">
     <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" class="w-5 h-5 mr-2">
     Akun Google
-</button>
+</button> -->
 
 <!-- <p class="mt-6 text-center text-gray-500">
     Belum memiliki akun? <a href="{{ route('register') }}" class="text-orange-500 hover:underline">Daftar Akun</a>
 </p> -->
 
-<p class="mt-16 text-center text-gray-400 text-sm">
+<!-- <p class="mt-16 text-center text-gray-400 text-sm">
     <a href="#" class="inline-flex items-center gap-2 hover:underline" style="color:#F37022;">
         <img src="{{ asset('images/hubungi-kami.png') }}" alt="Bantuan" class="w-5 h-5">
         Bantuan WooWEcoRide
     </a>
-</p>
+</p> -->
 
 @endsection
 

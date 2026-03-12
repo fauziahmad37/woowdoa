@@ -16,34 +16,38 @@ class DashboardController extends Controller
         $schoolId = Auth::user()->school_id;
   //  dd(Carbon::now());
         // total transaksi
-        $totalTransaksi = DB::table('transactions')
-            ->join('students', 'students.id', '=', 'transactions.student_id')
-            ->where('students.school_id', $schoolId)
-            ->count();
+     $totalTransaksi = DB::table('transactions')
+    ->join('students', 'students.id', '=', 'transactions.student_id')
+    ->where('students.school_id', $schoolId)
+    ->where('transactions.status', 'paid')
+    ->count();
 
         // total value transaksi
+        
         $totalValue = DB::table('transaction_details')
             ->join('transactions', 'transactions.id', '=', 'transaction_details.transaction_id')
             ->join('students', 'students.id', '=', 'transactions.student_id')
             ->where('students.school_id', $schoolId)
-            ->sum('transaction_details.amount');
+              ->where('transactions.status', 'paid')
+            ->sum('transactions.total_amount');
 
         // transaksi bulan ini
-        $transaksiBulanIni = DB::table('transactions')
-            ->join('students', 'students.id', '=', 'transactions.student_id')
-            ->where('students.school_id', $schoolId)
-            ->whereMonth('transactions.created_at', now()->month)
-            ->whereYear('transactions.created_at', now()->year)
-            ->count();
+       $transaksiBulanIni = DB::table('transactions')
+    ->join('students', 'students.id', '=', 'transactions.student_id')
+    ->where('students.school_id', $schoolId)
+    ->where('transactions.status', 'paid')
+    ->whereMonth('transactions.created_at', now()->month)
+    ->whereYear('transactions.created_at', now()->year)
+    ->count();
 
         // value transaksi bulan ini
-        $valueBulanIni = DB::table('transactions')
-            ->join('transaction_details', 'transactions.id', '=', 'transaction_details.transaction_id')
-            ->join('students', 'students.id', '=', 'transactions.student_id')
-            ->where('students.school_id', $schoolId)
-            ->whereMonth('transactions.created_at', now()->month)
-            ->whereYear('transactions.created_at', now()->year)
-            ->sum('transaction_details.amount');
+    $valueBulanIni = DB::table('transactions')
+    ->join('students', 'students.id', '=', 'transactions.student_id')
+    ->where('students.school_id', $schoolId)
+    ->where('transactions.status', 'paid')
+    ->whereMonth('transactions.created_at', now()->month)
+    ->whereYear('transactions.created_at', now()->year)
+    ->sum('transactions.total_amount');
 
 
 
@@ -56,6 +60,7 @@ $end = Carbon::now()->endOfDay();
 $transaksiPerHari = DB::table('transactions')
     ->join('students', 'students.id', '=', 'transactions.student_id')
     ->where('students.school_id', $schoolId)
+    ->where('transactions.status', 'paid')
     ->whereNotNull('transactions.paid_at')
     ->whereBetween('transactions.paid_at', [$start, $end])
     ->selectRaw('EXTRACT(DAY FROM transactions.paid_at)::int as hari, COUNT(*) as total')
@@ -226,6 +231,7 @@ $merchantTotals = [];
 $topMerchant = DB::table('transactions')
     ->join('merchants', 'merchants.id', '=', 'transactions.merchant_id')
     ->where('merchants.school_id', $schoolId)
+    ->where('transactions.status','paid')
     ->select(
         'merchants.merchant_name',
         DB::raw('COUNT(transactions.id) as total')
@@ -251,13 +257,12 @@ $merchantRevenueNames = [];
 $merchantRevenueTotals = [];
 
 $merchantRevenue = DB::table('transactions')
-    ->join('transaction_details', 'transactions.id', '=', 'transaction_details.transaction_id')
     ->join('merchants', 'merchants.id', '=', 'transactions.merchant_id')
     ->where('merchants.school_id', $schoolId)
     ->whereNotNull('transactions.paid_at')
     ->select(
         'merchants.merchant_name',
-        DB::raw('SUM(transaction_details.amount) as total_revenue')
+        DB::raw('SUM(transactions.total_amount) as total_revenue')
     )
     ->groupBy('merchants.merchant_name')
     ->orderByDesc('total_revenue')

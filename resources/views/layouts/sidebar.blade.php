@@ -12,12 +12,12 @@
     <!-- HEADER -->
     <div class="flex items-center justify-between h-30 border-b px-4 py-4">
         <a href="{{ route('dashboard') }}" class="flex items-center mx-auto">
-            <img src="{{ asset('images/logo-woowdoa.png') }}" 
+            <img src="{{ asset('images/e-Fulus-green.png') }}" 
                  alt="Logo" class="mx-auto mt-6 mb-4"
-                 style="width: 80px;"
+                 style="width: 150px;"
                  x-show="open" x-transition />
 
-            <img src="{{ asset('images/logo-woowdoa.png') }}" 
+            <img src="{{ asset('images/e-Fulus-green.png') }}" 
                  alt="Logo Mini"
                  class="w-4 mx-auto mt-6 mb-4"
                  x-show="!open" x-transition />
