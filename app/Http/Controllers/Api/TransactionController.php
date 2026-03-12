@@ -11,6 +11,7 @@ use App\Models\Student;
 use App\Models\Notification;
 use App\Models\Parents;
 use App\Models\Ewallet;
+use App\Models\Settlement;
 use App\Models\WalletMovement;
 use App\Models\Transaction;
 use App\Models\LimitBelanja;
@@ -78,11 +79,11 @@ class TransactionController extends BaseApiController
     }
 
     /**
-     * GET Data User From NIS
+     * GET Data User From Card Number
      */
     public function scan(Request $request)
     {
-        $nis = trim($request->input('nis'));
+        $cardNumber = trim($request->input('card_number'));
 
         // JIKA USER LOGIN DENGAN ROLE SELAIN MERCHANT ATAU 2, MAKA TIDAK BOLEH MENGAKSES ENDPOINT INI
         $user = auth()->user();
@@ -90,10 +91,11 @@ class TransactionController extends BaseApiController
             return $this->error('Hanya merchant yang dapat mengakses endpoint ini', 403);
         }
 
-        $santri = Student::select('id', 'student_name', 'nis', 'user_id')
-            ->where('nis', $nis)
+        $santri = Student::select('students.id', 'students.student_name', 'students.nis', 'students.user_id')
+            ->leftJoin('cards as c', 'students.nis', '=', 'c.nis')
+            ->where('c.card_number', $cardNumber)
             ->first();
-        
+
         $ewallet = Ewallet::where('user_id', $santri->user_id)->first();
         $santri->saldo = $ewallet ? $ewallet->balance : 0;
 
@@ -110,7 +112,7 @@ class TransactionController extends BaseApiController
     public function pay(Request $request)
     {
         $request->validate([
-            'nis' => 'required',
+            'card_number' => 'required',
             'amount' => 'required|numeric|min:1000',
             'pin' => 'required',
         ]);
@@ -124,7 +126,10 @@ class TransactionController extends BaseApiController
         DB::beginTransaction();
 
         try {
-            $santri = Student::where('nis', $request->nis)->lockForUpdate()->first();
+            $santri = Student::select('students.id', 'students.student_name', 'students.nis', 'students.user_id', 'students.pin', 'students.class_id', 'students.school_id', 'students.va_number', 'students.parent_id')
+            ->leftJoin('cards as c', 'students.nis', '=', 'c.nis')
+            ->where('c.card_number', $request->card_number)
+            ->first();
 
             // cek santri
             if (!$santri) {
@@ -145,7 +150,7 @@ class TransactionController extends BaseApiController
             $dailyLimit = LimitBelanja::where('school_id', $santri->school_id)
                 ->where('class_level', $santriClass->class_level)
                 ->first();
-            
+
             // Jika ada limit harian, cek apakah total pembayaran hari ini + jumlah pembayaran melebihi limit
             if ($dailyLimit && ($totalPaidToday + $request->amount) > $dailyLimit->daily_limit) {
                 return $this->error('Pembayaran melebihi limit harian', 400);
@@ -182,17 +187,31 @@ class TransactionController extends BaseApiController
                 'virtual_account_number' => $santri->va_number,
                 'total_amount' => $request->amount,
                 'paid_amount' => $request->amount,
-                'status' => 'paid',
-                'paid_at' => now(),
+                'status' => 'pending',
             ]);
 
+            // UPDATE KE API BANK UNTUK PROSES PEMBAYARAN (SIMULASI)
+            // Simulasi delay proses pembayaran =========================================
+            $bankResult = $this->processToBank($request, $transaction->id);
+            if ($bankResult->getStatusCode() != 200) {
+                DB::rollBack();
+                return $this->error('Gagal memproses pembayaran ke bank', 500);
+            } else {
+                // Update status transaksi menjadi 'paid'
+                $transaction->update(['status' => 'paid', 'paid_at' => now()]);
+            }
+
+            // ==========================================================================
+
+
+            $qty = $request->qty ?? 1;
             // Simpan detail transaksi
             $transactionDetail = TransactionDetail::create([
                 'transaction_id' => $transaction->id,
-                'type' => 'credit',
-                'amount' => $request->amount,
-                'saldo_before' => $saldoBefore,
-                'saldo_after' => $saldoAfter,
+                'product_name' => $request->product_name ?? 'Pembayaran Merchant',
+                'quantity' => $qty,
+                'price' => $request->amount,
+                'sub_total' => $request->amount * $qty,
                 'description' => 'Pembayaran di merchant ' . $user->merchant->merchant_name,
             ]);
 
@@ -229,7 +248,7 @@ class TransactionController extends BaseApiController
                 ]
             ];
 
-            
+
 
             // Insert ke table notifikasi untuk merchant
             Notification::create($dataInsert);
@@ -305,37 +324,26 @@ class TransactionController extends BaseApiController
         ]);
     }
 
-    /**
-     * settlement
-     */
-    public function settlement(Request $request){
-        $request->validate([
-            'start_date' => 'required|date',
-            'end_date' => 'required|date|after_or_equal:start_date',
-        ]);
 
-        $user = auth()->user();
-        if ($user->user_level_id != '2') {
-            return $this->error('Unauthorized', 403);
+
+    /**
+     * Simulate payment ke bank
+     */
+    public function processToBank(Request $request, $transactionId)
+    {
+        $transaction = Transaction::find($transactionId);
+
+        if (!$transaction) {
+            return $this->error('Transaksi tidak ditemukan', 404);
         }
 
-        $transactions = Transaction::where('merchant_id', $user->merchant_id)
-            ->whereDate('paid_at', '>=', $request->start_date)
-            ->whereDate('paid_at', '<=', $request->end_date)
-            ->get();
+        if ($transaction->status != 'pending') {
+            return $this->error('Transaksi sudah diproses', 400);
+        }
 
-        $totalSettlement = $transactions->sum('paid_amount');
-        return $this->success([
-            'total_settlement' => $totalSettlement,
-            'transactions' => $transactions->map(function($transaction) {
-                return [
-                    'transaction_code' => $transaction->transaction_code,
-                    'paid_at' => $transaction->paid_at->format('d-m-Y H:i'),
-                    'amount' => $transaction->paid_amount,
-                    'student_name' => $transaction->student->student_name,
-                    'nis' => $transaction->student->nis,
-                ];
-            })
-        ], 'Settlement data retrieved successfully');
+        // Simulasi delay proses pembayaran
+        sleep(10);
+
+        return $this->success($transaction, 'Transaksi berhasil diproses ke bank');
     }
 }
