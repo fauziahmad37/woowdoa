@@ -96,6 +96,11 @@ class TransactionController extends BaseApiController
             ->where('c.card_number', $cardNumber)
             ->first();
 
+        // Validasi jika santri tidak ditemukan
+        if (!$santri) {
+            return $this->error('Santri tidak ditemukan', 404);
+        }
+
         $ewallet = Ewallet::where('user_id', $santri->user_id)->first();
         $santri->saldo = $ewallet ? $ewallet->balance : 0;
 
