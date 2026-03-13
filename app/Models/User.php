@@ -73,6 +73,6 @@ class User extends Authenticatable
 
     public function ewallet()
     {
-        return $this->hasOne(EWallet::class, 'user_id');
+        return $this->hasOne(Ewallet::class, 'user_id');
     }
 }
