@@ -50,13 +50,6 @@ class EwalletController extends BaseApiController
             'amount' => 'required|numeric|min:1',
         ]);
 
-        $user = auth()->user();
-
-        // hanya admin
-        if ($user->user_level_id != '1') {
-            return $this->error('Hanya admin yang dapat melakukan top-up', 403);
-        }
-
         $student = Student::select('students.id', 'students.student_name', 'students.nis', 'students.user_id')
             ->leftJoin('cards as c', 'students.nis', '=', 'c.nis')
             ->where('c.card_number', $request->card_number)
