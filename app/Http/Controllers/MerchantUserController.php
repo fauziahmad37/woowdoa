@@ -16,37 +16,30 @@ class MerchantUserController extends Controller
 {
 
     // LIST USER MERCHANT
-    public function index($merchant_id)
-    {
-        $merchant = Merchant::findOrFail($merchant_id);
+public function index(Request $request)
+{
+    $users = MerchantUser::with('merchant','level')
+        ->when($request->search,function($q) use ($request){
+            $q->where('owner_name','like','%'.$request->search.'%')
+              ->orWhere('email','like','%'.$request->search.'%');
+        })
+        ->paginate(10);
 
-        $users = MerchantUser::where('merchant_id',$merchant_id)
-                ->with('level')
-                ->get();
-
-        return view('merchant.user.index', compact(
-            'merchant',
-            'users'
-        ));
-    }
-
+    return view('merchant_user.index',compact('users'));
+}
 
     // FORM CREATE
-    public function create($merchant_id)
-    {
-        $merchant = Merchant::findOrFail($merchant_id);
+ public function create()
+{
+    $merchants = Merchant::all();
 
-        $provinsi = Province::all();
+    $user_levels = UserLevel::whereIn('user_level_id',[2,3])->get();
 
-        $user_levels = UserLevel::whereIn('user_level_id',[2,3])->get();
-
-        return view('merchant.user.create', compact(
-            'merchant',
-            'provinsi',
-            'user_levels'
-        ));
-    }
-
+    return view('merchant_user.create', compact(
+        'merchants',
+        'user_levels'
+    ));
+}
 
     // STORE
     public function store(Request $request)

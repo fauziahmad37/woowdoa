@@ -2,27 +2,25 @@
 
 @section('content')
 <div class="py-6">
-    <div class="container mx-auto w-full">
+<div class="container mx-auto w-full">
 
-        <!-- Header -->
-        <h2 class="text-xl font-semibold text-gray-600">Kelola User Merchant</h2>
-        <p class="text-gray-500 mb-10">Pendataan User Merchant</p>
+<!-- Header -->
+<h2 class="text-xl font-semibold text-gray-600">Kelola User Merchant</h2>
+<p class="text-gray-500 mb-10">Pendataan User Merchant</p>
 
-        <!-- Top Bar -->
-        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-4 w-full">
+<!-- Top Bar -->
+<div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-4 w-full">
 
-            <!-- Form Pencarian -->
-         <form x-data="{ search: '{{ request('search') }}' }" method="GET" class="flex flex-col sm:flex-row items-center gap-2 w-full sm:w-auto">
+<!-- Search -->
+<form method="GET" class="flex gap-2">
 
-    <input 
-        type="text"
-        name="search"
-        x-model="search"
-        placeholder="Cari Kode / Nama"
-        class="w-full sm:w-64 border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
-    >
+<input type="text"
+name="search"
+value="{{ request('search') }}"
+placeholder="Cari Nama / Email"
+class="border border-gray-300 rounded-md px-3 py-2">
 
-    <button 
+   <button 
         type="submit"
         :disabled="search.trim() === ''"
         :class="search.trim() === '' 
@@ -31,101 +29,126 @@
     >
         Cari
     </button>
-      <a href="{{ route('merchant.index') }}"
-                   class="w-full sm:w-auto text-green-600 border border-green-600 px-4 py-2 rounded-md text-center hover:bg-green-50 transition">
-                    Atur Ulang
-                </a>
+
+<a href="{{ route('merchant.user.index') }}"
+class="text-green-600 border border-green-600 px-4 py-2 rounded-md">
+Reset
+</a>
 
 </form>
 
-            <!-- Tombol Tambah -->
-            <a href="{{ route('merchant.create') }}"
-               class="px-4 py-2 rounded-lg text-white text-center sm:w-auto w-full"
-               style="background: linear-gradient(203.18deg, #01AB14 11.82%, #085410 85.47%);">
-                + Tambah Merchant
-            </a>
-        </div>
+<!-- Tambah User -->
+<a href="{{ route('merchant.user.create') }}"
+class="px-4 py-2 rounded-lg text-white"
+style="background: linear-gradient(203.18deg, #01AB14 11.82%, #085410 85.47%);">
++ Tambah User
+</a>
 
-        <!-- Table -->
-        <div class="overflow-x-auto">
+</div>
 
-            @if($merchant->count() > 0)
+<!-- Table -->
+<div class="overflow-x-auto">
 
-                <div class="w-full overflow-x-auto p-4">
-                    <table class="min-w-full bg-white border border-gray-200 divide-y divide-gray-200 table-auto">
-                        <thead class="text-xs text-gray-700 bg-gray-50">
-                            <tr>
-                                <th class="px-4 py-2 border">No</th>
-                                <th class="px-4 py-2 border">Kode</th>
-                                <th class="px-4 py-2 border">Nama</th>
-                                <th class="px-4 py-2 border">Owner</th>
-                                <th class="px-4 py-2 border">Phone</th>
-                                <th class="px-4 py-2 border">Alamat</th>
-                                <th class="px-4 py-2 border text-center">Aksi</th>
-                            </tr>
-                        </thead>
+@if($users->count() > 0)
 
-                        <tbody>
-                            @foreach($merchant as $i => $rec)
-                                <tr class="border-b hover:bg-gray-50">
-                                    <td class="px-4 py-3">
-                                        {{ ($merchant->currentPage() - 1) * $merchant->perPage() + $i + 1 }}
-                                    </td>
-                                    <td class="px-4 py-3">{{ $rec->merchant_code }}</td>
-                                    <td class="px-4 py-3">{{ $rec->merchant_name }}</td>
-                                    <td class="px-4 py-3">{{ $rec->owner_name }}</td>
-                                    <td class="px-4 py-3">{{ $rec->phone }}</td>
-                                    <td class="px-4 py-3">{{ $rec->address }}</td>  
+<table class="min-w-full bg-white border border-gray-200">
 
-                                    <!-- Dropdown Aksi -->
-                                    <td class="px-4 py-4 text-center">
-                                        <details class="inline-block text-left">
-                                           
-                                        <summary
-    class="list-none bg-green-600 hover:bg-green-700 
-           text-white cursor-pointer marker:content-none
-           w-8 h-8 flex items-center justify-center rounded-full">
-<svg width="13" height="4" viewBox="0 0 13 4" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M1.83333 0.666016C1.1 0.666016 0.5 1.26602 0.5 1.99935C0.5 2.73268 1.1 3.33268 1.83333 3.33268C2.56667 3.33268 3.16667 2.73268 3.16667 1.99935C3.16667 1.26602 2.56667 0.666016 1.83333 0.666016ZM11.1667 0.666016C10.4333 0.666016 9.83333 1.26602 9.83333 1.99935C9.83333 2.73268 10.4333 3.33268 11.1667 3.33268C11.9 3.33268 12.5 2.73268 12.5 1.99935C12.5 1.26602 11.9 0.666016 11.1667 0.666016ZM6.5 0.666016C5.76667 0.666016 5.16667 1.26602 5.16667 1.99935C5.16667 2.73268 5.76667 3.33268 6.5 3.33268C7.23333 3.33268 7.83333 2.73268 7.83333 1.99935C7.83333 1.26602 7.23333 0.666016 6.5 0.666016Z" fill="white"></path>
+<thead class="bg-gray-50 text-xs text-gray-700">
+<tr>
+<th class="px-4 py-2 border">No</th>
+<th class="px-4 py-2 border">Merchant</th>
+<th class="px-4 py-2 border">Nama</th>
+<th class="px-4 py-2 border">Email</th>
+<th class="px-4 py-2 border">Phone</th>
+<th class="px-4 py-2 border">Level</th>
+<th class="px-4 py-2 border text-center">Aksi</th>
+</tr>
+</thead>
+
+<tbody>
+
+@foreach($users as $i => $user)
+
+<tr class="border-b hover:bg-gray-50">
+
+<td class="px-4 py-3">{{ $i+1 }}</td>
+
+<td class="px-4 py-3">
+{{ $user->merchant->merchant_name ?? '-' }}
+</td>
+
+<td class="px-4 py-3">
+{{ $user->owner_name }}
+</td>
+
+<td class="px-4 py-3">
+{{ $user->email }}
+</td>
+
+<td class="px-4 py-3">
+{{ $user->phone }}
+</td>
+
+<td class="px-4 py-3">
+<span class="px-2 py-1 bg-green-100 text-green-700 rounded text-xs">
+{{ $user->level->user_level_name ?? '-' }}
+</span>
+</td>
+
+
+<td class="px-4 py-4 text-center">
+<details class="inline-block text-left">
+
+<summary
+class="list-none bg-green-600 hover:bg-green-700 
+text-white cursor-pointer marker:content-none
+w-8 h-8 flex items-center justify-center rounded-full">
+
+<svg width="13" height="4" viewBox="0 0 13 4" fill="none">
+<path d="M1.83333 0.666016C1.1 0.666016 0.5 1.26602 0.5 1.99935C0.5 2.73268 1.1 3.33268 1.83333 3.33268C2.56667 3.33268 3.16667 2.73268 3.16667 1.99935C3.16667 1.26602 2.56667 0.666016 1.83333 0.666016ZM11.1667 0.666016C10.4333 0.666016 9.83333 1.26602 9.83333 1.99935C9.83333 2.73268 10.4333 3.33268 11.1667 3.33268C11.9 3.33268 12.5 2.73268 12.5 1.99935C12.5 1.26602 11.9 0.666016 11.1667 0.666016ZM6.5 0.666016C5.76667 0.666016 5.16667 1.26602 5.16667 1.99935C5.16667 2.73268 5.76667 3.33268 6.5 3.33268C7.23333 3.33268 7.83333 2.73268 7.83333 1.99935C7.83333 1.26602 7.23333 0.666016 6.5 0.666016Z" fill="white"/>
 </svg>
-                                            </summary>
 
-                                            <div class="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-xl shadow-lg z-50 overflow-hidden">
+</summary>
 
-                                                <!-- Edit -->
-                                                <a href="{{ route('merchant.edit', $rec->id) }}"
-                                                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                                    Ubah Data
-                                                </a>
+<div class="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-xl shadow-lg z-50 overflow-hidden">
 
-                                                <!-- Hapus -->
-                                                <button type="button"
-                                                        onclick="openDeleteModal({{ $rec->id }})"
-                                                        class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50">
-                                                    Hapus Data
-                                                </button>
-                                            </div>
-                                        </details>
-                                    </td>
+<!-- Edit -->
+<a href="{{ route('merchant.user.edit', $user->id) }}"
+class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+Ubah Data
+</a>
 
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+<!-- Hapus -->
+<button type="button"
+onclick="openDeleteModal({{ $user->id }})"
+class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50">
+Hapus Data
+</button>
 
-                    <div class="mt-4">
-                        {{ $merchant->links() }}
-                    </div>
-                </div>
+</div>
 
-            @else
-                <div class="text-center py-10 text-gray-500">
-                    Data merchant belum tersedia.
-                </div>
-            @endif
+</details>
+</td>
 
-        </div>
-    </div>
+
+</tr>
+
+@endforeach
+
+</tbody>
+
+</table>
+
+@else
+
+<div class="text-center py-10 text-gray-500">
+Data user merchant belum tersedia
+</div>
+
+@endif
+
+</div>
+</div>
 </div>
 
 
@@ -166,21 +189,19 @@
     const deleteModalContent = document.getElementById('deleteModalContent');
     const deleteForm = document.getElementById('deleteForm');
 
-    function openDeleteModal(id) {
-        // Set action form
-        deleteForm.action = `/merchant/${id}`;
+   function openDeleteModal(id) {
 
-        // Tampilkan modal
-        deleteModal.classList.remove('hidden');
-        deleteModal.classList.add('flex');
+    // set route delete merchant user
+    deleteForm.action = `/merchant-user/delete/${id}`;
 
-        // Animasi muncul
-        setTimeout(() => {
-            deleteModalContent.classList.remove('scale-95', 'opacity-0');
-            deleteModalContent.classList.add('scale-100', 'opacity-100');
-        }, 10);
-    }
+    deleteModal.classList.remove('hidden');
+    deleteModal.classList.add('flex');
 
+    setTimeout(() => {
+        deleteModalContent.classList.remove('scale-95','opacity-0');
+        deleteModalContent.classList.add('scale-100','opacity-100');
+    },10);
+}
     function closeDeleteModal() {
         // Animasi keluar
         deleteModalContent.classList.remove('scale-100', 'opacity-100');
