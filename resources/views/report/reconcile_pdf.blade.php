@@ -41,10 +41,9 @@ th{
 <th>Merchant</th>
 <th>Student</th>
 <th>Transaction Code</th>
-<th>VA Number</th>
+<th>Card Number</th>
 <th>Total</th>
 <th>Ledger</th>
-<th>Admin Fee</th>
 <th>Status</th>
 <th>Paid At</th>
 </tr>
@@ -59,10 +58,9 @@ th{
 <td>{{ $row->merchant_name }}</td>
 <td>{{ $row->student_name }}</td>
 <td>{{ $row->transaction_code }}</td>
-<td>{{ $row->virtual_account_number }}</td>
+<td>{{ $row->card_number }}</td>
 <td>{{ number_format($row->total_amount,0,',','.') }}</td>
 <td>{{ number_format($row->ledger_amount,0,',','.') }}</td>
-<td>{{ number_format($row->admin_fee,0,',','.') }}</td>
 <td>{{ $row->status }}</td>
 <td>{{ $row->paid_at }}</td>
 </tr>

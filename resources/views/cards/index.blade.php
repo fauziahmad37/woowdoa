@@ -37,12 +37,7 @@
 
 </form>
 
-            <!-- Tombol Tambah -->
-            <a href="{{ route('card.create') }}"
-               class="px-4 py-2 rounded-lg text-white text-center sm:w-auto w-full"
-               style="background: linear-gradient(203.18deg, #01AB14 11.82%, #085410 85.47%);">
-                + Tambah Kartu
-            </a>
+ 
         </div>
 
         <!-- Table -->
@@ -90,18 +85,17 @@
 
                                             <div class="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-xl shadow-lg z-50 overflow-hidden">
 
-                                                <!-- Edit -->
-                                                <a href="{{ route('card.edit', $rec->id) }}"
+                                                <!-- Cetak Depan -->
+                                                <a href="{{ route('cards.printfront', $rec->id) }}" target="_blank" 
                                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                                    Ubah Data
+                                                    Cetak Depan
                                                 </a>
 
-                                                <!-- Hapus -->
-                                                <button type="button"
-                                                        onclick="openDeleteModal({{ $rec->id }})"
-                                                        class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50">
-                                                    Hapus Data
-                                                </button>
+                                                <!-- Cetak Belakang -->
+                                                <a href="{{ route('cards.printback', $rec->id) }}" target="_blank" 
+                                                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                                    Cetak Belakang
+                                                </a>
                                             </div>
                                         </details>
                                     </td> 

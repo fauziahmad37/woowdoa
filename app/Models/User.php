@@ -6,7 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens; // ⬅️ pastikan ini ada
+use Laravel\Sanctum\HasApiTokens; 
 
 class User extends Authenticatable
 {
@@ -64,4 +64,9 @@ class User extends Authenticatable
     {
         return $this->hasOne(Merchant::class, 'id', 'merchant_id');
     }
+
+public function level()
+{
+    return $this->belongsTo(UserLevel::class, 'user_level_id', 'user_level_id');
+}
 }

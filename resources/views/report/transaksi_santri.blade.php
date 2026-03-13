@@ -143,8 +143,8 @@ Export PDF
                             </td>
 
                             <td class="px-4 py-3">
-                                {{ $trx->paid_at->format('d-m-Y H:i') }}
-                            </td>
+    {{ $trx->paid_at ? $trx->paid_at->format('d-m-Y H:i') : '-' }}
+</td>
                             <td class="px-4 py-3 text-center">
     @if($trx->status == 'pending')
         <span class="px-3 py-1 text-sm text-red-600 bg-red-200 rounded-full">

@@ -10,10 +10,13 @@ class CardDesign extends Model
 	
 	protected $fillable = [
 			'name',
-			'background_image',
+			'front_background',
+			'back_background',
 			'width',
 			'height',
-			'elements'
+			'front_elements',
+			'back_elements',
+			'school_id'
 	];
 
 	public function student()

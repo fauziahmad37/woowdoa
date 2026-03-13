@@ -59,30 +59,30 @@ $detail = $transaction->details->first();
 @endphp
 
  <div>
-                        <p class="text-gray-500">Jenis Transaksi</p>
-                        <p class="font-semibold">
-                           {{ $detail->type }}
-                        </p>
-                    </div>
+    <p class="text-gray-500">Jenis Transaksi</p>
+    <p class="font-semibold">
+        {{ $wallet->type ?? '-' }}
+    </p>
+</div>
 
 <div>
     <p class="text-gray-500">Jumlah Transaksi</p>
     <p class="font-semibold text-green-600">
-        Rp {{ number_format($detail->amount ?? 0,0,',','.') }}
+        {{ $wallet ? 'Rp '.number_format($wallet->amount,0,',','.') : '-' }}
     </p>
 </div>
 
 <div>
     <p class="text-gray-500">Saldo Sebelum</p>
     <p class="font-semibold">
-        Rp {{ number_format($detail->saldo_before ?? 0,0,',','.') }}
+        {{ $wallet ? 'Rp '.number_format($wallet->balance_before,0,',','.') : '-' }}
     </p>
 </div>
 
 <div>
     <p class="text-gray-500">Saldo Sesudah</p>
     <p class="font-semibold">
-        Rp {{ number_format($detail->saldo_after ?? 0,0,',','.') }}
+        {{ $wallet ? 'Rp '.number_format($wallet->balance_after,0,',','.') : '-' }}
     </p>
 </div>
 

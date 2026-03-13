@@ -5,6 +5,7 @@ use App\Models\Transaction;
 use Illuminate\Support\Facades\Auth;
 use App\Exports\TransactionExport;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\DB;
 use Barryvdh\DomPDF\Facade\Pdf;
 
 
@@ -54,7 +55,11 @@ public function detail($id)
         'details'
     ])->findOrFail($id);
 
-    return view('report.detail_transaksi', compact('transaction'));
+    $wallet = DB::table('wallet_movements')
+        ->where('transaction_id', $id)
+        ->first();
+
+    return view('report.detail_transaksi', compact('transaction','wallet'));
 }
 
 

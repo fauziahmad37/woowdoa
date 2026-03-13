@@ -17,11 +17,17 @@ public function index(Request $request)
 {
     $schoolId = Auth::user()->school_id;
 
-    $query = DB::table('transactions')
-        ->join('merchants','merchants.id','=','transactions.merchant_id')
-        ->join('students','students.id','=','transactions.student_id')
-        ->leftJoin('transaction_details','transaction_details.transaction_id','=','transactions.id')
-        ->where('merchants.school_id',$schoolId);
+    
+  $query = DB::table('transactions')
+    ->join('merchants','merchants.id','=','transactions.merchant_id')
+    ->join('students','students.id','=','transactions.student_id')
+
+    ->leftJoin('wallet_movements', function ($join) {
+    $join->on('wallet_movements.transaction_id','=','transactions.id');
+})
+
+    ->where('merchants.school_id',$schoolId);
+        
 
     /*
     |--------------------------------------------------------------------------
@@ -38,9 +44,10 @@ public function index(Request $request)
     $search = strtolower($search);
 
     $q->whereRaw('LOWER(students.student_name) LIKE ?', ["%{$search}%"])
-      ->orWhereRaw('LOWER(transactions.virtual_account_number) LIKE ?', ["%{$search}%"])
+      ->orWhereRaw('LOWER(transactions.card_number) LIKE ?', ["%{$search}%"])
       ->orWhereRaw('LOWER(transactions.transaction_code) LIKE ?', ["%{$search}%"])
       ->orWhereRaw('LOWER(merchants.merchant_name) LIKE ?', ["%{$search}%"]);
+      
 
 });
     }
@@ -65,33 +72,25 @@ public function index(Request $request)
     |--------------------------------------------------------------------------
     */
 
-   $reconcile = $query
-    ->select(
-        'transactions.id',
-        'transactions.merchant_id',
-        'transactions.student_id',
-        'transactions.transaction_code',
-        'transactions.virtual_account_number',
-        'transactions.total_amount',
-        'transactions.paid_amount',
-        'transactions.status',
-        'transactions.paid_at',
-        'merchants.merchant_name',
-        'students.student_name',
-        DB::raw('COALESCE(SUM(transaction_details.amount),0) as ledger_amount'),
-        DB::raw('(transactions.total_amount * 0.005) as admin_fee')
-    )
-        ->groupBy(
-            'transactions.id',
-            'transactions.transaction_code',
-            'transactions.virtual_account_number',
-            'transactions.total_amount',
-            'transactions.paid_amount',
-            'transactions.status',
-            'transactions.paid_at',
-            'merchants.merchant_name',
-            'students.student_name'
-        )
+$reconcile = $query
+ ->select(
+    'transactions.id',
+    'transactions.merchant_id',
+    'transactions.student_id',
+    'transactions.transaction_code',
+    'transactions.card_number',
+    'transactions.total_amount',
+    'transactions.status',
+    'transactions.paid_at',
+    'merchants.merchant_name',
+    'students.student_name',
+
+    DB::raw('wallet_movements.amount as wallet_paid_amount'),
+    DB::raw('wallet_movements.id as wallet_id'),
+
+    DB::raw('(transactions.total_amount * 0.005) as admin_fee')
+)
+      
         ->orderBy('merchants.merchant_name')
         ->orderByDesc('transactions.paid_at')
         ->get();
@@ -100,7 +99,10 @@ public function index(Request $request)
 
     return view('report.reconcile', compact('reconcile','grouped'));
 }
+
+
 // public function detail($merchantId, $studentId)
+
 public function detail($merchantId)
 {
     $merchant = DB::table('merchants')
@@ -110,26 +112,25 @@ public function detail($merchantId)
     // $student = DB::table('students')
     //     ->where('id', $studentId)
     //     ->first();
+$transactions = DB::table('transactions')
+    ->join('students','students.id','=','transactions.student_id')
+    ->join('merchants','merchants.id','=','transactions.merchant_id')
 
-    $transactions = DB::table('transactions')
-        ->join('transaction_details','transactions.id','=','transaction_details.transaction_id')
-        ->join('students','students.id','=','transactions.student_id')
-        ->join('merchants','merchants.id','=','transactions.merchant_id')
+    ->where('transactions.merchant_id',$merchantId)
 
-        ->where('transactions.merchant_id',$merchantId)
-        // ->where('transactions.student_id',$studentId)
+    ->select(
+        'transactions.id',
+        'transactions.transaction_code',
+        'students.student_name',
+        'transactions.total_amount',
+        'transactions.paid_at',
+        'transactions.status'
+    )
 
-        ->select(
-            'transactions.id',
-            'transactions.transaction_code',
-            'students.student_name',
-            'transaction_details.amount',
-            'transactions.paid_at',
-            'transactions.status'
-        )
+    ->orderByDesc('transactions.paid_at')
+    ->get();
 
-        ->orderByDesc('transactions.paid_at')
-        ->get();
+   
 
     return view('report.reconcile_detail', [
         'transactions' => $transactions,
@@ -157,7 +158,7 @@ public function exportExcel(Request $request)
 
         $query->where(function ($q) use ($search) {
             $q->whereRaw('LOWER(students.student_name) LIKE ?', ["%{$search}%"])
-              ->orWhereRaw('LOWER(transactions.virtual_account_number) LIKE ?', ["%{$search}%"])
+              ->orWhereRaw('LOWER(transactions.card_number) LIKE ?', ["%{$search}%"])
               ->orWhereRaw('LOWER(transactions.transaction_code) LIKE ?', ["%{$search}%"])
               ->orWhereRaw('LOWER(merchants.merchant_name) LIKE ?', ["%{$search}%"]);
         });
@@ -174,20 +175,20 @@ public function exportExcel(Request $request)
     $reconcile = $query
         ->select(
             'transactions.transaction_code',
-            'transactions.virtual_account_number',
+            'transactions.card_number',
             'transactions.total_amount',
             'transactions.paid_amount',
             'transactions.status',
             'transactions.paid_at',
             'merchants.merchant_name',
             'students.student_name',
-            DB::raw('COALESCE(SUM(transaction_details.amount),0) as ledger_amount'),
+            DB::raw('transactions.total_amount as ledger_amount'),
             DB::raw('(transactions.total_amount * 0.005) as admin_fee')
         )
         ->groupBy(
             'transactions.id',
             'transactions.transaction_code',
-            'transactions.virtual_account_number',
+            'transactions.card_number',
             'transactions.total_amount',
             'transactions.paid_amount',
             'transactions.status',
@@ -221,7 +222,7 @@ public function exportPdf(Request $request)
 
         $query->where(function ($q) use ($search) {
             $q->whereRaw('LOWER(students.student_name) LIKE ?', ["%{$search}%"])
-              ->orWhereRaw('LOWER(transactions.virtual_account_number) LIKE ?', ["%{$search}%"])
+              ->orWhereRaw('LOWER(transactions.card_number) LIKE ?', ["%{$search}%"])
               ->orWhereRaw('LOWER(transactions.transaction_code) LIKE ?', ["%{$search}%"])
               ->orWhereRaw('LOWER(merchants.merchant_name) LIKE ?', ["%{$search}%"]);
         });
@@ -238,20 +239,20 @@ public function exportPdf(Request $request)
     $reconcile = $query
         ->select(
             'transactions.transaction_code',
-            'transactions.virtual_account_number',
+            'transactions.card_number',
             'transactions.total_amount',
             'transactions.paid_amount',
             'transactions.status',
             'transactions.paid_at',
             'merchants.merchant_name',
             'students.student_name',
-            DB::raw('COALESCE(SUM(transaction_details.amount),0) as ledger_amount'),
+            DB::raw('transactions.total_amount as ledger_amount'),
             DB::raw('(transactions.total_amount * 0.005) as admin_fee')
         )
         ->groupBy(
             'transactions.id',
             'transactions.transaction_code',
-            'transactions.virtual_account_number',
+            'transactions.card_number',
             'transactions.total_amount',
             'transactions.paid_amount',
             'transactions.status',

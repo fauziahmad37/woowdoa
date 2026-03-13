@@ -3,8 +3,8 @@
 @section('content')
 <h2 class="text-xl font-bold mb-4">Edit Limit Belanja</h2>
 
-<form action="{{ route('limitbelanja.update', $limitbelanja->id) }}" method="POST">
+<form action="{{ route('carddesign.update', $carddesign->id) }}" method="POST">
     @method('PUT')
-    @include('limitbelanja.form')
+    @include('carddesign.form')
 </form>
 @endsection

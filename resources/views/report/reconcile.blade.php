@@ -115,9 +115,9 @@ $no = 1;
 <th class="px-4 py-2 border">Nama Santri</th>
 <th class="px-4 py-2 border">Total Tagihan</th>
 <th class="px-4 py-2 border">Total Dibayar</th>
-<th class="px-4 py-2 border">Biaya Admin</th>
-<th class="px-4 py-2 border">Status Gateway</th>
-<th class="px-4 py-2 border">Settlement</th>
+<!-- <th class="px-4 py-2 border">Biaya Admin</th> -->
+<th class="px-4 py-2 border">Status Transaksi</th>
+<!-- <th class="px-4 py-2 border">Status Settlement</th> -->
 <th class="px-4 py-2 border">Rekonsiliasi</th>
 <th class="px-4 py-2 border">Action</th>
 </tr>
@@ -135,7 +135,7 @@ $rowspan = $rows->count();
 
 @php
 $tagihan = $row->total_amount;
-$dibayar = $row->paid_amount;
+$dibayar = $row->wallet_paid_amount;
 @endphp
 
 <tr class="border-b hover:bg-gray-50">
@@ -157,7 +157,7 @@ $dibayar = $row->paid_amount;
 </td>
 
 <td class="px-4 py-3 border">
-{{ $row->virtual_account_number }}
+{{ $row->card_number }}
 </td>
 
 <td class="px-4 py-3 border">
@@ -169,45 +169,49 @@ Rp {{ number_format($tagihan,0,',','.') }}
 </td>
 
 <td class="px-4 py-3 border text-right">
+@if($dibayar)
 Rp {{ number_format($dibayar,0,',','.') }}
+@endif
 </td>
 
-<td class="px-4 py-3 border text-right">
+<!-- <td class="px-4 py-3 border text-right">
 Rp {{ number_format($row->admin_fee,0,',','.') }}
-</td>
+</td> -->
 
 <td class="px-4 py-3 border text-center">
 
-@if($row->status == 'paid')
-<span class="text-green-600 font-semibold">Success</span>
-@elseif($row->status == 'pending')
+@if(!$row->wallet_id)
 <span class="text-yellow-600 font-semibold">Pending</span>
+
+@elseif($row->status == 'paid')
+<span class="text-green-600 font-semibold">Success</span>
+
 @else
 <span class="text-red-600 font-semibold">Expired</span>
 @endif
 
 </td>
 
-<td class="px-4 py-3 border text-center">
+<!-- <td class="px-4 py-3 border text-center">
 @if($row->status == 'paid')
 Settled
 @else
 Pending
 @endif
-</td>
+</td> -->
 
 <td class="px-4 py-3 border text-center">
 
-@if($row->status == 'paid' && $tagihan == $dibayar)
-
-<span class="px-3 py-1 text-xs text-green-600 bg-green-200 rounded-full">
-Cocok
-</span>
-
-@elseif($row->status == 'pending')
+@if(!$row->wallet_id)
 
 <span class="px-3 py-1 text-xs text-red-600 bg-red-200 rounded-full">
-Belum Bayar
+Not Match
+</span>
+
+@elseif($tagihan == $dibayar)
+
+<span class="px-3 py-1 text-xs text-green-600 bg-green-200 rounded-full">
+Match
 </span>
 
 @elseif($dibayar < $tagihan)

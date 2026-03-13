@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Login Admin - EcoRide')</title>
+    <title>@yield('title', 'Login Admin - E-Fulus')</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('images/favicon.png') }}">
+<link rel="apple-touch-icon" href="{{ asset('images/favicon.png') }}">
+
     @vite('resources/css/app.css')
 </head>
 <body class="bg-gray-100 flex font-jakarta h-screen">

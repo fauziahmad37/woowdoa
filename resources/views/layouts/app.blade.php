@@ -5,8 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>WooWDoa</title>
-
+    <title>E-Fulus</title>
+<link rel="icon" type="image/png" sizes="32x32" href="{{ asset('images/favicon.png') }}">
+<link rel="apple-touch-icon" href="{{ asset('images/favicon.png') }}">
     {{-- PWA --}}
     {{-- <link rel="manifest" href="{{ asset('pwa.json') }}">
     <meta name="theme-color" content="#0d6efd">
@@ -86,7 +87,7 @@
 
         <!-- Footer -->
         <footer class="bg-white text-gray-800 text-center p-4">
-            <p>&copy; 2026 WooWDoa</p>
+            <p>&copy; 2026 E-Fulus</p>
         </footer>
 
     </div>

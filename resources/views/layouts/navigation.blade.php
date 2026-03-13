@@ -19,9 +19,9 @@
                         <p class="text-lg font-semibold">
                             Hallo {{ session('complete_name') }}
                         </p>
-                        <p class="text-sm text-gray-500">
-                            Selamat Datang di Halaman {{ session('hak_akses') }}
-                        </p>
+                       <p class="text-sm text-gray-500">
+    Selamat Datang di Halaman {{ Auth::user()->level->user_level_name }}
+</p>
                     </div>
                 </div>
             </div>
@@ -33,10 +33,10 @@
                     <x-slot name="trigger">
                         <button class="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-600 bg-white rounded-md hover:text-gray-800 focus:outline-none transition">
                             
-                            <img src="{{ session('url_photo') 
-                                ? asset('storage/' . session('url_photo')) 
-                                : asset('users/admin.png') }}"
-                                 class="w-8 h-8 rounded-full mr-2">
+                           <img src="{{ session('profile_photo') 
+        ? asset('storage/' . session('profile_photo')) 
+        : asset('images/user-icon.png') }}"
+     class="w-8 h-8 rounded-full mr-2">
 
                             <div>{{ session('nama_user') }}</div>
 
@@ -51,9 +51,9 @@
                     </x-slot>
 
                     <x-slot name="content">
-                        <x-dropdown-link :href="route('profile.edit')">
+                        <!-- <x-dropdown-link :href="route('profile.edit')">
                             Profile
-                        </x-dropdown-link>
+                        </x-dropdown-link> -->
 
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf

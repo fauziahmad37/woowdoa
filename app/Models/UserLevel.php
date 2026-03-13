@@ -8,9 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class UserLevel extends Model
 {
     use HasFactory;
-
+protected $table = 'user_levels';
     protected $fillable = [
         'user_level_id',
         'user_level_name',
     ];
+
+
+
 }
