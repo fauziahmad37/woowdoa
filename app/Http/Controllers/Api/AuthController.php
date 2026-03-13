@@ -54,7 +54,7 @@ class AuthController extends Controller
         // STORE DEVICE TOKEN
         if ($request->has('device_token')) {
             $deviceToken = $request->input('device_token');
-            $user->update(['device_token' => $deviceToken]);
+            User::where('id', $user->id)->update(['device_token' => $deviceToken]);
         }
 
         // JIKA USER SELAIN MERCHANT, TAMBAHKAN URL LOGO KE PROFILE_PHOTO
