@@ -18,4 +18,9 @@ class Ewallet extends Model
     protected $casts = [
         'balance' => 'integer',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }

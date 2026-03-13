@@ -66,8 +66,13 @@ class User extends Authenticatable
         return $this->hasOne(Merchant::class, 'id', 'merchant_id');
     }
 
-public function level()
-{
-    return $this->belongsTo(UserLevel::class, 'user_level_id', 'user_level_id');
-}
+    public function level()
+    {
+        return $this->belongsTo(UserLevel::class, 'user_level_id', 'user_level_id');
+    }
+
+    public function ewallet()
+    {
+        return $this->hasOne(EWallet::class, 'user_id');
+    }
 }

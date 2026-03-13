@@ -49,6 +49,7 @@ class AuthController extends Controller
         // JIKA USER MERCHANT, TAMBAHKAN URL LOGO KE PROFILE_PHOTO
         if ($user->merchant && $user->merchant->logo) {
             $user->profile_photo = url($user->merchant->logo);
+            $user->balance = $user->ewallet ? $user->ewallet->balance : 0; // tambahkan balance ke response
         }
 
         // STORE DEVICE TOKEN
@@ -68,6 +69,7 @@ class AuthController extends Controller
                 $student = Student::where('parent_id', $parent->id)->first(); // ambil student
                 if ($student) {
                     $user->nis = $student->nis; // tambahkan nis ke response
+                    $user->balance = $student->ewallet ? $student->ewallet->balance : 0; // tambahkan balance ke response
                 }
             }
         }
