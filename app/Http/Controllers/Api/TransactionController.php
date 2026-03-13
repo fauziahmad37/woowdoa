@@ -293,7 +293,9 @@ class TransactionController extends BaseApiController
             return $this->success([
                 'transaction_id' => $transaction->id,
                 'transaction_code' => $transaction->transaction_code,
-                'tanggal' => $transaction->paid_at->format('d-m-Y, H:i'),
+                'status' => $transaction->status,
+                'paid_at' => $transaction->paid_at,
+                'created_at' => $transaction->created_at->format('d-m-Y, H:i'),
                 'total_pembayaran' => $transaction->paid_amount,
                 'nama' => $santri->student_name,
                 'nis' => $santri->nis,
