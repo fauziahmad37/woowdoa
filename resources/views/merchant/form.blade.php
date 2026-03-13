@@ -7,7 +7,7 @@
 		<nav class="text-gray-700 text-sm mb-6" aria-label="Breadcrumb">
 				<ol class="list-reset flex flex-wrap items-center">
 						<li class="flex items-center">
-								<a href="{{ route('santri.index') }}" 
+								<a href="{{ route('merchant.index') }}" 
 									 class="text-green-600 hover:text-green-800">
 										Data Merchant
 								</a>
@@ -21,7 +21,7 @@
 						</li>
 						<li>
 								<span class="text-gray-500">
-										{{ isset($santri) ? 'Edit Merchant' : 'Tambah Merchant Baru' }}
+										{{ isset($merchant) ? 'Edit Merchant' : 'Tambah Merchant Baru' }}
 								</span>
 						</li>
 				</ol>
@@ -68,16 +68,7 @@
 					<p class="text-sm text-red-600 mt-1">{{ $message }}</p>
 			@enderror
 	</div>
-	<div>
-    <!-- Provinsi -->
-    <label class="block font-medium mb-1">Provinsi<span class="text-red-500">*</span></label>
-    <select id="provinsi" name="merchant_id_provinsi" class="form-control form-select input-form select2">
-        <option value="">-- Pilih Provinsi --</option>
-        @foreach($provinsi as $prov)
-            <option value="{{ $prov->id }}">{{ $prov->name }}</option>
-        @endforeach
-    </select>
-	</div>
+
 	
 	<!-- Nama -->
 	<div>
@@ -92,20 +83,66 @@
 			@enderror
 	</div>
 	
+    <div>
+    <label class="block text-gray-700 font-medium mb-1">
+        Kategori Merchant <span class="text-red-500">*</span>
+    </label>
+
+    <select name="merchant_category_id" 
+        class="w-full border border-gray-300 rounded-lg px-3 py-2 select2">
+
+        <option value="">-- Pilih Kategori --</option>
+
+        @foreach($merchant_categories as $mc)
+        <option value="{{ $mc->id }}"
+        {{ old('merchant_category_id', $merchant->merchant_category_id ?? '') == $mc->id ? 'selected' : '' }}>
+            {{ $mc->mc_name }}
+        </option>
+        @endforeach
+
+    </select>
+</div>
 	
+
+	<div>
+    <!-- Provinsi -->
+    <label class="block font-medium mb-1">Provinsi<span class="text-red-500">*</span></label>
+  <select id="provinsi" name="merchant_id_provinsi" class="form-control form-select input-form select2">
+<option value="">-- Pilih Provinsi --</option>
+
+@foreach($provinsi as $prov)
+<option value="{{ $prov->id }}"
+{{ old('merchant_id_provinsi', $merchant->province_id ?? '') == $prov->id ? 'selected' : '' }}>
+{{ $prov->name }}
+</option>
+@endforeach
+
+</select>
+	</div>
 	<div>
     <!-- Kota -->
     <label class="block font-medium mb-1">Kota/Kabupaten<span class="text-red-500">*</span></label>
-    <select id="kota" name="merchant_id_kota" class="form-control form-select input-form select2">
-        <option value="">-- Pilih Kota --</option>
-    </select>
+ <select id="kota" name="merchant_id_kota" class="form-control form-select input-form select2">
+
+<option value="">-- Pilih Kota --</option>
+
+@isset($kota)
+@foreach($kota as $k)
+<option value="{{ $k->id }}"
+{{ old('merchant_id_kota', $merchant->city_id ?? '') == $k->id ? 'selected' : '' }}>
+{{ $k->name }}
+</option>
+@endforeach
+@endisset
+
+</select>
 	</div>	
  
 	<!-- No HP -->
 	<div>
 			<label class="block text-gray-700 font-medium mb-1">No HP</label>
 			<input type="text" name="phone"
-						 value="{{ old('phone', $santri->phone ?? '') }}"
+						 value="{{ old('phone', $merchant->phone ?? '') }}"
 						 class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500">
 	</div> 
  
@@ -113,9 +150,20 @@
  	<div>
     <!-- Kecamatan -->
     <label class="block font-medium mb-1">Kecamatan<span class="text-red-500">*</span></label>
-    <select id="kecamatan" name="merchant_id_kecamatan" class="form-control form-select input-form select2">
-        <option value="">-- Pilih Kecamatan --</option>
-    </select>
+   <select id="kecamatan" name="merchant_id_kecamatan" class="form-control form-select input-form select2">
+
+<option value="">-- Pilih Kecamatan --</option>
+
+@isset($kecamatan)
+@foreach($kecamatan as $kec)
+<option value="{{ $kec->id }}"
+{{ old('merchant_id_kecamatan', $merchant->district_id ?? '') == $kec->id ? 'selected' : '' }}>
+{{ $kec->name }}
+</option>
+@endforeach
+@endisset
+
+</select>
 	</div>
 
 
@@ -123,16 +171,27 @@
 	<div>
 			<label class="block text-gray-700 font-medium mb-1">Email</label>
 			<input type="email" name="email"
-						 value="{{ old('email', $santri->email ?? '') }}"
+						 value="{{ old('email', $merchant->email ?? '') }}"
 						 class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500">
 	</div>
 
 	<div>
     <!-- Kelurahan -->
     <label class="block font-medium mb-1">Kelurahan/Desa<span class="text-red-500">*</span></label>
-    <select id="kelurahan" name="merchant_id_kelurahan" class="form-control form-select input-form select2">
-        <option value="">-- Pilih Kelurahan --</option>
-    </select>
+   <select id="kelurahan" name="merchant_id_kelurahan" class="form-control form-select input-form select2">
+
+<option value="">-- Pilih Kelurahan --</option>
+
+@isset($kelurahan)
+@foreach($kelurahan as $kel)
+<option value="{{ $kel->id }}"
+{{ old('merchant_id_kelurahan', $merchant->village_id ?? '') == $kel->id ? 'selected' : '' }}>
+{{ $kel->name }}
+</option>
+@endforeach
+@endisset
+
+</select>
 	</div> 
 	<!-- sekolah -->
 
@@ -142,7 +201,7 @@
 			<option value="">Pilih Sekolah</option>
 			@foreach($schools as $school)
 			<option value="{{ $school->id }}"
-			{{ old('school_id', $santri->school_id ?? '') == $school->id ? 'selected' : '' }}>
+			{{ old('school_id', $merchant->school_id ?? '') == $school->id ? 'selected' : '' }}>
 			{{ $school->school_name }}
 			</option>
 			@endforeach
@@ -164,7 +223,19 @@
 	rows="3">{{ old('address', $merchant->address ?? '') }}</textarea>
 </div>
 
- 
+ <div>
+    <label class="block text-gray-700 font-medium mb-1">
+        Logo Merchant
+    </label>
+
+    <input type="file" name="logo"
+        class="w-full border border-gray-300 rounded-lg px-3 py-2">
+
+    @if(isset($merchant) && $merchant->logo)
+        <img src="{{ asset('storage/'.$merchant->logo) }}"
+            class="mt-2 h-16">
+    @endif
+</div>
 		
 </div>
 

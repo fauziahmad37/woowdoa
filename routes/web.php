@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\SantriController;
 use App\Http\Controllers\ParentController;
+use App\Http\Controllers\MerchantUserController;
 use App\Http\Controllers\MerchantController;
 use App\Http\Controllers\MerchantCategoryController;
 use App\Http\Controllers\LimitBelanjaController;
@@ -62,6 +63,22 @@ Route::get('/merchant/kelurahan/{district_id}', [MerchantController::class, 'get
 //Limit Belanja
 Route::resource('limitbelanja', LimitBelanjaController::class);
 
+// merchantuser
+Route::prefix('merchant-user')->name('merchant.user.')->group(function(){
+
+    Route::get('/{merchant_id}',[MerchantUserController::class,'index'])->name('index');
+
+    Route::get('/create/{merchant_id}',[MerchantUserController::class,'create'])->name('create');
+
+    Route::post('/store',[MerchantUserController::class,'store'])->name('store');
+
+    Route::get('/edit/{id}',[MerchantUserController::class,'edit'])->name('edit');
+
+    Route::put('/update/{id}',[MerchantUserController::class,'update'])->name('update');
+
+    Route::delete('/delete/{id}',[MerchantUserController::class,'destroy'])->name('destroy');
+
+});
 
     // santri
 Route::get('/santri/import', [SantriController::class,'importForm'])->name('santri.import.form');
