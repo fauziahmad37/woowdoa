@@ -66,9 +66,9 @@ Route::resource('limitbelanja', LimitBelanjaController::class);
 // merchantuser
 Route::prefix('merchant-user')->name('merchant.user.')->group(function(){
 
-    Route::get('/{merchant_id}',[MerchantUserController::class,'index'])->name('index');
+    Route::get('/',[MerchantUserController::class,'index'])->name('index');
 
-    Route::get('/create/{merchant_id}',[MerchantUserController::class,'create'])->name('create');
+    Route::get('/create',[MerchantUserController::class,'create'])->name('create');
 
     Route::post('/store',[MerchantUserController::class,'store'])->name('store');
 
@@ -79,7 +79,6 @@ Route::prefix('merchant-user')->name('merchant.user.')->group(function(){
     Route::delete('/delete/{id}',[MerchantUserController::class,'destroy'])->name('destroy');
 
 });
-
     // santri
 Route::get('/santri/import', [SantriController::class,'importForm'])->name('santri.import.form');
 Route::post('/santri/import', [SantriController::class,'import'])->name('santri.import');
