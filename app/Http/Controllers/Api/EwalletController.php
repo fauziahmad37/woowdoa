@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Services\FirebaseService;
 
 use App\Http\Controllers\Api\BaseApiController;
+use App\Models\Card;
 use App\Services\ImageUploadService;
 
 use Illuminate\Http\Request;
@@ -71,6 +72,22 @@ class EwalletController extends BaseApiController
         $ewallet->save();
 
         return $this->success(null, 'Ewallet topped up successfully');
+    }
+
+    /**
+     * Display the balance of the authenticated user's ewallet.
+     */
+    public function balance(Request $request)
+    {
+        $request->validate([
+            'card_number' => 'required|exists:cards,card_number',
+        ]);
+
+        $cardNumber = Card::where('card_number', $request->card_number)->first();
+        $userId = $cardNumber->student->user_id;
+        $ewallet = Ewallet::where('user_id', $userId)->first();
+
+        return $this->success(['balance' => $ewallet->balance], 'Ewallet balance retrieved successfully');
     }
 
     /**

@@ -82,4 +82,9 @@ class Student extends Authenticatable
     {
         return $this->belongsTo(TahunAjaran::class, 'tahun_ajaran_id');
     }
+
+    public function card()
+    {
+        return $this->hasOne(Card::class, 'nis', 'nis');
+    }
 }
