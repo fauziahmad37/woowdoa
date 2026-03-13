@@ -28,6 +28,15 @@ class Transaction extends Model
         'paid_amount' => 'integer',
     ];
 
+    public function getPaidAtAttribute($value)
+    {
+        if (!$value) {
+            return "";
+        }
+
+        return \Carbon\Carbon::parse($value)->format('Y-m-d H:i:s');
+    }
+
     public function student()
     {
         return $this->belongsTo(Student::class);
@@ -52,5 +61,4 @@ class Transaction extends Model
     {
         return $this->belongsTo(Settlement::class, 'settlement_id', 'id');
     }
-
 }

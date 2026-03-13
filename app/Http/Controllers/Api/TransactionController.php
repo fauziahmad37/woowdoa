@@ -70,7 +70,7 @@ class TransactionController extends BaseApiController
         $perPage = $request->input('per_page', 10);
 
         $transactions = $query
-            ->orderBy('paid_at', 'desc')
+            ->orderBy('id', 'desc')
             ->paginate($perPage);
 
         return $this->successPaginate($transactions, 'List transaksi retrieved successfully', [
@@ -182,6 +182,7 @@ class TransactionController extends BaseApiController
             $saldoBefore = $ewallet->balance;
             $saldoAfter  = $saldoBefore - $request->amount;
 
+            // SIMPAN TRANSAKSI
             $transactionCode = $this->generateTransactionCode();
             $transaction = Transaction::create([
                 'merchant_id' => $user->merchant_id,
@@ -193,6 +194,8 @@ class TransactionController extends BaseApiController
                 'status' => 'pending',
                 'payment_type_id' => 1, // Tambahkan ini untuk menyimpan tipe pembayaran
                 'card_number' => $request->card_number, // Simpan nomor kartu untuk referensi
+                'created_at' => now(),
+                'updated_at' => now()
             ]);
 
             $qty = $request->qty ?? 1;
@@ -204,6 +207,8 @@ class TransactionController extends BaseApiController
                 'price' => $request->amount,
                 'sub_total' => $request->amount * $qty,
                 'description' => 'Pembayaran di merchant ' . $user->merchant->merchant_name,
+                'created_at' => now(),
+                'updated_at' => now()
             ]);
 
             // UPDATE KE API BANK UNTUK PROSES PEMBAYARAN (SIMULASI)
