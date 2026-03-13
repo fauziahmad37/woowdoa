@@ -14,8 +14,9 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use App\Models\MerchantCategory;
 use Carbon\Carbon;
-
+use Illuminate\Support\Facades\Storage;
 
 
 class MerchantController extends Controller
@@ -41,41 +42,50 @@ public function create()
     $merchant = null;
     $provinsi = Province::all();
     $kota     = City::all();
-		
+    $merchant_categories = MerchantCategory::all();
+
     $schools = School::where('is_active', true)->get();  
-    return view('merchant.create', compact('schools','provinsi','kota'));
+    return view('merchant.create', compact('schools','provinsi','kota','merchant_categories'));
 }
 
 public function store(Request $request)
 {
-    $request->validate([
-        'merchant_code' => 'required|unique:merchants,merchant_code',
-        'merchant_name' => 'required',
-        'phone' => 'required|unique:merchants,phone',
-        'email' => 'required|email|unique:merchants,email', 
-        'school_id' => 'required',  
-				'merchant_id_provinsi' => 'required',
-				'merchant_id_kota' => 'required',
-				'merchant_id_kecamatan' => 'required',
-				'merchant_id_kelurahan' => 'required'
-    ]);
+ $request->validate([
+    'merchant_code' => 'required|unique:merchants,merchant_code',
+    'merchant_name' => 'required',
+    'phone' => 'required|unique:merchants,phone',
+    'email' => 'required|email|unique:merchants,email',
+    'school_id' => 'required',
+    'merchant_category_id' => 'required',
+    'merchant_id_provinsi' => 'required',
+    'merchant_id_kota' => 'required',
+    'merchant_id_kecamatan' => 'required',
+    'merchant_id_kelurahan' => 'required',
+    'logo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
+]);
 
     DB::beginTransaction();
+$logoPath = null;
 
+if ($request->hasFile('logo')) {
+    $logoPath = $request->file('logo')->store('merchant_logo', 'public');
+}
     try { 
         // 1️⃣ Insert ke merchant
-        $merchant = Merchant::create([
-            'merchant_code' => $request->merchant_code,
-            'merchant_name' => $request->merchant_name,  
-            'phone' => $request->phone,
-            'email' => $request->email, 
-            'school_id' => $request->school_id, 
-            'province_id' => $request->merchant_id_provinsi, 
-            'city_id' => $request->merchant_id_kota, 
-            'district_id' => $request->merchant_id_kecamatan, 
-            'village_id' => $request->merchant_id_kelurahan 
-        ]);
- 
+    $merchant = Merchant::create([
+    'merchant_code' => $request->merchant_code,
+    'merchant_name' => $request->merchant_name,
+    'phone' => $request->phone,
+    'email' => $request->email,
+    'school_id' => $request->school_id,
+    'merchant_category_id' => $request->merchant_category_id,
+    'province_id' => $request->merchant_id_provinsi,
+    'city_id' => $request->merchant_id_kota,
+    'district_id' => $request->merchant_id_kecamatan,
+    'village_id' => $request->merchant_id_kelurahan,
+    'address' => $request->address,
+    'logo' => $logoPath
+]);
 
         DB::commit();
 
@@ -88,48 +98,79 @@ public function store(Request $request)
         return back()->withErrors($e->getMessage());
     }
 }
-
 public function edit(Merchant $merchant)
 {
- 
     $provinsi = Province::all();
-    $kota     = City::all();
-		
-    $schools = School::where('is_active', true)->get();  
 
-    return view('merchant.edit', compact('schools','provinsi','kota'));
+    $kota = City::where('province_id', $merchant->province_id)->get();
+
+    $kecamatan = District::where('regency_id', $merchant->city_id)->get();
+
+    $kelurahan = Village::where('district_id', $merchant->district_id)->get();
+
+    $schools = School::where('is_active', true)->get();
+    $merchant_categories = MerchantCategory::all();
+
+    return view('merchant.edit', compact(
+        'merchant',
+        'provinsi',
+        'kota',
+        'kecamatan',
+        'kelurahan',
+        'schools',
+        'merchant_categories'
+    ));
 }
 
 public function update(Request $request, Merchant $merchant)
 {
     $request->validate([
-        'merchant_code' => 'required|unique:merchants,merchant_code',
+        'merchant_code' => 'required|unique:merchants,merchant_code,' . $merchant->id,
         'merchant_name' => 'required',
-        'phone' => 'required|unique:merchants,phone',
-        'email' => 'required|email|unique:merchants,email', 
-        'school_id' => 'required',  
-				'merchant_id_provinsi' => 'required',
-				'merchant_id_kota' => 'required',
-				'merchant_id_kecamatan' => 'required',
-				'merchant_id_kelurahan' => 'required'
+        'phone' => 'required|unique:merchants,phone,' . $merchant->id,
+        'email' => 'required|email|unique:merchants,email,' . $merchant->id,
+        'school_id' => 'required',
+        'merchant_category_id' => 'required',
+        'merchant_id_provinsi' => 'required',
+        'merchant_id_kota' => 'required',
+        'merchant_id_kecamatan' => 'required',
+        'merchant_id_kelurahan' => 'required',
+        'logo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
     ]);
 
     DB::beginTransaction();
 
-    try { 
-        // 🔹 Update tabel merchant
-        $merchant = Merchant::create([
+    try {
+
+        $logoPath = $merchant->logo;
+
+        // jika upload logo baru
+        if ($request->hasFile('logo')) {
+
+            // hapus logo lama
+            if ($merchant->logo && Storage::disk('public')->exists($merchant->logo)) {
+                Storage::disk('public')->delete($merchant->logo);
+            }
+
+            // upload logo baru
+            $logoPath = $request->file('logo')->store('merchant_logo', 'public');
+        }
+
+        $merchant->update([
             'merchant_code' => $request->merchant_code,
-            'merchant_name' => $request->merchant_name,  
+            'merchant_name' => $request->merchant_name,
             'phone' => $request->phone,
-            'email' => $request->email, 
-            'school_id' => $request->school_id, 
-            'province_id' => $request->merchant_id_provinsi, 
-            'city_id' => $request->merchant_id_kota, 
-            'district_id' => $request->merchant_id_kecamatan, 
-            'village_id' => $request->merchant_id_kelurahan 
+            'email' => $request->email,
+            'school_id' => $request->school_id,
+            'merchant_category_id' => $request->merchant_category_id,
+            'province_id' => $request->merchant_id_provinsi,
+            'city_id' => $request->merchant_id_kota,
+            'district_id' => $request->merchant_id_kecamatan,
+            'village_id' => $request->merchant_id_kelurahan,
+            'address' => $request->address,
+            'logo' => $logoPath
         ]);
-				
+
         DB::commit();
 
         return redirect()->route('merchant.index')

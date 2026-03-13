@@ -23,6 +23,36 @@
                 display: block !important;
             }
         }
+
+
+
+/* box utama */
+.select2-container .select2-selection--single {
+  
+    border-radius: 0.5rem;
+    border: 1px solid #d1d5db;
+    padding: 6px 12px;
+}
+
+/* text di dalam */
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    line-height: 28px !important;
+    padding-left: 0 !important;
+}
+
+/* icon panah */
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 40px !important;
+}
+
+
+.select2-container--default .select2-selection--single {
+    background-color: #fff;
+    border: 1px solid #aaa;
+    border-radius: 6px !important;
+     height: 42px !important;
+}
+        
     </style>
 
      @yield('styles')

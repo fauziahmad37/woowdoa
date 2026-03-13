@@ -23,6 +23,9 @@ class Merchant extends Model
         'is_active',
         'fax',
         'website',
+        'school_id',
+        'logo',
+        'merchant_category_id',
     ];
 
     public function getFaxAttribute($value)
