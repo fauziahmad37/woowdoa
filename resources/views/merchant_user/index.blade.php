@@ -12,15 +12,18 @@
 <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-4 w-full">
 
 <!-- Search -->
-<form method="GET" class="flex gap-2">
+<form x-data="{ search: '{{ request('search') }}' }" method="GET" class="flex flex-col sm:flex-row items-center gap-2 w-full sm:w-auto">
 
-<input type="text"
-name="search"
-value="{{ request('search') }}"
-placeholder="Cari Nama / Email"
-class="border border-gray-300 rounded-md px-3 py-2">
+   <input 
+   value="{{ request('search') }}"
+        type="text"
+        name="search"
+        x-model="search"
+        placeholder="Cari Nama / Email"
+        class="w-full sm:w-64 border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+    >
 
-   <button 
+    <button 
         type="submit"
         :disabled="search.trim() === ''"
         :class="search.trim() === '' 
@@ -32,7 +35,7 @@ class="border border-gray-300 rounded-md px-3 py-2">
 
 <a href="{{ route('merchant.user.index') }}"
 class="text-green-600 border border-green-600 px-4 py-2 rounded-md">
-Reset
+Muat Ulang
 </a>
 
 </form>

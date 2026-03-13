@@ -1,10 +1,13 @@
 @extends('layouts.app')
 
 @section('content')
-<h2 class="text-xl font-bold mb-4">Edit Santri</h2>
+<h2 class="text-xl font-bold mb-4">Edit User Merchant</h2>
 
-<form action="{{ route('santri.update', $santri->id) }}" method="POST">
+<form action="{{ route('merchant.user.update', $user->id) }}" method="POST" enctype="multipart/form-data">
+    @csrf
     @method('PUT')
-    @include('santri.form')
+
+    @include('merchant_user.form')
+
 </form>
 @endsection

@@ -25,7 +25,8 @@ class MerchantUser extends Model
         'village_id',
         'is_active',
         'merchant_id',
-        'user_type'
+        'user_type',
+        'user_id'
     ];
 
     public function province()

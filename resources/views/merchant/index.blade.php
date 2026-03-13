@@ -31,6 +31,7 @@
     >
         Cari
     </button>
+    
       <a href="{{ route('merchant.index') }}"
                    class="w-full sm:w-auto text-green-600 border border-green-600 px-4 py-2 rounded-md text-center hover:bg-green-50 transition">
                     Atur Ulang
