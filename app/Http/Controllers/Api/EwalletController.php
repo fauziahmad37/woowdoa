@@ -80,11 +80,11 @@ class EwalletController extends BaseApiController
     public function balance(Request $request)
     {
         $request->validate([
-            'card_number' => 'required|exists:cards,card_number',
+            'nis' => 'required|exists:students,nis',
         ]);
 
-        $cardNumber = Card::where('card_number', $request->card_number)->first();
-        $userId = $cardNumber->student->user_id;
+        $student = Student::where('nis', $request->nis)->first();
+        $userId = $student->user_id;
         $ewallet = Ewallet::where('user_id', $userId)->first();
 
         return $this->success(['balance' => $ewallet->balance], 'Ewallet balance retrieved successfully');
