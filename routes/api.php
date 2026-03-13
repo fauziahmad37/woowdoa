@@ -24,6 +24,9 @@ Route::post('/forgot-password', [AuthController::class, 'sendOtp']);
 Route::post('/verify-otp', [AuthController::class, 'verifyOtp']);
 Route::post('/reset-password', [AuthController::class, 'resetPassword']);
 
+// topup ewallet
+Route::post('/v1/ewallets/topup', [EwalletController::class, 'topup'])->name('ewallets.topup');
+
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/logout', '\App\Http\Controllers\Api\AuthController@logout');
 });
@@ -75,7 +78,6 @@ Route::prefix('v1')
 
         // Ewallet
         Route::get('/ewallets', [EwalletController::class, 'index'])->name('ewallets.index');
-        Route::post('/ewallets/topup', [EwalletController::class, 'topup'])->name('ewallets.topup');
 
         // Contacts
         Route::get('/contacts', [ChatController::class, 'contacts']);
