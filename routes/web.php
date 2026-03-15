@@ -31,7 +31,8 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
 
 
 // Card Management
-Route::resource('card', CardController::class);
+//Route::resource('card', CardController::class);
+Route::resource('card', CardController::class)->except('show');
 Route::resource('cardrequest', CardRequestController::class);
 Route::resource('carddesign', CardDesignController::class);
 Route::resource('cardlossreport', CardLossReportController::class);
@@ -45,6 +46,9 @@ Route::post('/cardrequest/{id}/reject',[CardRequestController::class,'reject'])-
 Route::get('/card-print/{id}',[CardController::class,'print'])->name('cards.print');
 Route::get('/card/{id}/print-front',[CardController::class,'printFront'])->name('cards.printfront');
 Route::get('/card/{id}/print-back',[CardController::class,'printBack'])->name('cards.printback');
+Route::get('/card/report',[CardController::class,'report'])->name('cards.report');
+Route::get('/card/export-excel',[CardController::class,'exportExcel'])->name('card.export.excel');
+Route::get('/card/export-pdf',[CardController::class,'exportPdf'])->name('card.export.pdf');
 
 Route::get('/card-design/{id}/preview',[CardDesignController::class,'preview'])->name('carddesign.preview');
 

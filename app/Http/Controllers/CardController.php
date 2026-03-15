@@ -6,7 +6,10 @@ use App\Models\Card;
 use App\Models\CardDesign; 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-  
+use App\Exports\CardExport;
+use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade\Pdf;
+	
 class CardController extends Controller
 {
 	/**
@@ -25,7 +28,7 @@ class CardController extends Controller
 				});
 		}
 
-		$card = $query->latest()->paginate(10);
+		$card = $query->latest()->paginate(20);
 		$user_level = Auth::user()->user_level_id;
 		return view('cards.index', compact('card','user_level')); 
 	}
@@ -74,5 +77,74 @@ class CardController extends Controller
 		$back = json_decode($design->back_elements, true);
 		return view('cards.print-back',compact('card','design','back')); 
 	}
-	 
+
+
+	public function report(Request $request)
+	{
+		$query = Card::with(['student']);
+
+		if ($request->search) {
+				$query->where(function ($q) use ($request) {
+						$q->where('nis', 'ilike', '%'.$request->search.'%')
+							->orWhere('status', 'ilike', '%'.$request->search.'%')
+							->orWhere('student_name', 'ilike', '%'.$request->search.'%')
+							->orWhere('card_number', 'ilike', '%'.$request->search.'%') ;
+				});
+		}
+		//if($request->status){
+		//		$query->where('status',$request->status);
+		//}
+		//if($request->date_from){
+		//		$query->whereDate('created_at','>=',$request->date_from);
+		//}
+		//if($request->date_to){
+		//		$query->whereDate('created_at','<=',$request->date_to);
+		//}
+		$cards = $query->latest()->paginate(20);
+		return view('cards.report',compact('cards'));
+	}
+	
+	
+
+	// export excel
+	public function exportExcel(Request $request)
+	{
+		$query = Card::with(['student']);
+
+		if ($request->search) {
+				$query->where(function ($q) use ($request) {
+						$q->where('nis', 'ilike', '%'.$request->search.'%')
+							->orWhere('status', 'ilike', '%'.$request->search.'%')
+							->orWhere('student_name', 'ilike', '%'.$request->search.'%')
+							->orWhere('card_number', 'ilike', '%'.$request->search.'%') ;
+				});
+		}
+
+		$cardreport = $query->get();
+
+		return Excel::download(new \App\Exports\CardExport($cardreport), 'laporan_kartu.xlsx');
+	}
+
+
+	// export pdf
+
+	public function exportPdf(Request $request)
+	{
+		$query = Card::with(['student']);
+
+		if ($request->search) {
+				$query->where(function ($q) use ($request) {
+						$q->where('nis', 'ilike', '%'.$request->search.'%')
+							->orWhere('status', 'ilike', '%'.$request->search.'%')
+							->orWhere('student_name', 'ilike', '%'.$request->search.'%')
+							->orWhere('card_number', 'ilike', '%'.$request->search.'%') ;
+				});
+		}
+
+		$cardreport = $query->get();
+
+		$pdf = Pdf::loadView('card.reportpdf', compact('cardreport'));
+
+		return $pdf->download('laporan_kartu.pdf');
+	}
 }

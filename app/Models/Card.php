@@ -30,6 +30,14 @@ class Card extends Model
 
 		);
 	}
+	
+	public function cardrequest()
+	{
+		return $this->belongsTo(
+				CardRequest::class,'nis','username'
+
+		);
+	}	
 
     public function nis()
     {

@@ -139,7 +139,8 @@ class CardRequestController extends Controller
 		if($requestCard->old_card_id){ 
 			Card::where('id',$requestCard->old_card_id)
 					->update([
-							'status'=>'inactive'
+							'status'=>'inactive',
+							'reason'=>$requestCard->reason
 					]);
 		}
 
