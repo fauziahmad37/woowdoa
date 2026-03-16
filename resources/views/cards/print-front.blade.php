@@ -101,7 +101,7 @@ top:{{$front['card_number']['top']}}px;
 font-size:{{$front['card_number']['font_size']}}px;
 ">
 
-{!! DNS1D::getBarcodeHTML($card->card_number, 'C128',2,40) !!}
+{!! DNS1D::getBarcodeHTML($card->card_number, 'C128',2,20) !!}
  
 </div>
 @endif 
