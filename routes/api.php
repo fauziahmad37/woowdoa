@@ -56,6 +56,8 @@ Route::prefix('v1')
         Route::post('/users/profile_merchant_owner', [UserController::class, 'profileMerchantOwnerEdit']);
         Route::get('/users/profile_merchant_leader', [UserController::class, 'profileMerchantLeader']);
         Route::post('/users/profile_merchant_leader', [UserController::class, 'profileMerchantLeaderEdit']);
+        Route::get('/users/profile_merchant_cachier', [UserController::class, 'profileMerchantCachier']);
+        Route::post('/users/profile_merchant_cachier', [UserController::class, 'profileMerchantCashierEdit']);
 
         Route::get('/users/profile_parents', [UserController::class, 'profileParents']);
 

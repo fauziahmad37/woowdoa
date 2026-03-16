@@ -105,7 +105,7 @@ class UserController extends BaseApiController
         }
 
         $merchantOwner = MerchantUser::where('merchant_id', $user->merchant_id)
-            ->where('user_type', 1)
+            ->where('user_type', 2)
             ->first();
 
         $merchantOwner->province_name = $merchantOwner->province ? $merchantOwner->province->name : null;
@@ -144,40 +144,39 @@ class UserController extends BaseApiController
     }
 
     /**
-     * Get Profile Merchant Leader by auth
+     * Get Profile Merchant Cachier by auth
      */
-    public function profileMerchantLeader(Request $request)
+    public function profileMerchantCachier(Request $request)
     {
         $user = $request->user();
 
-        $merchantLeader = MerchantUser::where('merchant_id', $user->merchant_id)
-            ->where('user_type', 2)
+        $merchantCachier = MerchantUser::where('merchant_id', $user->merchant_id)
+            ->where('user_type', 3)
             ->first();
-
-        $merchantLeader->province_name = $merchantLeader->province ? $merchantLeader->province->name : null;
-        $merchantLeader->city_name = $merchantLeader->city ? $merchantLeader->city->name : null;
-        $merchantLeader->district_name = $merchantLeader->district ? $merchantLeader->district->name : null;
-        $merchantLeader->village_name = $merchantLeader->village ? $merchantLeader->village->name : null;
-
-        return $this->success($merchantLeader, 'User profile retrieved successfully');
+        $merchantCachier->province_name = $merchantCachier->province ? $merchantCachier->province->name : null;
+        $merchantCachier->city_name = $merchantCachier->city ? $merchantCachier->city->name : null;
+        $merchantCachier->district_name = $merchantCachier->district ? $merchantCachier->district->name : null;
+        $merchantCachier->village_name = $merchantCachier->village ? $merchantCachier->village->name : null;
+        return $this->success($merchantCachier, 'User profile retrieved successfully');
     }
 
     /**
-     * Edit merchant leader
+     * Edit Profil Merchant Cashier by auth
      */
-    public function profileMerchantLeaderEdit(Request $request)
+    public function profileMerchantCashierEdit(Request $request)
     {
         $user = $request->user();
-        // jika user level selain merchant owner / 1 maka tidak bisa edit profil merchant leader
-        if ($user->user_level_id != 2) {
+
+        // jika user level selain merchant cashier / 3 maka tidak bisa edit profil merchant
+        if ($user->user_level_id != 3) {
             return $this->error('Unauthorized', 403);
         }
-        $merchantLeader = MerchantUser::where('merchant_id', $user->merchant_id)
-            ->where('user_type', 2)
+
+        $merchant = MerchantUser::where('user_id', $user->id)
             ->first();
 
-        $merchantLeader->update([
-            'leader_name' => $request->name,
+        $merchant->update([
+            'owner_name' => $request->name,
             'email' => $request->email,
             'phone' => $request->phone,
             'address' => $request->address,
@@ -187,7 +186,7 @@ class UserController extends BaseApiController
             'village_id' => $request->village_id,
         ]);
 
-        return $this->success($merchantLeader, 'User profile updated successfully');
+        return $this->success($merchant, 'User profile updated successfully');
     }
 
     /**
