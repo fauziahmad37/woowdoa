@@ -58,4 +58,9 @@ class MerchantUser extends Model
 {
     return $this->belongsTo(UserLevel::class,'user_type','user_level_id');
 }
+
+public function user()
+{
+    return $this->belongsTo(User::class,'user_id','id');
+}
 }

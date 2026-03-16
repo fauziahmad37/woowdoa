@@ -24,8 +24,12 @@ class Merchant extends Model
         'fax',
         'website',
         'school_id',
+           'bank',
+    'nomor_rekening',
+    'atas_nama_norek',
         'logo',
         'merchant_category_id',
+         'no_npwp',
     ];
 
     public function getFaxAttribute($value)

@@ -82,6 +82,9 @@ Route::prefix('merchant-user')->name('merchant.user.')->group(function(){
 
     Route::delete('/delete/{id}',[MerchantUserController::class,'destroy'])->name('destroy');
 
+    Route::get('/get-kota/{province_id}', [MerchantUserController::class,'getKota']);
+Route::get('/get-kecamatan/{regency_id}', [MerchantUserController::class,'getKecamatan']);
+Route::get('/get-kelurahan/{district_id}', [MerchantUserController::class,'getKelurahan']);
 });
     // santri
 Route::get('/santri/import', [SantriController::class,'importForm'])->name('santri.import.form');

@@ -55,7 +55,7 @@
                     @method('PUT')
                 @endif
 
-<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div class="grid grid-cols-1 md:grid-cols-1 gap-4">
 	<!-- Kode Merchant -->
 	<div>
 			<label class="block text-gray-700 font-medium mb-1">
@@ -102,8 +102,21 @@
 
     </select>
 </div>
-	
 
+	<div>
+			<label class="block text-gray-700 font-medium mb-1">No HP</label>
+			<input type="text" name="phone"
+						 value="{{ old('phone', $merchant->phone ?? '') }}"
+						 class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500">
+	</div> 
+	
+	<!-- Email -->
+	<div>
+			<label class="block text-gray-700 font-medium mb-1">Email</label>
+			<input type="email" name="email"
+						 value="{{ old('email', $merchant->email ?? '') }}"
+						 class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500">
+	</div>
 	<div>
     <!-- Provinsi -->
     <label class="block font-medium mb-1">Provinsi<span class="text-red-500">*</span></label>
@@ -139,12 +152,7 @@
 	</div>	
  
 	<!-- No HP -->
-	<div>
-			<label class="block text-gray-700 font-medium mb-1">No HP</label>
-			<input type="text" name="phone"
-						 value="{{ old('phone', $merchant->phone ?? '') }}"
-						 class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500">
-	</div> 
+
  
  
  	<div>
@@ -167,13 +175,7 @@
 	</div>
 
 
-	<!-- Email -->
-	<div>
-			<label class="block text-gray-700 font-medium mb-1">Email</label>
-			<input type="email" name="email"
-						 value="{{ old('email', $merchant->email ?? '') }}"
-						 class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500">
-	</div>
+
 
 	<div>
     <!-- Kelurahan -->
@@ -213,8 +215,92 @@
 
 
 
-  
+    <!-- Nomor Rekening -->
+<!-- Bank -->
+<div>
+    <label class="block text-gray-700 font-medium mb-1">
+        Bank
+    </label>
 
+    <select name="bank"
+        class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500">
+
+        <option value="">-- Pilih Bank --</option>
+
+        @php
+            $banks = [
+                'BCA',
+                'BRI',
+                'BNI',
+                'Mandiri',
+                'BSI',
+                'CIMB Niaga',
+                'Danamon',
+                'Permata',
+                'BTN',
+                'OCBC NISP',
+                'Maybank',
+                'Panin Bank',
+                'Bank Mega',
+                'BJB',
+                'Bank DKI',
+                'Bank Jateng',
+                'Bank Jatim',
+                'Bank Nagari'
+            ];
+        @endphp
+
+        @foreach($banks as $bank)
+        <option value="{{ $bank }}"
+            {{ old('bank', $merchant->bank ?? '') == $bank ? 'selected' : '' }}>
+            {{ $bank }}
+        </option>
+        @endforeach
+
+    </select>
+
+    @error('bank')
+        <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+    @enderror
+</div>
+
+<!-- Nomor Rekening -->
+<div>
+    <label class="block text-gray-700 font-medium mb-1">
+        Nomor Rekening
+    </label>
+    <input type="text" name="nomor_rekening"
+        value="{{ old('nomor_rekening', $merchant->nomor_rekening ?? '') }}"
+        class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500">
+
+    @error('nomor_rekening')
+        <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+    @enderror
+</div>
+
+<!-- Atas Nama Rekening -->
+<div>
+    <label class="block text-gray-700 font-medium mb-1">
+        Atas Nama Rekening
+    </label>
+    <input type="text" name="atas_nama_norek"
+        value="{{ old('atas_nama_norek', $merchant->atas_nama_norek ?? '') }}"
+        class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500">
+
+    @error('atas_nama_norek')
+        <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+    @enderror
+</div>
+  
+<div>
+<label class="block text-gray-700 font-medium mb-1">
+No NPWP
+</label>
+
+<input type="text" name="no_npwp"
+value="{{ old('no_npwp', $merchant->no_npwp ?? '') }}"
+class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500">
+</div>
 	
 <div>
 	<label class="block text-gray-700 font-medium mb-1">Alamat</label>

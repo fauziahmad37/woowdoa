@@ -23,7 +23,8 @@ class MerchantController extends Controller
 {
 public function index(Request $request)
 {
-    $query = Merchant::where('is_active', 't');
+    $query = Merchant::where('is_active', 't')
+            ->where('school_id', auth()->user()->school_id);
 
     if ($request->search) {
         $query->where(function ($q) use ($request) {
@@ -61,6 +62,10 @@ public function store(Request $request)
     'merchant_id_kota' => 'required',
     'merchant_id_kecamatan' => 'required',
     'merchant_id_kelurahan' => 'required',
+    'bank' => 'required',
+    'nomor_rekening' => 'required',
+    'atas_nama_norek' => 'required',
+     'no_npwp' => 'required',
     'logo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
 ]);
 
@@ -83,7 +88,11 @@ if ($request->hasFile('logo')) {
     'city_id' => $request->merchant_id_kota,
     'district_id' => $request->merchant_id_kecamatan,
     'village_id' => $request->merchant_id_kelurahan,
+     'bank' => $request->bank,
+    'nomor_rekening' => $request->nomor_rekening,
+    'atas_nama_norek' => $request->atas_nama_norek,
     'address' => $request->address,
+    'no_npwp' => $request->no_npwp,
     'logo' => $logoPath
 ]);
 
@@ -135,6 +144,10 @@ public function update(Request $request, Merchant $merchant)
         'merchant_id_kota' => 'required',
         'merchant_id_kecamatan' => 'required',
         'merchant_id_kelurahan' => 'required',
+         'bank' => 'required',
+    'nomor_rekening' => 'required',
+    'atas_nama_norek' => 'required',
+       'no_npwp' => 'required',
         'logo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
     ]);
 
@@ -168,6 +181,10 @@ public function update(Request $request, Merchant $merchant)
             'district_id' => $request->merchant_id_kecamatan,
             'village_id' => $request->merchant_id_kelurahan,
             'address' => $request->address,
+              'bank' => $request->bank,
+    'nomor_rekening' => $request->nomor_rekening,
+    'atas_nama_norek' => $request->atas_nama_norek,
+     'no_npwp' => $request->no_npwp,
             'logo' => $logoPath
         ]);
 

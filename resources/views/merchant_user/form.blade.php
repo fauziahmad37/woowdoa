@@ -5,9 +5,8 @@
 <div class="container mx-auto w-full px-4">
 
 <h2 class="text-xl font-semibold text-gray-700 mb-6">
-Tambah User Merchant
+{{ isset($user) ? 'Edit User Merchant' : 'Tambah User Merchant' }}
 </h2>
-
 <div class="bg-white shadow-sm sm:rounded-lg p-6">
 
 @if ($errors->any())
@@ -20,15 +19,20 @@ Tambah User Merchant
 </div>
 @endif
 
-<form action="{{ route('merchant.user.store') }}" method="POST" enctype="multipart/form-data">
+<form action="{{ isset($user) ? route('merchant.user.update', $user->id) : route('merchant.user.store') }}" 
+      method="POST" enctype="multipart/form-data">
+
 @csrf
 
+@if(isset($user))
+    @method('PUT')
+@endif
 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 
 {{-- OWNER NAME --}}
 <div>
 <label class="block font-medium mb-1">
-Nama Owner <span class="text-red-500">*</span>
+Nama User <span class="text-red-500">*</span>
 </label>
 <input type="text" name="owner_name"
 class="w-full border rounded-lg px-3 py-2"
@@ -40,9 +44,10 @@ value="{{ old('owner_name', $user->owner_name ?? '') }}">
 <label class="block font-medium mb-1">
 Username <span class="text-red-500">*</span>
 </label>
+
 <input type="text" name="username"
 class="w-full border rounded-lg px-3 py-2"
-value="{{ old('username', $username ?? '') }}">
+value="{{ old('username', $user->user->username ?? '') }}">
 </div>
 
 {{-- EMAIL --}}
@@ -113,14 +118,12 @@ class="w-full border rounded-lg px-3 py-2">
 Sekolah
 </label>
 
-<select name="school_id"
-class="w-full border rounded-lg px-3 py-2">
-
+<select name="school_id" class="w-full border rounded-lg px-3 py-2">
 <option value="">Pilih Sekolah</option>
 
 @foreach($schools as $school)
 <option value="{{ $school->id }}"
-{{ old('school_id', $user->school_id ?? '') == $school->id ? 'selected' : '' }}>
+{{ old('school_id', $user->user->school_id ?? '') == $school->id ? 'selected' : '' }}>
 {{ $school->school_name }}
 </option>
 @endforeach
@@ -133,7 +136,7 @@ class="w-full border rounded-lg px-3 py-2">
 {{-- USER TYPE --}}
 <div>
 <label class="block font-medium mb-1">
-User Level
+User Type
 </label>
 
 <select name="user_type"
@@ -181,11 +184,17 @@ class="w-full border rounded-lg px-3 py-2 select2">
 <label class="block font-medium mb-1">
 Kota/Kabupaten <span class="text-red-500">*</span>
 </label>
-
 <select id="kota" name="city_id"
 class="w-full border rounded-lg px-3 py-2 select2">
 
 <option value="">-- Pilih Kota --</option>
+
+@foreach($kota as $k)
+<option value="{{ $k->id }}"
+{{ old('city_id', $user->city_id ?? '') == $k->id ? 'selected' : '' }}>
+{{ $k->name }}
+</option>
+@endforeach
 
 </select>
 </div>
@@ -202,6 +211,13 @@ class="w-full border rounded-lg px-3 py-2 select2">
 
 <option value="">-- Pilih Kecamatan --</option>
 
+@foreach($kecamatan as $kec)
+<option value="{{ $kec->id }}"
+{{ old('district_id', $user->district_id ?? '') == $kec->id ? 'selected' : '' }}>
+{{ $kec->name }}
+</option>
+@endforeach
+
 </select>
 </div>
 
@@ -217,6 +233,13 @@ class="w-full border rounded-lg px-3 py-2 select2">
 
 <option value="">-- Pilih Kelurahan --</option>
 
+@foreach($kelurahan as $kel)
+<option value="{{ $kel->id }}"
+{{ old('village_id', $user->village_id ?? '') == $kel->id ? 'selected' : '' }}>
+{{ $kel->name }}
+</option>
+@endforeach
+
 </select>
 </div>
 
@@ -229,7 +252,7 @@ Alamat
 
 <textarea name="address"
 class="w-full border rounded-lg px-3 py-2"
-rows="3">{{ old('address') }}</textarea>
+rows="3">{{ old('address', $user->address ?? '') }}</textarea>
 </div>
 
 {{-- PROFILE PHOTO --}}
@@ -237,9 +260,17 @@ rows="3">{{ old('address') }}</textarea>
 <label class="block font-medium mb-1">
 Profile Photo
 </label>
+
 <input type="file" name="profile_photo"
 class="w-full border rounded-lg px-3 py-2">
+
+@if(isset($user->user) && $user->user->profile_photo)
+<img src="{{ asset('storage/'.$user->user->profile_photo) }}"
+class="mt-3 w-20 h-20 rounded-full object-cover border">
+@endif
+
 </div>
+
 <div class="flex justify-end mt-6">
 <button type="submit"
 class="text-white px-6 py-2 rounded-lg"
@@ -257,6 +288,7 @@ Simpan Data
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
+$(document).ready(function(){
 
 $('#provinsi').change(function(){
 
@@ -314,6 +346,7 @@ $('#kelurahan').append(`<option value="${item.id}">${item.name}</option>`)
 
 })
 
+});
 </script>
 @endsection
 
