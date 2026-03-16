@@ -8,14 +8,26 @@ use Illuminate\Database\Eloquent\Model;
 class School extends Model
 {
     use HasFactory;
+ 
+
 
     protected $fillable = [
-        'school_name',
-        'address',
-        'phone',
-        'email',
-        'is_active',
-        'logo',
+						'school_name',
+						'npsn',
+						'address',
+						'phone',
+						'email',
+						'is_active',
+						'logo ',
+						'no_school',
+						'bank',
+						'province_id',
+						'city_id',
+						'district_id',
+						'village_id',
+						'pic1',
+						'pic2',
+						'pic3',
     ];
 
     function teachers()

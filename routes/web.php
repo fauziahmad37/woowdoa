@@ -14,6 +14,9 @@ use App\Http\Controllers\ShortcutNominalController;
 use App\Http\Controllers\ReportTransactionController;
 use App\Http\Controllers\ReportReconcileController;
 use App\Http\Controllers\DashboardTransaksiSiswaController;
+
+use App\Http\Controllers\SchoolController;
+
 //Card
 use App\Http\Controllers\CardController;
 use App\Http\Controllers\CardRequestController;
@@ -86,7 +89,13 @@ Route::prefix('merchant-user')->name('merchant.user.')->group(function(){
 Route::get('/get-kecamatan/{regency_id}', [MerchantUserController::class,'getKecamatan']);
 Route::get('/get-kelurahan/{district_id}', [MerchantUserController::class,'getKelurahan']);
 });
-    // santri
+
+
+
+//school
+Route::resource('school', SchoolController::class); 
+
+// santri
 Route::get('/santri/import', [SantriController::class,'importForm'])->name('santri.import.form');
 Route::post('/santri/import', [SantriController::class,'import'])->name('santri.import');
 Route::resource('santri', SantriController::class);
