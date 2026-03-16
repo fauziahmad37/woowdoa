@@ -22,11 +22,11 @@ class Transaction extends Model
         'settlement_id',
     ];
 
-    protected $casts = [
-        'paid_at' => 'datetime:Y-m-d H:i:s',
-        'total_amount' => 'integer',
-        'paid_amount' => 'integer',
-    ];
+protected $casts = [
+    'paid_at' => 'datetime',
+    'total_amount' => 'integer',
+    'paid_amount' => 'integer',
+];
 
     public function getPaidAtAttribute($value)
     {

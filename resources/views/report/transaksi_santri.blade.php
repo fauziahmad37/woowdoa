@@ -142,8 +142,8 @@ Export PDF
                                 Rp {{ number_format($trx->total_amount,0,',','.') }}
                             </td>
 
-                            <td class="px-4 py-3">
-    {{ $trx->paid_at ? $trx->paid_at->format('d-m-Y H:i') : '-' }}
+                          <td class="px-4 py-3">
+{{ $trx->paid_at ? \Carbon\Carbon::parse($trx->paid_at)->format('d-m-Y H:i') : '-' }}
 </td>
                             <td class="px-4 py-3 text-center">
     @if($trx->status == 'pending')
