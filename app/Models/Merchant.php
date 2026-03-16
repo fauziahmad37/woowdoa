@@ -24,7 +24,7 @@ class Merchant extends Model
         'fax',
         'website',
         'school_id',
-           'bank',
+           'bank_id',
     'nomor_rekening',
     'atas_nama_norek',
         'logo',

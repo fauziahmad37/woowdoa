@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use App\Models\MerchantCategory;
+use App\Models\Bank;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 
@@ -43,10 +44,11 @@ public function create()
     $merchant = null;
     $provinsi = Province::all();
     $kota     = City::all();
+     $banks     = Bank::all();
     $merchant_categories = MerchantCategory::all();
 
     $schools = School::where('is_active', true)->get();  
-    return view('merchant.create', compact('schools','provinsi','kota','merchant_categories'));
+    return view('merchant.create', compact('schools','provinsi','kota','merchant_categories','banks'));
 }
 
 public function store(Request $request)
@@ -62,7 +64,7 @@ public function store(Request $request)
     'merchant_id_kota' => 'required',
     'merchant_id_kecamatan' => 'required',
     'merchant_id_kelurahan' => 'required',
-    'bank' => 'required',
+    'bank_id' => 'required',
     'nomor_rekening' => 'required',
     'atas_nama_norek' => 'required',
      'no_npwp' => 'required',
@@ -88,7 +90,7 @@ if ($request->hasFile('logo')) {
     'city_id' => $request->merchant_id_kota,
     'district_id' => $request->merchant_id_kecamatan,
     'village_id' => $request->merchant_id_kelurahan,
-     'bank' => $request->bank,
+     'bank_id' => $request->bank_id,
     'nomor_rekening' => $request->nomor_rekening,
     'atas_nama_norek' => $request->atas_nama_norek,
     'address' => $request->address,
@@ -116,7 +118,7 @@ public function edit(Merchant $merchant)
     $kecamatan = District::where('regency_id', $merchant->city_id)->get();
 
     $kelurahan = Village::where('district_id', $merchant->district_id)->get();
-
+  $banks     = Bank::all();
     $schools = School::where('is_active', true)->get();
     $merchant_categories = MerchantCategory::all();
 
@@ -127,7 +129,8 @@ public function edit(Merchant $merchant)
         'kecamatan',
         'kelurahan',
         'schools',
-        'merchant_categories'
+        'merchant_categories',
+        'banks'
     ));
 }
 
@@ -144,7 +147,7 @@ public function update(Request $request, Merchant $merchant)
         'merchant_id_kota' => 'required',
         'merchant_id_kecamatan' => 'required',
         'merchant_id_kelurahan' => 'required',
-         'bank' => 'required',
+         'bank_id' => 'required',
     'nomor_rekening' => 'required',
     'atas_nama_norek' => 'required',
        'no_npwp' => 'required',
@@ -181,7 +184,7 @@ public function update(Request $request, Merchant $merchant)
             'district_id' => $request->merchant_id_kecamatan,
             'village_id' => $request->merchant_id_kelurahan,
             'address' => $request->address,
-              'bank' => $request->bank,
+              'bank_id' => $request->bank_id,
     'nomor_rekening' => $request->nomor_rekening,
     'atas_nama_norek' => $request->atas_nama_norek,
      'no_npwp' => $request->no_npwp,

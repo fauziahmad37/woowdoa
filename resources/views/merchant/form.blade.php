@@ -221,47 +221,23 @@
     <label class="block text-gray-700 font-medium mb-1">
         Bank
     </label>
+<select name="bank_id"
+class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500">
 
-    <select name="bank"
-        class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500">
+<option value="">-- Pilih Bank --</option>
 
-        <option value="">-- Pilih Bank --</option>
+@foreach($banks as $item)
+<option value="{{ $item->id }}"
+{{ old('bank_id', $merchant->bank_id ?? '') == $item->id ? 'selected' : '' }}>
+{{ $item->nama }}
+</option>
+@endforeach
 
-        @php
-            $banks = [
-                'BCA',
-                'BRI',
-                'BNI',
-                'Mandiri',
-                'BSI',
-                'CIMB Niaga',
-                'Danamon',
-                'Permata',
-                'BTN',
-                'OCBC NISP',
-                'Maybank',
-                'Panin Bank',
-                'Bank Mega',
-                'BJB',
-                'Bank DKI',
-                'Bank Jateng',
-                'Bank Jatim',
-                'Bank Nagari'
-            ];
-        @endphp
+</select>
 
-        @foreach($banks as $bank)
-        <option value="{{ $bank }}"
-            {{ old('bank', $merchant->bank ?? '') == $bank ? 'selected' : '' }}>
-            {{ $bank }}
-        </option>
-        @endforeach
-
-    </select>
-
-    @error('bank')
-        <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
-    @enderror
+@error('bank_id')
+<p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+@enderror
 </div>
 
 <!-- Nomor Rekening -->
