@@ -198,6 +198,28 @@ $laki = [];
 $perempuan = [];
 
 
+$santriPerAngkatan = DB::table('students')
+    ->join('tahun_ajaran', 'tahun_ajaran.id', '=', 'students.tahun_ajaran_id')
+    ->where('students.school_id', $schoolId)
+    ->select(
+        'tahun_ajaran.id',
+        'tahun_ajaran.tahun_ajaran',
+        DB::raw('COUNT(students.id) as total')
+    )
+    ->groupBy('tahun_ajaran.id', 'tahun_ajaran.tahun_ajaran')
+    ->orderByDesc('tahun_ajaran.id') 
+    ->limit(10)
+    ->get()
+    ->sortBy('tahun_ajaran'); 
+
+$angkatanLabels = [];
+$angkatanTotal = [];
+
+foreach ($santriPerAngkatan as $row) {
+    $angkatanLabels[] = $row->tahun_ajaran;
+    $angkatanTotal[] = (int) $row->total;
+}
+
 // ======================
 // DATA TEACHER
 // ======================
@@ -226,6 +248,8 @@ foreach ($santriPerTingkat as $row) {
     $laki[] = (int) $row->laki;
     $perempuan[] = (int) $row->perempuan;
 }
+
+
 
 
 
@@ -385,7 +409,9 @@ $merchantTotalData = [$totalMerchant];
 'saldoNames',
     'saldoTotals',
     'belanjaNames',
-    'belanjaTotals'
+    'belanjaTotals',
+      'angkatanLabels',
+    'angkatanTotal'
 ));
     }
 }

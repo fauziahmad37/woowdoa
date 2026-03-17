@@ -390,6 +390,11 @@ Persentase Siswa Topup Bulan Ini
 
 </div>
 
+<div class="bg-white rounded-xl shadow p-4 mt-4">
+<h5 class="font-semibold mb-3">Total Santri Berdasarkan Angkatan</h5>
+<div id="chart-angkatan"></div>
+</div>
+
 </div>
 
 <!-- end dashboard pesantren -->
@@ -842,7 +847,33 @@ Highcharts.chart('chart-top-belanja', {
     credits: { enabled:false }
 });
 
+
+
+// angkatan
+
+
+ Highcharts.chart('chart-angkatan', {
+        chart: { type: 'column' },
+        title: {
+            text: 'Jumlah Siswa per Angkatan (10 Tahun Terakhir)'
+        },
+        xAxis: {
+            categories: @json($angkatanLabels)
+        },
+        yAxis: {
+            min: 0,
+            title: { text: 'Jumlah Siswa' }
+        },
+        series: [{
+            name: 'Siswa',
+            data: @json($angkatanTotal),
+            color: '#22c55e'
+        }],
+        credits: { enabled:false }
+    });
 });
+
+
 
 
 </script>
