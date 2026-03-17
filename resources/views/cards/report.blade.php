@@ -17,7 +17,7 @@
         type="text"
         name="search"
         x-model="search"
-        placeholder="Cari"
+        placeholder="Cari Nama / NIS / Nomor Kartu"
         class="w-full sm:w-64 border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
     >
 
@@ -28,13 +28,12 @@
             ? 'bg-gray-200 text-gray-700 cursor-not-allowed px-4 py-2 rounded-md'
             : 'bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md'"
     >
-        Cari
+        Cari 
     </button>
-      <a href="{{ route('card.index') }}"
-                   class="w-full sm:w-auto text-green-600 border border-green-600 px-4 py-2 rounded-md text-center hover:bg-green-50 transition">
-                    Atur Ulang
-                </a>
-
+<a href="{{ route('cards.report') }}"
+   class="w-full sm:w-auto text-green-600 border border-green-600 px-4 py-2 rounded-md text-center hover:bg-green-50 transition">
+    Atur Ulang
+</a>
 </form>
 
  
@@ -94,15 +93,20 @@ Export PDF
                         <tbody>
                             @foreach($cards as $i => $rec)
                                 <tr class="border-b hover:bg-gray-50">
-                                    <td class="px-4 py-3">
+                                    <td class="px-4 py-3  text-center">
                                         {{ ($cards->currentPage() - 1) * $cards->perPage() + $i + 1 }}
                                     </td>
-                                    <td class="px-4 py-3 text-right">{{ $rec->nis }}</td>
-                                    <td class="px-4 py-3 text-right">{{ $rec->student->student_name }}</td> 
-                                    <td class="px-4 py-3 text-right">{{ $rec->card_number }}</td> 
-                                    <td class="px-4 py-3 text-right">{{ $rec->sequence }}</td> 
-                                    <td class="px-4 py-3 text-right">{{ $rec->status }}</td>   
-                                    <td class="px-4 py-3 text-right">{{ $rec->reason }}</td>    
+                                    <td class="px-4 py-3 text-left">{{ $rec->nis }}</td>
+                                    <td class="px-4 py-3 text-left">{{ $rec->student->student_name }}</td> 
+                                    <td class="px-4 py-3 text-left">{{ $rec->card_number }}</td> 
+                                    <td class="px-4 py-3 text-center">{{ $rec->sequence }}</td> 
+                                <td class="px-4 py-3 text-center">
+    <span class="px-2 py-1 rounded-full text-xs font-semibold
+        {{ $rec->status == 'active' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' }}">
+        {{ $rec->status }}
+    </span>
+</td> 
+                                    <td class="px-4 py-3 text-left">{{ $rec->reason }}</td>    
                                     
                                 </tr>
                             @endforeach
