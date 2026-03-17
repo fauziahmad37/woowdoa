@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\School;
 use App\Models\Bank;
+use App\Models\Province;
+use App\Models\City;
+use App\Models\District; 
+use App\Models\Village;
 use Illuminate\Http\Request; 
-
 use Illuminate\Support\Facades\Auth;
 
 class SchoolController extends Controller
@@ -13,15 +16,16 @@ class SchoolController extends Controller
 	/**
 	 * Display a listing of the resource.
 	 */
+	public function index()
+	{ 	
+		$school = School::where('id',  Auth::user()->school_id)->first();
 
+    $provinsi = Province::all();
+    $kota     = City::all();		
+    $bank = Bank::all();
+		return view('school.index', compact('school','bank','provinsi','kota'));
+	}
 
-public function index()
-{ 	
-    $school = School::where('id', Auth::user()->school_id)->first();
-    $banks = Bank::all();
-
-    return view('school.index', compact('school','banks'));
-}
 	/**
 	 * Show the form for creating a new resource.
 	 */
