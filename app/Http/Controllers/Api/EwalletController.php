@@ -171,6 +171,20 @@ class EwalletController extends BaseApiController
     }
 
     /**
+     * Display the balance of the authenticated merchant's ewallet.
+     */
+    public function balanceMerchant(Request $request)
+    {
+        $request->validate([
+            'username' => 'required|exists:users,username',
+        ]);
+
+        $user = User::where('username', $request->username)->first();
+        $ewallet = Ewallet::where('user_id', $user->id)->first();
+        return $this->success(['balance' => $ewallet->balance], 'Merchant ewallet balance retrieved successfully');
+    }
+
+    /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request, ImageUploadService $imageService)
