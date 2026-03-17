@@ -120,6 +120,9 @@ class EwalletController extends BaseApiController
         $userId = $student->user_id;
         $ewallet = Ewallet::where('user_id', $userId)->first();
         $history = WalletMovement::where('ewallet_id', $ewallet->id)
+            ->when($request->start_date && $request->end_date, function ($query) use ($request) {
+                $query->whereBetween('created_at', [$request->start_date, $request->end_date]);
+            })
             ->orderBy('created_at', 'desc')
             ->get();
         return $this->success($history, 'Ewallet transaction history retrieved successfully');
