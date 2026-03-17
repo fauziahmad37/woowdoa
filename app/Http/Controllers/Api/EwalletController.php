@@ -101,6 +101,8 @@ class EwalletController extends BaseApiController
                 'transaction_code' => $transaction->transaction_code,
                 'amount' => $request->amount,
                 'transaction_date' => $request->created_at,
+                'saldo_before' => $walletMovement->balance_before,
+                'saldo_after' => $walletMovement->balance_after,
             ]
         ];
 
