@@ -16,6 +16,7 @@ use App\Http\Controllers\ReportReconcileController;
 use App\Http\Controllers\DashboardTransaksiSiswaController;
 
 use App\Http\Controllers\SchoolController;
+use App\Http\Controllers\SettlementController;
 
 //Card
 use App\Http\Controllers\CardController;
@@ -130,6 +131,10 @@ Route::get('/report/reconcile/export/pdf',[ReportReconcileController::class,'exp
 //     ->name('report.reconcile.detail');
 
 
+//settlement
+Route::resource('settlement', SettlementController::class); 
+Route::post('/settlement/{id}/approve',[SettlementController::class,'approve'])->name('settlement.approve');
+Route::post('/settlement/{id}/reject',[SettlementController::class,'reject'])->name('settlement.reject');
 
 Route::get(
     '/report/reconcile/detail/{merchantId}',

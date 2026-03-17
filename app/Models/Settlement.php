@@ -30,6 +30,12 @@ class Settlement extends Model
         return $this->belongsTo(Merchant::class, 'merchant_id', 'id');
     }
 
+    function ewallet()
+    {
+        return $this->belongsTo(Ewallet::class, 'merchant_id', 'user_id');
+    }
+
+
     function transactions()
     {
         return $this->hasMany(Transaction::class, 'settlement_id', 'id');
