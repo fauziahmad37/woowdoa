@@ -11,7 +11,15 @@ class DashboardController extends Controller
 {
     public function index()
     {
-      
+
+      $startDate = request('start_date')
+    ? Carbon::parse(request('start_date'))->startOfDay()
+    : Carbon::now()->startOfMonth();
+
+$endDate = request('end_date')
+    ? Carbon::parse(request('end_date'))->endOfDay()
+    : Carbon::now()->endOfDay();
+
 
         $schoolId = Auth::user()->school_id;
   //  dd(Carbon::now());
@@ -19,34 +27,35 @@ class DashboardController extends Controller
      $totalTransaksi = DB::table('transactions')
     ->join('students', 'students.id', '=', 'transactions.student_id')
     ->where('students.school_id', $schoolId)
+    
     ->where('transactions.status', 'paid')
+        ->whereBetween('transactions.created_at', [$startDate, $endDate])
     ->count();
 
         // total value transaksi
         
-        $totalValue = DB::table('transaction_details')
-            ->join('transactions', 'transactions.id', '=', 'transaction_details.transaction_id')
-            ->join('students', 'students.id', '=', 'transactions.student_id')
-            ->where('students.school_id', $schoolId)
-              ->where('transactions.status', 'paid')
-            ->sum('transactions.total_amount');
-
-        // transaksi bulan ini
-       $transaksiBulanIni = DB::table('transactions')
+     $totalValue = DB::table('transaction_details')
+    ->join('transactions', 'transactions.id', '=', 'transaction_details.transaction_id')
     ->join('students', 'students.id', '=', 'transactions.student_id')
     ->where('students.school_id', $schoolId)
     ->where('transactions.status', 'paid')
-    ->whereMonth('transactions.created_at', now()->month)
-    ->whereYear('transactions.created_at', now()->year)
+    ->whereBetween('transactions.created_at', [$startDate, $endDate])
+    ->sum('transactions.total_amount');
+    
+        // transaksi bulan ini
+      $transaksiBulanIni = DB::table('transactions')
+    ->join('students', 'students.id', '=', 'transactions.student_id')
+    ->where('students.school_id', $schoolId)
+    ->where('transactions.status', 'paid')
+    ->whereBetween('transactions.created_at', [$startDate, $endDate])
     ->count();
 
         // value transaksi bulan ini
-    $valueBulanIni = DB::table('transactions')
+$valueBulanIni = DB::table('transactions')
     ->join('students', 'students.id', '=', 'transactions.student_id')
     ->where('students.school_id', $schoolId)
     ->where('transactions.status', 'paid')
-    ->whereMonth('transactions.created_at', now()->month)
-    ->whereYear('transactions.created_at', now()->year)
+    ->whereBetween('transactions.created_at', [$startDate, $endDate])
     ->sum('transactions.total_amount');
 
 
@@ -62,7 +71,7 @@ $transaksiPerHari = DB::table('transactions')
     ->where('students.school_id', $schoolId)
     ->where('transactions.status', 'paid')
     ->whereNotNull('transactions.paid_at')
-    ->whereBetween('transactions.paid_at', [$start, $end])
+    ->whereBetween('transactions.paid_at', [$startDate, $endDate])
     ->selectRaw('EXTRACT(DAY FROM transactions.paid_at)::int as hari, COUNT(*) as total')
     ->groupByRaw('EXTRACT(DAY FROM transactions.paid_at)')
     ->orderByRaw('EXTRACT(DAY FROM transactions.paid_at)')
@@ -80,6 +89,52 @@ for ($i = 1; $i <= $today; $i++) {
 }
 
 
+// top saldo 10 tertinggi siswa
+$topSaldo = DB::table('ewallets')
+    ->join('students', 'students.id', '=', 'ewallets.user_id')
+    ->where('students.school_id', $schoolId)
+    ->where('ewallets.wallet_type', 'student')
+    ->whereBetween('ewallets.created_at', [$startDate, $endDate])
+    ->select(
+        'students.student_name',
+        'ewallets.balance'
+    )
+    ->orderByDesc('ewallets.balance')
+    ->limit(10)
+    ->get();
+
+$saldoNames = [];
+$saldoTotals = [];
+
+foreach ($topSaldo as $row) {
+    $saldoNames[] = $row->student_name;
+    $saldoTotals[] = (float) $row->balance;
+}
+
+// top belanja tertinggi siswa
+
+$topBelanja = DB::table('transactions')
+    ->join('students', 'students.id', '=', 'transactions.student_id')
+    ->where('students.school_id', $schoolId)
+    ->where('transactions.status', 'paid')
+    ->whereBetween('transactions.paid_at', [$startDate, $endDate])
+    ->select(
+        'students.student_name',
+        DB::raw('SUM(transactions.total_amount) as total_belanja')
+    )
+    ->groupBy('students.student_name')
+    ->orderByDesc('total_belanja')
+    ->limit(10)
+    ->get();
+
+$belanjaNames = [];
+$belanjaTotals = [];
+
+foreach ($topBelanja as $row) {
+    $belanjaNames[] = $row->student_name;
+    $belanjaTotals[] = (float) $row->total_belanja;
+}
+// dd($belanjaNames, $belanjaTotals);
 // ======================
 // SISWA TOPUP BULAN INI
 // ======================
@@ -94,16 +149,16 @@ $totalSantri = DB::table('students')
 $santriTopup = DB::table('transactions')
     ->join('students', 'students.id', '=', 'transactions.student_id')
     ->where('students.school_id', $schoolId)
-    ->whereMonth('transactions.created_at', now()->month)
-    ->whereYear('transactions.created_at', now()->year)
+    ->whereBetween('transactions.created_at', [$startDate, $endDate])
     ->distinct('transactions.student_id')
     ->count('transactions.student_id');
-
 
 // siswa yang belum topup
 $santriBelumTopup = $totalSantri - $santriTopup;
 
 // dashboarad pesantren
+
+
 // untuk filter santri
 
 
@@ -143,6 +198,28 @@ $laki = [];
 $perempuan = [];
 
 
+$santriPerAngkatan = DB::table('students')
+    ->join('tahun_ajaran', 'tahun_ajaran.id', '=', 'students.tahun_ajaran_id')
+    ->where('students.school_id', $schoolId)
+    ->select(
+        'tahun_ajaran.id',
+        'tahun_ajaran.tahun_ajaran',
+        DB::raw('COUNT(students.id) as total')
+    )
+    ->groupBy('tahun_ajaran.id', 'tahun_ajaran.tahun_ajaran')
+    ->orderByDesc('tahun_ajaran.id') 
+    ->limit(10)
+    ->get()
+    ->sortBy('tahun_ajaran'); 
+
+$angkatanLabels = [];
+$angkatanTotal = [];
+
+foreach ($santriPerAngkatan as $row) {
+    $angkatanLabels[] = $row->tahun_ajaran;
+    $angkatanTotal[] = (int) $row->total;
+}
+
 // ======================
 // DATA TEACHER
 // ======================
@@ -174,13 +251,17 @@ foreach ($santriPerTingkat as $row) {
 
 
 
+
+
 // ======================
 // DATA MERCHANT
 // ======================
 
+
 // total merchant
 $totalMerchant = DB::table('merchants')
     ->where('school_id', $schoolId)
+    ->whereBetween('created_at', [$startDate, $endDate])
     ->count();
 
 
@@ -190,13 +271,12 @@ $merchantHariIni = DB::table('merchants')
     ->whereDate('created_at', Carbon::today())
     ->count();
 
-
 // merchant aktif
 $merchantAktif = DB::table('merchants')
     ->where('school_id', $schoolId)
     ->where('is_active', true)
+    ->whereBetween('created_at', [$startDate, $endDate])
     ->count();
-
 
     // ======================
 // MERCHANT HARIAN
@@ -204,7 +284,7 @@ $merchantAktif = DB::table('merchants')
 
 $merchantPerHari = DB::table('merchants')
     ->where('school_id', $schoolId)
-    ->whereBetween('created_at', [Carbon::now()->startOfMonth(), Carbon::now()->endOfDay()])
+    ->whereBetween('created_at', [$startDate, $endDate])
     ->selectRaw('EXTRACT(DAY FROM created_at)::int as hari, COUNT(*) as total')
     ->groupByRaw('EXTRACT(DAY FROM created_at)')
     ->orderByRaw('EXTRACT(DAY FROM created_at)')
@@ -225,6 +305,7 @@ for ($i = 1; $i <= $today; $i++) {
 // TOP MERCHANT TRANSAKSI
 // ======================
 
+
 $merchantNames = [];
 $merchantTotals = [];
 
@@ -232,6 +313,7 @@ $topMerchant = DB::table('transactions')
     ->join('merchants', 'merchants.id', '=', 'transactions.merchant_id')
     ->where('merchants.school_id', $schoolId)
     ->where('transactions.status','paid')
+    ->whereBetween('transactions.created_at', [$startDate, $endDate])
     ->select(
         'merchants.merchant_name',
         DB::raw('COUNT(transactions.id) as total')
@@ -260,6 +342,7 @@ $merchantRevenue = DB::table('transactions')
     ->join('merchants', 'merchants.id', '=', 'transactions.merchant_id')
     ->where('merchants.school_id', $schoolId)
     ->whereNotNull('transactions.paid_at')
+    ->whereBetween('transactions.paid_at', [$startDate, $endDate])
     ->select(
         'merchants.merchant_name',
         DB::raw('SUM(transactions.total_amount) as total_revenue')
@@ -274,13 +357,14 @@ foreach ($merchantRevenue as $row) {
     $merchantRevenueTotals[] = (float) $row->total_revenue;
 }
 
-// ======================
-// TOTAL MERCHANT
-// ======================
 
-$totalMerchant = DB::table('merchants')
-    ->where('school_id', $schoolId)
-    ->count();
+// filter merchant by date
+
+
+
+
+
+
 
 $merchantTotalLabel = ['Total Merchant'];
 $merchantTotalData = [$totalMerchant];
@@ -321,7 +405,13 @@ $merchantTotalData = [$totalMerchant];
     'merchantNames',
     'merchantTotals',
 'merchantRevenueNames',
-'merchantRevenueTotals'
+'merchantRevenueTotals',
+'saldoNames',
+    'saldoTotals',
+    'belanjaNames',
+    'belanjaTotals',
+      'angkatanLabels',
+    'angkatanTotal'
 ));
     }
 }

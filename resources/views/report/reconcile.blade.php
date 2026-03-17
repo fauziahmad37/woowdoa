@@ -13,6 +13,7 @@
 
 <form 
 x-data="{ 
+    filterType: '{{ request('filter_type', 'merchant_name') }}',
     search: '{{ request('search') }}',
     start_date: '{{ request('start_date') }}',
     end_date: '{{ request('end_date') }}'
@@ -21,41 +22,44 @@ method="GET"
 class="flex flex-col sm:flex-row items-center gap-2 w-full sm:w-auto"
 >
 
-<input 
-type="text"
-name="search"
-x-model="search"
-placeholder="Cari Nama Santri / VA"
-class="w-full sm:w-64 border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
-/>
-
-<input
-type="date"
-name="start_date"
-x-model="start_date"
-class="border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-green-500"
-/>
-
-<input
-type="date"
-name="end_date"
-x-model="end_date"
-class="border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-green-500"
-/>
-
-<button 
-type="submit"
-:disabled="search.trim() === '' && !start_date && !end_date"
-:class="(search.trim() === '' && !start_date && !end_date)
-? 'bg-gray-200 text-gray-700 cursor-not-allowed px-4 py-2 rounded-md'
-: 'bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md'"
+<!-- DROPDOWN FILTER -->
+<select 
+    name="filter_type"
+    x-model="filterType"
+    class="border border-gray-300 rounded-md px-3 py-2"
 >
+    <option value="merchant_name">Merchant Name</option>
+    <option value="merchant_code">Merchant Code</option>
+</select>
+
+<!-- INPUT DINAMIS -->
+<input 
+    type="text"
+    name="search"
+    x-model="search"
+    :placeholder="filterType === 'merchant_name' 
+        ? 'Cari Nama Merchant' 
+        : 'Cari Kode Merchant'"
+    class="w-full sm:w-64 border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-green-500"
+/>
+
+<!-- DATE -->
+<input type="date" name="start_date" x-model="start_date"
+class="border border-gray-300 rounded-md px-3 py-2">
+
+<input type="date" name="end_date" x-model="end_date"
+class="border border-gray-300 rounded-md px-3 py-2">
+
+<!-- BUTTON -->
+<button type="submit"
+:disabled="search.trim() === '' && !start_date && !end_date"
+class="bg-green-600 text-white px-4 py-2 rounded-md">
 Cari
 </button>
 
 <a href="{{ url()->current() }}"
-class="text-green-600 border border-green-600 px-4 py-2 rounded-md hover:bg-green-50 transition">
-Atur Ulang
+class="text-green-600 border border-green-600 px-4 py-2 rounded-md">
+Reset
 </a>
 
 </form>
