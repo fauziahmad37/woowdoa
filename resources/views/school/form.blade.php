@@ -68,7 +68,7 @@
 
         <option value="">-- Pilih --</option>
 
-        @foreach($banks as $rec)
+        @foreach($bank as $rec)
         <option value="{{ $rec->id }}"
         {{ old('bank_id', $rec->id ?? '') == $rec->id ? 'selected' : '' }}>
             {{ $rec->nama }}
@@ -91,22 +91,160 @@
 					<p class="text-sm text-red-600 mt-1">{{ $message }}</p>
 			@enderror
 	</div>
-	 
-	 
-	<!-- Nama -->
+	
+	<!-- PIC 1 -->
 	<div>
 			<label class="block text-gray-700 font-medium mb-1">
-					Nama Pesantren <span class="text-red-500">*</span>
+					PIC 1 <span class="text-red-500">*</span>
 			</label>
-			<input type="text" name="school_name"
-						 value="{{ old('school_name', $school->school_name ?? '') }}"
+			<input type="text" name="pic1"
+						 value="{{ old('pic1', $school->pic1 ?? '') }}"
 						 class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500">
-			@error('school_name')
+			@error('pic1')
 					<p class="text-sm text-red-600 mt-1">{{ $message }}</p>
 			@enderror
 	</div>
 	 
+	<!-- Alamat -->
+	<div>
+			<label class="block text-gray-700 font-medium mb-1">
+					Alamat <span class="text-red-500">*</span>
+			</label>
+ 
+			<textarea name="address" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500">{{ old('address', $school->address ?? '') }}</textarea>			 
+			@error('address')
+					<p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+			@enderror
+	</div>
+
+	 
+	 
+
+
+	<!-- PIC 2 -->
+	<div>
+			<label class="block text-gray-700 font-medium mb-1">
+					PIC 2 <span class="text-red-500">*</span>
+			</label>
+			<input type="text" name="pic2"
+						 value="{{ old('pic2', $school->pic2 ?? '') }}"
+						 class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500">
+			@error('pic2')
+					<p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+			@enderror
+	</div>
+	 
+	 
+		<div>
+		<!-- Provinsi -->
+		<label class="block font-medium mb-1">Provinsi<span class="text-red-500">*</span></label>
+		<select id="provinsi" name="merchant_id_provinsi" class="form-control form-select input-form select2">
+		<option value="">-- Pilih Provinsi --</option>
+
+		@foreach($provinsi as $prov)
+		<option value="{{ $prov->id }}"
+		{{ old('merchant_id_provinsi', $school->province_id ?? '') == $prov->id ? 'selected' : '' }}>
+		{{ $prov->name }}
+		</option>
+		@endforeach
+
+		</select>
+		</div>
+	
+	<!-- PIC 3 -->
+	<div>
+			<label class="block text-gray-700 font-medium mb-1">
+					PIC 3 <span class="text-red-500">*</span>
+			</label>
+			<input type="text" name="pic3"
+						 value="{{ old('pic3', $school->pic3 ?? '') }}"
+						 class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500">
+			@error('pic3')
+					<p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+			@enderror
+	</div>	 
+	
+	<div>
+    <!-- Kota -->
+    <label class="block font-medium mb-1">Kota/Kabupaten<span class="text-red-500">*</span></label>
+ <select id="kota" name="merchant_id_kota" class="form-control form-select input-form select2">
+
+<option value="">-- Pilih Kota --</option>
+
+@isset($kota)
+@foreach($kota as $k)
+<option value="{{ $k->id }}"
+{{ old('merchant_id_kota', $merchant->city_id ?? '') == $k->id ? 'selected' : '' }}>
+{{ $k->name }}
+</option>
+@endforeach
+@endisset
+
+</select>
+	</div>
+	
+		<div  >
+			<label class="block text-gray-700 font-medium mb-1">Logo</label>
+			@if(isset($school) && optional($school)->logo)
+			<img src="{{ $school->logo
+			? asset('images/' . $school->logo)
+			: asset('images/default-avatar.png') }}"
+			class="w-12 h-12 object-cover rounded-full border">
+			@endif
+
+			<input type="file" name="logo"
+			class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500">
+		</div>		
+	
+<div>
+	<!-- Kecamatan -->
+	<label class="block font-medium mb-1">Kecamatan<span class="text-red-500">*</span></label>
+	<select id="kecamatan" name="merchant_id_kecamatan" class="form-control form-select input-form select2">
+		<option value="">-- Pilih Kecamatan --</option>
+
+		@isset($kecamatan)
+		@foreach($kecamatan as $kec)
+		<option value="{{ $kec->id }}"
+		{{ old('merchant_id_kecamatan', $merchant->district_id ?? '') == $kec->id ? 'selected' : '' }}>
+		{{ $kec->name }}
+		</option>
+		@endforeach
+		@endisset
+	</select>
+</div>	
+
+
+	
+	<!-- Phone -->
+	<div>
+			<label class="block text-gray-700 font-medium mb-1">
+					Phone <span class="text-red-500">*</span>
+			</label>
+			<input type="text" name="phone"
+						 value="{{ old('phone', $school->phone ?? '') }}"
+						 class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500">
+			@error('phone')
+					<p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+			@enderror
+	</div>
+	 	 
+
+	 
+	<!-- Email -->
+	<div>
+			<label class="block text-gray-700 font-medium mb-1">
+					Email <span class="text-red-500">*</span>
+			</label>
+			<input type="text" name="email"
+						 value="{{ old('email', $school->email ?? '') }}"
+						 class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500">
+			@error('email')
+					<p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+			@enderror
+	</div>	 
+	 
  	
+
 	 
 		
 </div>
@@ -172,6 +310,7 @@
 <!-- end modal -->
 
 
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <!-- Select2 CSS -->
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
@@ -187,10 +326,35 @@ document.addEventListener("DOMContentLoaded", function () {
             modal.classList.remove("scale-95", "opacity-0");
             modal.classList.add("scale-100", "opacity-100");
         }, 100);
-    } 
+    }
+ 
+    $('.select2').select2({ width: '100%' });
+
+    $('#provinsi').on('change', function () {
+        $('#kota').html('<option value="">-- Pilih Kota --</option>');
+        $.get('/merchant/kota/' + this.value, res => {
+            res.forEach(r => $('#kota').append(`<option value="${r.id}">${r.name}</option>`));
+        });
+    });
+
+    $('#kota').on('change', function () {
+        $('#kecamatan').html('<option value="">-- Pilih Kecamatan --</option>');
+        $.get('/merchant/kecamatan/' + this.value, res => {
+            res.forEach(r => $('#kecamatan').append(`<option value="${r.id}">${r.name}</option>`));
+        });
+    });
+
+    $('#kecamatan').on('change', function () {
+        $('#kelurahan').html('<option value="">-- Pilih Kelurahan --</option>');
+        $.get('/merchant/kelurahan/' + this.value, res => {
+            res.forEach(r => $('#kelurahan').append(`<option value="${r.id}">${r.name}</option>`));
+        });
+    });
 });
 
 
- 
+function reloadForm() {
+    window.location.href = "{{ route('merchant.create') }}";
+}
 </script>
 @endsection@extends('layouts.app')
