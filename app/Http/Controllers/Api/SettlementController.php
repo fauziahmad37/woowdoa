@@ -20,19 +20,25 @@ class SettlementController extends BaseApiController
      */
     public function index(Request $request)
     {
+        $request->validate([
+            'start_date' => 'date',
+            'end_date' => 'date|after_or_equal:start_date',
+        ]);
+
         $perPage = $request->input('per_page', 10);
 
         $settlements = Settlement::query()
             ->when($request->search, function ($query) use ($request) {
                 $query->whereRaw('LOWER(settlement_code) like ?', ['%' . strtolower($request->search) . '%']);
             })
+            ->when($request->start_date, function ($query) use ($request) {
+                $query->where('created_at', '>=', \Carbon\Carbon::parse($request->start_date)->startOfDay());
+            })
+            ->when($request->end_date, function ($query) use ($request) {
+                $query->where('created_at', '<=', \Carbon\Carbon::parse($request->end_date)->endOfDay());
+            })
             ->latest()
             ->paginate($perPage);
-
-        $settlements->getCollection()->transform(function ($item) {
-            $item->merchant = $item->merchant;
-            return $item;
-        });
 
         return $this->successPaginate($settlements, 'List of settlements retrieved successfully');
     }

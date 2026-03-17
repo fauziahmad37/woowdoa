@@ -18,6 +18,12 @@ class Settlement extends Model
         'status',
     ];
 
+    // ubah created_at dan updated_at ke format timestamp Y-m-d H:i:s
+    protected $casts = [
+        'created_at' => 'datetime:Y-m-d H:i:s',
+        'updated_at' => 'datetime:Y-m-d H:i:s',
+    ];
+
     function merchant()
     {
         return $this->belongsTo(Merchant::class, 'merchant_id', 'id');
