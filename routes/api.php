@@ -81,6 +81,7 @@ Route::prefix('v1')
         // Ewallet
         Route::get('/ewallets', [EwalletController::class, 'index'])->name('ewallets.index');
         Route::get('/balance', [EwalletController::class, 'balance'])->name('ewallets.balance');
+        Route::get('/ewallets/history', [EwalletController::class, 'history'])->name('ewallets.history');
 
         // Contacts
         Route::get('/contacts', [ChatController::class, 'contacts']);

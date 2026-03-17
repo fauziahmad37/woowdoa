@@ -105,6 +105,27 @@ class EwalletController extends BaseApiController
     }
 
     /**
+     * Display the transaction history of the authenticated user's ewallet.
+     */
+    public function history(Request $request)
+    {
+        $request->validate([
+            'nis' => 'required|exists:students,nis',
+            'start_date' => 'nullable|date',
+            'end_date' => 'nullable|date|after_or_equal:start_date',
+        ]);
+
+        // Ambil data ewallet berdasarkan nis
+        $student = Student::where('nis', $request->nis)->first();
+        $userId = $student->user_id;
+        $ewallet = Ewallet::where('user_id', $userId)->first();
+        $history = WalletMovement::where('ewallet_id', $ewallet->id)
+            ->orderBy('created_at', 'desc')
+            ->get();
+        return $this->success($history, 'Ewallet transaction history retrieved successfully');
+    }
+
+    /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request, ImageUploadService $imageService)
