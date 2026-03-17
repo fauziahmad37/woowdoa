@@ -43,59 +43,28 @@ class SettlementController extends BaseApiController
     public function process(Request $request)
     {
         $request->validate([
-            'start_date' => 'required|date',
-            'end_date' => 'required|date|after_or_equal:start_date',
+            'amount' => 'required|numeric',
         ]);
 
         $user = auth()->user();
 
-        // hanya admin
-        if ($user->user_level_id != '1') {
+        // hanya merchant owner & kasir yang bisa melakukan settlement
+        if (!in_array($user->user_level_id, ['2', '3'])) {
             return $this->error('Unauthorized', 403);
         }
 
-        // cek apakah sudah ada settlement untuk periode tersebut
-        $existing = Settlement::where('period_start', $request->start_date)
-            ->where('period_end', $request->end_date)
-            ->first();
-        if ($existing) {
-            return $this->error('Settlement for this period already exists', 400);
-        }
+        $settlement = Settlement::create([
+            'merchant_id' => $user->merchant_id,
+            'amount' => $request->amount,
+            'status' => 'pending'
+        ]);
 
-        // ambil transaksi yang sudah dibayar dalam periode tersebut
-        $transactions = Transaction::whereDate('paid_at', '>=', $request->start_date)
-            ->whereDate('paid_at', '<=', $request->end_date)
-            ->get();
 
-        // group transaksi per merchant
-        $grouped = $transactions->groupBy('merchant_id');
 
-        $settlements = [];
 
-        foreach ($grouped as $merchantId => $merchantTransactions) {
 
-            $total = $merchantTransactions->sum('paid_amount');
 
-            // simpan ke tabel settlement
-            $settlement = Settlement::create([
-                'merchant_id' => $merchantId,
-                'settlement_code' => 'SETTLEMENT-' . Str::upper(Str::random(10)),
-                'period_start' => $request->start_date,
-                'period_end' => $request->end_date,
-                'amount' => $total,
-                'status' => 'pending'
-            ]);
-
-            // update status settlement di transaksi
-            Transaction::whereIn('id', $merchantTransactions->pluck('id'))->update(['settlement_id' => $settlement->id]);
-
-            $settlements[] = $settlement;
-        }
-
-        return $this->success([
-            'total_settlements' => count($settlements),
-            'settlements' => $settlements
-        ], 'Settlement successfully created');
+        return $this->success($settlement, 'Settlement processed successfully');
     }
 
     /**
