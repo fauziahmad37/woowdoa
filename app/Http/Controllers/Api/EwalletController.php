@@ -58,9 +58,23 @@ class EwalletController extends BaseApiController
 
         $ewallet = Ewallet::where('user_id', $student->user_id)->first();
 
+        // insert ke transactions
+        $transaction = Transaction::create([
+            'student_id' => $student->id,
+            'transaction_code' => $this->generateTransactionCode(),
+            'total_amount' => $request->amount,
+            'paid_amount' => $request->amount,
+            'status' => 'paid',
+            'paid_at' => $request->created_at,
+            'payment_type_id' => 5, // 5 = top-up ewallet
+            'card_number' => $request->card_number,
+            'trx_id_bank' => $request->trxid ?? null,
+        ]);
+
         // insert ke wallet movements
         WalletMovement::create([
             'ewallet_id' => $ewallet->id,
+            'transaction_id' => $transaction->id,
             'type' => 'credit',
             'amount' => $request->amount,
             'balance_before' => $ewallet->balance,
@@ -116,5 +130,17 @@ class EwalletController extends BaseApiController
      */
     public function destroy(string $id, ImageUploadService $imageService)
     {
+    }
+
+    /**
+     * Generate kode transaksi unik
+     */
+    function generateTransactionCode()
+    {
+        do {
+            $code = 'TRX-' . now()->format('Ymd') . Str::upper(Str::random(6));
+        } while (Transaction::where('transaction_code', $code)->exists());
+
+        return $code;
     }
 }
