@@ -3,37 +3,78 @@
 @section('content')
 <div class="py-6">
 <div class="container mx-auto w-full px-4">
-
-<div x-data="{ tab: 'transaksi' }" class="py-6">
+<div x-data="{
+    tab: new URLSearchParams(window.location.search).get('tab') || 'transaksi'
+}">
+    
 <div class="container mx-auto w-full px-4 ">
 
 <!-- TAB MENU -->
 <div class="flex flex-wrap gap-2 mb-6 pb-2 mb-4">
 
-<button @click="tab='transaksi'"
+<button 
+@click="
+    tab='transaksi';
+    window.history.replaceState(null, '', '?tab=transaksi')
+"
 :class="tab==='transaksi' ? 'bg-green-600 text-white' : 'bg-gray-100'"
 class="px-4 py-2 rounded-lg text-sm font-semibold">
 Dashboard Transaksi
 </button>
 
-<button @click="tab='pesantren'"
+<button 
+@click="
+    tab='pesantren';
+    window.history.replaceState(null, '', '?tab=pesantren')
+"
 :class="tab==='pesantren' ? 'bg-green-600 text-white' : 'bg-gray-100'"
 class="px-4 py-2 rounded-lg text-sm font-semibold">
 Dashboard Pesantren
 </button>
 
-<button @click="tab='merchant'"
+<button 
+@click="
+    tab='merchant';
+    window.history.replaceState(null, '', '?tab=merchant')
+"
 :class="tab==='merchant' ? 'bg-green-600 text-white' : 'bg-gray-100'"
 class="px-4 py-2 rounded-lg text-sm font-semibold">
 Dashboard Merchant
 </button>
-
 
 </div>
 
 <!-- dashboard transaksi -->
 <div x-show="tab === 'transaksi'">
 
+<form method="GET" class="flex flex-wrap gap-2 items-end mt-6">
+
+<input type="hidden" name="tab" value="transaksi">
+
+<div>
+<input type="date" name="start_date"
+value="{{ request('start_date') }}"
+class="border rounded px-3 py-2">
+</div>
+
+<div>
+<label class="text-sm">End Date</label>
+<input type="date" name="end_date"
+value="{{ request('end_date') }}"
+class="border rounded px-3 py-2">
+</div>
+
+<button type="submit"
+class="bg-green-600 text-white px-4 py-2 rounded">
+Filter
+</button>
+
+<a href="{{ url('/dashboard?tab=transaksi') }}"
+class="bg-gray-200 text-gray-700 px-4 py-2 rounded">
+Reset
+</a>
+
+</form>
 
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
 
@@ -130,6 +171,22 @@ Grafik Transaksi Bulanan
 
 </div>
 
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+
+    <!-- kiri -->
+    <div class="bg-white rounded-xl p-4 shadow">
+        <h4 class="font-bold mb-3">Top 10 Saldo Santri</h4>
+        <div id="chart-top-saldo" class="h-[350px]"></div>
+    </div>
+
+    <!-- kanan -->
+    <div class="bg-white rounded-xl p-4 shadow">
+        <h4 class="font-bold mb-3">Top 10 Belanja Santri</h4>
+        <div id="chart-top-belanja" class="h-[350px]"></div>
+    </div>
+
+</div>
+
 <div class="bg-white rounded-xl p-4 shadow mt-6">
 
 <h4 class="font-bold text-gray-700 mb-4">
@@ -145,6 +202,7 @@ Persentase Siswa Topup Bulan Ini
 
 <!-- dashboard pesantren -->
 <div x-show="tab === 'pesantren'">
+    
   
 <!-- grid santri -->
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
@@ -340,6 +398,35 @@ Persentase Siswa Topup Bulan Ini
 
 <div x-show="tab === 'merchant'">
   
+<form method="GET" class="flex flex-wrap gap-2 items-end mt-6">
+
+<input type="hidden" name="tab" value="merchant">
+
+<div>
+<input type="date" name="start_date"
+value="{{ request('start_date') }}"
+class="border rounded px-3 py-2">
+</div>
+
+<div>
+<input type="date" name="end_date"
+value="{{ request('end_date') }}"
+class="border rounded px-3 py-2">
+</div>
+
+<button type="submit"
+class="bg-green-600 text-white px-4 py-2 rounded">
+Filter
+</button>
+
+<!-- ✅ tombol reset -->
+<a href="{{ url('/dashboard?tab=merchant') }}"
+class="bg-gray-200 text-gray-700 px-4 py-2 rounded">
+Reset
+</a>
+
+</form>
+
 <!-- grid santri -->
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
 
@@ -706,6 +793,56 @@ Highcharts.chart('chart-merchant-revenue', {
         enabled:false
     }
 });
+
+// saldo siswa tertinggi
+
+
+Highcharts.chart('chart-top-saldo', {
+    chart: { type: 'bar' },
+    title: { text: '' },
+    xAxis: {
+        categories: @json($saldoNames),
+        title: { text: 'Santri' }
+    },
+    yAxis: {
+        title: { text: 'Saldo (Rp)' }
+    },
+    series: [{
+        name: 'Saldo',
+        data: @json($saldoTotals),
+        color: '#22c55e'
+    }],
+    tooltip: {
+        pointFormat: 'Rp <b>{point.y:,.0f}</b>'
+    },
+    credits: { enabled:false }
 });
+
+
+// belanja tertigggi
+
+Highcharts.chart('chart-top-belanja', {
+    chart: { type: 'bar' },
+    title: { text: '' },
+    xAxis: {
+        categories: @json($belanjaNames),
+        title: { text: 'Santri' }
+    },
+    yAxis: {
+        title: { text: 'Total Belanja (Rp)' }
+    },
+    series: [{
+        name: 'Belanja',
+        data: @json($belanjaTotals),
+        color: '#16a34a'
+    }],
+    tooltip: {
+        pointFormat: 'Rp <b>{point.y:,.0f}</b>'
+    },
+    credits: { enabled:false }
+});
+
+});
+
 
 </script>
