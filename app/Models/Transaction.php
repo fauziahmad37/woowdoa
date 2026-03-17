@@ -23,11 +23,11 @@ class Transaction extends Model
         'trx_id_bank',
     ];
 
-protected $casts = [
-    'paid_at' => 'datetime',
-    'total_amount' => 'integer',
-    'paid_amount' => 'integer',
-];
+    protected $casts = [
+        'paid_at' => 'datetime',
+        'total_amount' => 'integer',
+        'paid_amount' => 'integer',
+    ];
 
     public function getPaidAtAttribute($value)
     {

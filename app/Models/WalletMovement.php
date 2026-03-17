@@ -28,4 +28,14 @@ class WalletMovement extends Model
     public function transaction(){
         $this->belongsTo(Transaction::class, 'transaction_id', 'id');
     }
+
+    // ubah created_at jadi format Y-m-d H:i:s
+    public function getCreatedAtAttribute($value)
+    {        if (!$value) {
+            return "";
+        }
+
+        return \Carbon\Carbon::parse($value)->format('Y-m-d H:i:s');
+    }
+
 }
