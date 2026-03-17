@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\School;
+use App\Models\Bank;
 use Illuminate\Http\Request; 
+
 use Illuminate\Support\Facades\Auth;
 
 class SchoolController extends Controller
@@ -11,12 +13,15 @@ class SchoolController extends Controller
 	/**
 	 * Display a listing of the resource.
 	 */
-	public function index()
-	{ 	
-		$school = School::where('id',  Auth::user()->school_id)->first();
-		return view('school.index', compact('school'));
-	}
 
+
+public function index()
+{ 	
+    $school = School::where('id', Auth::user()->school_id)->first();
+    $banks = Bank::all();
+
+    return view('school.index', compact('school','banks'));
+}
 	/**
 	 * Show the form for creating a new resource.
 	 */

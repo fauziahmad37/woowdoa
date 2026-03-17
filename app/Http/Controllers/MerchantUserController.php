@@ -126,15 +126,15 @@ public function store(Request $request)
         // 3. UPDATE MERCHANT
         // hanya jika user_type = 2
         // ======================
-        if ($request->user_type == 2) {
+        // if ($request->user_type == 2) {
 
-            DB::table('merchants')
-                ->where('id', $request->merchant_id)
-                ->update([
-                    'owner_name' => $request->owner_name
-                ]);
+        //     DB::table('merchants')
+        //         ->where('id', $request->merchant_id)
+        //         ->update([
+        //             'owner_name' => $request->owner_name
+        //         ]);
 
-        }
+        // }
 
         DB::commit();
 
@@ -256,15 +256,15 @@ public function update(Request $request, $id)
         // ======================
         // UPDATE MERCHANT (jika owner)
         // ======================
-        if ($request->user_type == 2) {
+        // if ($request->user_type == 2) {
 
-            DB::table('merchants')
-                ->where('id', $request->merchant_id)
-                ->update([
-                    'owner_name' => $request->owner_name
-                ]);
+        //     DB::table('merchants')
+        //         ->where('id', $request->merchant_id)
+        //         ->update([
+        //             'owner_name' => $request->owner_name
+        //         ]);
 
-        }
+        // }
 
         DB::commit();
 

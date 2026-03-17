@@ -68,7 +68,7 @@
 
         <option value="">-- Pilih --</option>
 
-        @foreach($bank as $rec)
+        @foreach($banks as $rec)
         <option value="{{ $rec->id }}"
         {{ old('bank_id', $rec->id ?? '') == $rec->id ? 'selected' : '' }}>
             {{ $rec->nama }}
