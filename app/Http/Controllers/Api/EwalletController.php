@@ -13,6 +13,9 @@ use Illuminate\Support\Str;
 
 use App\Models\Settlement;
 use App\Models\Transaction;
+use App\Models\Parents;
+use App\Models\User;
+use App\Models\Notification;
 use App\Models\Ewallet;
 use App\Models\WalletMovement;
 use App\Models\Student;
@@ -51,7 +54,7 @@ class EwalletController extends BaseApiController
             'amount' => 'required|numeric|min:1',
         ]);
 
-        $student = Student::select('students.id', 'students.student_name', 'students.nis', 'students.user_id')
+        $student = Student::select('students.id', 'students.student_name', 'students.nis', 'students.user_id', 'students.parent_id')
             ->leftJoin('cards as c', 'students.nis', '=', 'c.nis')
             ->where('c.card_number', $request->card_number)
             ->first();
@@ -72,7 +75,7 @@ class EwalletController extends BaseApiController
         ]);
 
         // insert ke wallet movements
-        WalletMovement::create([
+        $walletMovement = WalletMovement::create([
             'ewallet_id' => $ewallet->id,
             'transaction_id' => $transaction->id,
             'type' => 'credit',
@@ -85,7 +88,41 @@ class EwalletController extends BaseApiController
         $ewallet->balance += $request->amount;
         $ewallet->save();
 
-        return $this->success(null, 'Ewallet topped up successfully');
+        // Kirim notifikasi ke Firebase
+        // Siapkan data notifikasi
+        $dataInsert = [
+            'title' => 'Top-up Ewallet Berhasil',
+            'body' => "Top-up sebesar Rp {$request->amount} berhasil.",
+            'is_read' => false,
+            'user_id' => $student->user_id, // Notifikasi untuk murid yang melakukan top-up
+            'type' => 'topup',
+            'data' => [
+                'transaction_id' => $transaction->id,
+                'transaction_code' => $transaction->transaction_code,
+                'amount' => $request->amount,
+                'transaction_date' => $request->created_at,
+            ]
+        ];
+
+        // Insert ke table notifikasi untuk wali santri (jika ada)
+        $dataInsert['user_id'] = Parents::where('id', $student->parent_id)->value('user_id');
+        Notification::create($dataInsert);
+
+        // Push notifikasi menggunakan Firebase Cloud Messaging
+        $firebase = new FirebaseService();
+
+        $userIdParent = Parents::where('id', $student->parent_id)->value('user_id'); // Notifikasi untuk wali santri (jika ada)
+        $deviceToken = User::where('id', $userIdParent)->value('device_token');
+        if ($deviceToken) {
+            $firebase->sendNotification(
+                $deviceToken,
+                "Top-up Ewallet Berhasil",
+                "Top-up sebesar Rp {$request->amount} berhasil."
+            );
+        }
+
+
+        return $this->success($walletMovement, 'Ewallet topped up successfully');
     }
 
     /**
