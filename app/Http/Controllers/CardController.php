@@ -15,24 +15,27 @@ class CardController extends Controller
 	/**
 	 * Display a listing of the resource.
 	 */
-	public function index(Request $request)
-	{
-		$query = Card::with(['student']);
+public function index(Request $request)
+{
+    $query = Card::with('student');
 
-		if ($request->search) {
-				$query->where(function ($q) use ($request) {
-						$q->where('nis', 'ilike', '%'.$request->search.'%')
-							->orWhere('status', 'ilike', '%'.$request->search.'%')
-							->orWhere('student_name', 'ilike', '%'.$request->search.'%')
-							->orWhere('card_number', 'ilike', '%'.$request->search.'%') ;
-				});
-		}
+    if ($request->search) {
+        $search = $request->search;
 
-		$card = $query->latest()->paginate(20);
-		$user_level = Auth::user()->user_level_id;
-		return view('cards.index', compact('card','user_level')); 
-	}
+        $query->where(function ($q) use ($search) {
+            $q->where('nis', 'ILIKE', "%{$search}%")
+              ->orWhere('card_number', 'ILIKE', "%{$search}%")
+              ->orWhereHas('student', function ($s) use ($search) {
+                    $s->where('student_name', 'ILIKE', "%{$search}%");
+              });
+        });
+    }
 
+    $card = $query->latest()->paginate(20);
+    $user_level = Auth::user()->user_level_id;
+
+    return view('cards.index', compact('card','user_level'));
+}
  
 	/**
 	 * Store a newly created resource in storage.
@@ -79,32 +82,28 @@ class CardController extends Controller
 	}
 
 
-	public function report(Request $request)
-	{
-		$query = Card::with(['student']);
+public function report(Request $request)
+{
+    $query = Card::query()
+        ->leftJoin('students', 'students.nis', '=', 'cards.nis')
+        ->select('cards.*', 'students.student_name');
 
-		if ($request->search) {
-				$query->where(function ($q) use ($request) {
-						$q->where('nis', 'ilike', '%'.$request->search.'%')
-							->orWhere('status', 'ilike', '%'.$request->search.'%')
-							->orWhere('student_name', 'ilike', '%'.$request->search.'%')
-							->orWhere('card_number', 'ilike', '%'.$request->search.'%') ;
-				});
-		}
-		//if($request->status){
-		//		$query->where('status',$request->status);
-		//}
-		//if($request->date_from){
-		//		$query->whereDate('created_at','>=',$request->date_from);
-		//}
-		//if($request->date_to){
-		//		$query->whereDate('created_at','<=',$request->date_to);
-		//}
-		$cards = $query->latest()->paginate(20);
-		return view('cards.report',compact('cards'));
-	}
-	
-	
+    if ($request->search) {
+        $search = $request->search;
+
+        $query->where(function ($q) use ($search) {
+            $q->where('cards.nis', 'ILIKE', "%{$search}%")
+              ->orWhere('cards.card_number', 'ILIKE', "%{$search}%")
+              ->orWhere('cards.status', 'ILIKE', "%{$search}%")
+              ->orWhere('students.student_name', 'ILIKE', "%{$search}%");
+        });
+    }
+
+    $cards = $query->orderBy('cards.created_at','desc')->paginate(20);
+
+    return view('cards.report', compact('cards'));
+}
+
 
 	// export excel
 	public function exportExcel(Request $request)

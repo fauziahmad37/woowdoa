@@ -12,7 +12,7 @@ class Merchant extends Model
     protected $fillable = [
         'merchant_code',
         'merchant_name',
-        'owner_name',
+        // 'owner_name',
         'email',
         'phone',
         'address',
