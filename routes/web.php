@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\SantriController;
 use App\Http\Controllers\ParentController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\MerchantUserController;
 use App\Http\Controllers\MerchantController;
 use App\Http\Controllers\MerchantCategoryController;
@@ -73,22 +74,16 @@ Route::resource('limitbelanja', LimitBelanjaController::class);
 
 // merchantuser
 Route::prefix('merchant-user')->name('merchant.user.')->group(function(){
+	Route::get('/',[MerchantUserController::class,'index'])->name('index');
+	Route::get('/create',[MerchantUserController::class,'create'])->name('create');
+	Route::post('/store',[MerchantUserController::class,'store'])->name('store');
+	Route::get('/edit/{id}',[MerchantUserController::class,'edit'])->name('edit');
+	Route::put('/update/{id}',[MerchantUserController::class,'update'])->name('update');
+	Route::delete('/delete/{id}',[MerchantUserController::class,'destroy'])->name('destroy');
 
-    Route::get('/',[MerchantUserController::class,'index'])->name('index');
-
-    Route::get('/create',[MerchantUserController::class,'create'])->name('create');
-
-    Route::post('/store',[MerchantUserController::class,'store'])->name('store');
-
-    Route::get('/edit/{id}',[MerchantUserController::class,'edit'])->name('edit');
-
-    Route::put('/update/{id}',[MerchantUserController::class,'update'])->name('update');
-
-    Route::delete('/delete/{id}',[MerchantUserController::class,'destroy'])->name('destroy');
-
-    Route::get('/get-kota/{province_id}', [MerchantUserController::class,'getKota']);
-Route::get('/get-kecamatan/{regency_id}', [MerchantUserController::class,'getKecamatan']);
-Route::get('/get-kelurahan/{district_id}', [MerchantUserController::class,'getKelurahan']);
+	Route::get('/get-kota/{province_id}', [MerchantUserController::class,'getKota']);
+	Route::get('/get-kecamatan/{regency_id}', [MerchantUserController::class,'getKecamatan']);
+	Route::get('/get-kelurahan/{district_id}', [MerchantUserController::class,'getKelurahan']);
 });
 
 
@@ -149,14 +144,18 @@ Route::middleware('auth')->group(function () {
 
 
 
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // logout
 
- 
+//user
+Route::resource('user', UserController::class);   
+Route::get('/user/userlevel', [UserController::class, 'userlevel'])->name('user.userlevel');
 
+
+
+// logout
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
     ->name('logout');
 
