@@ -261,11 +261,10 @@
     <label class="block text-gray-700 font-medium mb-1">
         NIK Orangtua <span class="text-red-500">*</span>
     </label>
+    <input type="text" id="nik" name="nik"
+        class="w-full border border-gray-300 rounded-lg px-3 py-2">
 
-        <input type="text" id="nik" name="nik"
-    value="{{ old('nik', $santri->parent->nik ?? '') }}"
-    class="w-full border border-gray-300 rounded-lg px-3 py-2">
-    
+        
         <p id="nik_status" class="text-sm mt-1"></p>
 </div>
                     <!-- Nama -->
@@ -273,9 +272,9 @@
                         <label class="block text-gray-700 font-medium mb-1">
                             Nama Orangtua <span class="text-red-500">*</span>
                         </label>
-               <input type="text" name="parent_name" id="parent_name"
-    value="{{ old('parent_name', $santri->parent->parent_name ?? '') }}"
-    class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                        <input type="text" name="parent_name" id="parent_name"
+                              value="{{ old('parent_name') }}"
+                               class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500">
                         @error('parent_name')
                             <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
                         @enderror
@@ -288,30 +287,31 @@
     <label class="block text-gray-700 font-medium mb-1">
         Jenis Kelamin
     </label>
-<select name="parent_gender"
-    class="w-full border border-gray-300 rounded-lg px-3 py-2">
-    
-    <option value="">Pilih Jenis Kelamin</option>
+    <select name="parent_gender"
+        class="w-full border border-gray-300 rounded-lg px-3 py-2">
+        
+        <option value="">Pilih Jenis Kelamin</option>
 
-    <option value="Laki-Laki"
-        {{ old('parent_gender', $santri->parent->gender ?? '') == 'Laki-Laki' ? 'selected' : '' }}>
-        Laki-laki
-    </option>
+        <option value="Laki-Laki"
+            {{ old('parent_gender') == 'Laki-Laki' ? 'selected' : '' }}>
+            Laki-laki
+        </option>
 
-    <option value="Perempuan"
-        {{ old('parent_gender', $santri->parent->gender ?? '') == 'Perempuan' ? 'selected' : '' }}>
-        Perempuan
-    </option>
-</select>
+        <option value="Perempuan"
+            {{ old('parent_gender') == 'Perempuan' ? 'selected' : '' }}>
+            Perempuan
+        </option>
+
+    </select>
 </div>
                     <!-- Username -->
                     <div>
                         <label class="block text-gray-700 font-medium mb-1">
                             Username <span class="text-red-500">*</span>
                         </label>
-                  <input type="text" name="parent_username" id="parent_username"
-    value="{{ old('parent_username', optional($santri->parent->user)->username) }}"
-    class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                     <input type="text" name="parent_username" id="parent_username"
+  value="{{ old('parent_username') }}"
+    class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500">
     @error('parent_username')
         <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
     @enderror
@@ -322,9 +322,9 @@
                         <label class="block text-gray-700 font-medium mb-1">
                             Email <span class="text-red-500">*</span>
                         </label>
-                     <input type="email" name="parent_email" id="parent_email"
-    value="{{ old('parent_email', optional($santri->parent->user)->email) }}"
-    class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                        <input type="email" name="parent_email" id="parent_email"
+                              value="{{ old('parent_email') }}"
+                               class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500">
                         @error('parent_email')
                             <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
                         @enderror
@@ -335,9 +335,9 @@
                         <label class="block text-gray-700 font-medium mb-1">
                             No HP
                         </label>
-                       <input type="text" name="parent_phone" id="parent_phone"
-    value="{{ old('parent_phone', $santri->parent->parent_phone ?? '') }}"
-    class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                        <input type="text" name="parent_phone" id="parent_phone" 
+                              value="{{ old('parent_phone') }}"
+                               class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500">
                     </div>
 
                     <!-- Sekolah -->
@@ -345,21 +345,16 @@
                         <label class="block text-gray-700 font-medium mb-1">
                             Sekolah
                         </label>
-                     <select name="parent_school_id"
-    class="w-full border border-gray-300 rounded-lg px-3 py-2">
-
-    <option value="">Pilih Sekolah</option>
-
-    @foreach($schools as $school)
-        <option value="{{ $school->id }}"
-            {{ old('parent_school_id', $santri->parent->school_id ?? '') == $school->id ? 'selected' : '' }}>
-            
-            {{ $school->school_name }}
-
-        </option>
-    @endforeach
-
-</select>
+                        <select name="parent_school_id"
+                                class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500">
+                            <option value="">Pilih Sekolah</option>
+                            @foreach($schools as $school)
+                                <option value="{{ $school->id }}"
+                                    {{ old('parent_school_id') == $school->id ? 'selected' : '' }}>
+                                    {{ $school->school_name }}
+                                </option>
+                            @endforeach
+                        </select>
                     </div>
 
                     <!-- Password -->
@@ -382,8 +377,8 @@
                             Status
                         </label>
                            
-@php
-$selectedActive = old('parent_active', $santri->parent->active ?? 1);
+ @php
+    $selectedActive = old('parent_active', 1);
 @endphp
                         <select name="parent_active"
                             class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500">
@@ -402,9 +397,9 @@ $selectedActive = old('parent_active', $santri->parent->active ?? 1);
     <label class="block text-gray-700 font-medium mb-1">
         Alamat
     </label>
-   <textarea name="parent_address"
-    class="w-full border border-gray-300 rounded-lg px-3 py-2"
-    rows="3">{{ old('parent_address', $santri->parent->address ?? '') }}</textarea>
+    <textarea name="parent_address"
+        class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500"
+        rows="3">{{ old('parent_address') }}</textarea>
 </div>
 
 
@@ -415,14 +410,9 @@ $selectedActive = old('parent_active', $santri->parent->active ?? 1);
         Profil Foto
     </label>
 
-    <img id="parent_photo_preview"
-        src="{{ optional($santri->parent->user)->profile_photo 
-            ? asset('storage/' . $santri->parent->user->profile_photo) 
-            : '' }}"
-        class="w-12 h-12 rounded-full {{ optional($santri->parent->user)->profile_photo ? '' : 'hidden' }}">
-
+<img id="parent_photo_preview" class="w-12 h-12 rounded-full hidden">
     <input type="file" name="parent_profile_photo"
-        class="w-full border border-gray-300 rounded-lg px-3 py-2">
+        class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500">
 </div>
                 </div>
 
@@ -553,15 +543,9 @@ document.getElementById('parent_username').value = res.data.username;
 
 // foto preview
 if (res.data.profile_photo) {
-  let img = document.getElementById('parent_photo_preview');
-
-if (res.data.profile_photo) {
+    let img = document.getElementById('parent_photo_preview');
     img.src = '/storage/' + res.data.profile_photo;
     img.classList.remove('hidden');
-} else {
-    img.src = '';
-    img.classList.add('hidden');
-}
 }
                         statusText.innerText = "✅ NIK ditemukan";
                         statusText.className = "text-green-600 text-sm mt-1";
