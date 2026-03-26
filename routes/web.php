@@ -160,7 +160,7 @@ Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.
 Route::resource('user', UserController::class);
 
 //user level
-Route::resource('userlevel', UserLevelController::class);
+Route::resource('userlevel', UserLevelController::class); 
 
 
 
