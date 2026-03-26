@@ -224,6 +224,7 @@
 </select>
                     </div>
 
+
                      <div class="mt-4">
     <label class="block text-gray-700 font-medium mb-1">Alamat</label>
  <textarea name="address"
@@ -263,16 +264,13 @@
     </label>
     <input type="text" id="nik" name="nik"
         class="w-full border border-gray-300 rounded-lg px-3 py-2">
-
-        
-        <p id="nik_status" class="text-sm mt-1"></p>
 </div>
-                    <!-- Nama orangtua-->
+                    <!-- Nama -->
                     <div>
                         <label class="block text-gray-700 font-medium mb-1">
                             Nama Orangtua <span class="text-red-500">*</span>
                         </label>
-                        <input type="text" name="parent_name" id="parent_name"
+                        <input type="text" name="parent_name"
                               value="{{ old('parent_name') }}"
                                class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500">
                         @error('parent_name')
@@ -280,36 +278,12 @@
                         @enderror
                     </div>
 
-
-                    <!-- gender -->
-
-                    <div>
-    <label class="block text-gray-700 font-medium mb-1">
-        Jenis Kelamin
-    </label>
-    <select name="parent_gender"
-        class="w-full border border-gray-300 rounded-lg px-3 py-2">
-        
-        <option value="">Pilih Jenis Kelamin</option>
-
-        <option value="Laki-Laki"
-            {{ old('parent_gender') == 'Laki-Laki' ? 'selected' : '' }}>
-            Laki-laki
-        </option>
-
-        <option value="Perempuan"
-            {{ old('parent_gender') == 'Perempuan' ? 'selected' : '' }}>
-            Perempuan
-        </option>
-
-    </select>
-</div>
                     <!-- Username -->
                     <div>
                         <label class="block text-gray-700 font-medium mb-1">
                             Username <span class="text-red-500">*</span>
                         </label>
-                     <input type="text" name="parent_username" id="parent_username"
+                     <input type="text" name="parent_username"
   value="{{ old('parent_username') }}"
     class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500">
     @error('parent_username')
@@ -322,7 +296,7 @@
                         <label class="block text-gray-700 font-medium mb-1">
                             Email <span class="text-red-500">*</span>
                         </label>
-                        <input type="email" name="parent_email" id="parent_email"
+                        <input type="email" name="parent_email"
                               value="{{ old('parent_email') }}"
                                class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500">
                         @error('parent_email')
@@ -335,7 +309,7 @@
                         <label class="block text-gray-700 font-medium mb-1">
                             No HP
                         </label>
-                        <input type="text" name="parent_phone" id="parent_phone" 
+                        <input type="text" name="parent_phone"
                               value="{{ old('parent_phone') }}"
                                class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500">
                     </div>
@@ -370,6 +344,9 @@
                     <!-- Status -->
                <!-- Status -->
 
+                </div>
+
+
                 <div class="mt-4">
 
 
@@ -377,9 +354,14 @@
                             Status
                         </label>
                            
- @php
-    $selectedActive = old('parent_active', 1);
-@endphp
+      @php
+                        $selectedActive = old(
+                            'active',
+                            isset($parent) && $parent->user
+                                ? $parent->user->is_active
+                                : 1
+                        );
+                    @endphp
                         <select name="parent_active"
                             class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500">
                             <option value="1" {{ $selectedActive == 1 ? 'selected' : '' }}>
@@ -391,7 +373,6 @@
                         </select>
 </div>
 
-
 <!-- Alamat -->
 <div class="mt-4">
     <label class="block text-gray-700 font-medium mb-1">
@@ -402,21 +383,22 @@
         rows="3">{{ old('parent_address') }}</textarea>
 </div>
 
-
-
 <!-- Foto Profil -->
 <div class="mt-4">
     <label class="block text-gray-700 font-medium mb-1">
         Profil Foto
     </label>
 
-<img id="parent_photo_preview" class="w-12 h-12 rounded-full hidden">
+    @if(isset($parent))
+        <img src="{{ $parent->user && $parent->user->profile_photo
+            ? asset('storage/' . $parent->user->profile_photo)
+            : asset('images/default-avatar.png') }}"
+            class="w-12 h-12 object-cover rounded-full border mb-2">
+    @endif
+
     <input type="file" name="parent_profile_photo"
         class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500">
 </div>
-                </div>
-
-
 
                 <!-- Tombol -->
                 <div class="flex justify-end mt-6">
@@ -483,11 +465,8 @@
 
 <!-- end modal -->
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-
-    // modal success
     let modal = document.getElementById("successModalContent");
     if (modal) {
         setTimeout(() => {
@@ -495,95 +474,8 @@ document.addEventListener("DOMContentLoaded", function () {
             modal.classList.add("scale-100", "opacity-100");
         }, 100);
     }
-
-    // =========================
-    // 🔥 CHECK NIK REALTIME
-    // =========================
-
-    let timeout = null;
-    let nikInput = document.getElementById('nik');
-    let statusText = document.getElementById('nik_status');
-
-    nikInput.addEventListener('input', function () {
-
-        clearTimeout(timeout);
-
-        let nik = this.value;
-
-        timeout = setTimeout(() => {
-
-            if (nik.length < 5) {
-                statusText.innerText = '';
-                nikInput.classList.remove('border-green-500', 'border-red-500');
-                return;
-            }
-
-            // loading
-            statusText.innerText = "⏳ Mengecek NIK...";
-            statusText.className = "text-gray-500 text-sm mt-1";
-
-            fetch(`/parent/check-nik/${nik}`)
-                .then(res => res.json())
-                .then(res => {
-
-                    if (res.exists) {
-
-                        document.getElementById('parent_name').value = res.data.parent_name;
-                        document.getElementById('parent_email').value = res.data.email;
-                        document.getElementById('parent_phone').value = res.data.phone;
-
-                        document.getElementById('parent_name').readOnly = true;
-                        document.getElementById('parent_email').readOnly = true;
-                        document.getElementById('parent_phone').readOnly = true;
-    document.querySelector('select[name="parent_school_id"]').value = res.data.school_id;
-    document.querySelector('select[name="parent_gender"]').value = res.data.gender;
-document.querySelector('textarea[name="parent_address"]').value = res.data.address;
-// username
-document.getElementById('parent_username').value = res.data.username;
-
-// foto preview
-if (res.data.profile_photo) {
-    let img = document.getElementById('parent_photo_preview');
-    img.src = '/storage/' + res.data.profile_photo;
-    img.classList.remove('hidden');
-}
-                        statusText.innerText = "✅ NIK ditemukan";
-                        statusText.className = "text-green-600 text-sm mt-1";
-
-                        nikInput.classList.add('border-green-500');
-                        nikInput.classList.remove('border-red-500');
-
-                    } else {
-
-                        document.getElementById('parent_name').value = '';
-                        document.getElementById('parent_email').value = '';
-                        document.getElementById('parent_phone').value = '';
-
-                        document.getElementById('parent_name').readOnly = false;
-                        document.getElementById('parent_email').readOnly = false;
-                        document.getElementById('parent_phone').readOnly = false;
-
-                        statusText.innerText = "❌ NIK tidak terdaftar silahkan isi data";
-                        statusText.className = "text-red-600 text-sm mt-1";
-
-                        nikInput.classList.add('border-red-500');
-                        nikInput.classList.remove('border-green-500');
-                    }
-
-                })
-                .catch(() => {
-                    statusText.innerText = "⚠️ Error cek NIK";
-                    statusText.className = "text-yellow-600 text-sm mt-1";
-                });
-
-        }, 500); // delay biar tidak spam
-
-    });
-
-    
 });
 
-// reload form
 function reloadForm() {
     window.location.href = "{{ route('santri.create') }}";
 }
