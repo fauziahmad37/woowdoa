@@ -30,6 +30,6 @@ class UserLevel extends Model
 		return $this->belongsToMany(Menu::class, 'menu_level', 'menu_level_menu_id', 'menu_id')
 								->withTimestamps();
 	}
- 
+  
 
 }

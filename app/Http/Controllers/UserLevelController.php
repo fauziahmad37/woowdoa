@@ -76,7 +76,7 @@ class UserLevelController extends Controller
 
      
     $userlevel->menus()->sync($request->menu_ids ?? []);
-		 
+		  
 
 		return redirect()->route('userlevel.index')
 										 ->with('success', 'User Level berhasil diperbarui!');

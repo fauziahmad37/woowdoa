@@ -132,7 +132,7 @@ class UserController extends Controller
 
 		// Update User
 		$user->update([
-				'is_active'  => 'f',
+				'is_active'  => 'f', 
 				'is_delete'  => 't',
 				'deleted_at' => $now,
 		]);
