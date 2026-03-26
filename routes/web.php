@@ -95,6 +95,11 @@ Route::resource('school', SchoolController::class);
 Route::get('/santri/import', [SantriController::class,'importForm'])->name('santri.import.form');
 Route::post('/santri/import', [SantriController::class,'import'])->name('santri.import');
 Route::resource('santri', SantriController::class);
+Route::get('/parent/check-nik/{nik}', [ParentController::class, 'checkNik']);
+
+Route::get('/santri/kota/{province_id}', [SantriController::class, 'getKota']);
+Route::get('/santri/kecamatan/{regency_id}', [SantriController::class, 'getKecamatan']);
+Route::get('/santri/kelurahan/{district_id}', [SantriController::class, 'getKelurahan']);
 
 // parent
 Route::get('/parent/import', [ParentController::class,'importForm'])->name('parent.import.form');
