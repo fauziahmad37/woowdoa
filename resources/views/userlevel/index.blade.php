@@ -3,7 +3,7 @@
 @section('content')
 <div class="py-6">
     <div class="container mx-auto w-full">
-
+ 
         <!-- Header -->
         <h2 class="text-xl font-semibold text-gray-600">Kelola User Level</h2>
         <p class="text-gray-500 mb-10">Pendataan User Level</p>
