@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
+
 <div class="py-6">
     <div class="container mx-auto w-full px-4">
         
@@ -54,7 +55,6 @@
     @if(isset($parent) && $parent->exists)
         @method('PUT')
     @endif
-
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 
                     <!-- Nama -->

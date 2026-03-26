@@ -38,6 +38,7 @@ class Parents extends Authenticatable
         'village_id',
         'postal_code',
         'student_id',
+        'nik',
     ];
 
     /**
@@ -79,4 +80,9 @@ class Parents extends Authenticatable
     {
         return $this->belongsTo(Village::class, 'village_id', 'id');
     }
+
+    public function user()
+{
+    return $this->belongsTo(User::class, 'user_id');
+}
 }

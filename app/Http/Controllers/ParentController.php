@@ -112,7 +112,7 @@ public function create()
         return back()->withErrors($e->getMessage());
     }
 }
-
+// 
     /* =========================
        EDIT
     ========================== */
@@ -240,5 +240,31 @@ public function import(Request $request)
 
     return redirect()->route('parent.index')
         ->with('success','Data orang tua berhasil diimport');
+}
+
+public function checkNik($nik)
+{
+    $parent = StudentParent::with('user')->where('nik', $nik)->first();
+
+    if ($parent) {
+        return response()->json([
+            'exists' => true,
+            'data' => [
+                'id' => $parent->id,
+                'parent_name' => $parent->parent_name,
+                'email' => optional($parent->user)->email,
+                'phone' => $parent->parent_phone,
+                'school_id' => $parent->school_id,
+                  'gender' => $parent->gender,
+                'address' => $parent->address,
+
+                // dari users
+                'username' => optional($parent->user)->username,
+                'profile_photo' => optional($parent->user)->profile_photo,
+            ]
+        ]);
+    }
+
+    return response()->json(['exists' => false]);
 }
 }
