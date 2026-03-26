@@ -66,7 +66,7 @@
                                     </td> 
                                     <td class="px-4 py-3 text-left">{{ $rec->merchant->merchant_name }}</td>
                                     <td class="px-4 py-3 text-center">{{ $rec->created_at }}</td> 
-                                    <td class="px-4 py-3 text-center">{{ $rec->ewallet->balance?? 0 }}</td> 
+                                    <td class="px-4 py-3 text-center">{{ $rec->ewallet->balance?? 0 }}</td>  
                                     <td class="px-4 py-3 text-right">{{ $rec->amount }}</td> 
                                     <td class="px-4 py-3 text-center"> 
 																			<span class="px-2 py-1 text-xs font-semibold rounded-full
