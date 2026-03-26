@@ -553,14 +553,23 @@ document.addEventListener("DOMContentLoaded", function () {
         title: {
             text: ''
         },
-        xAxis: {
-            categories: @json($days)
-        },
+       xAxis: {
+    categories: @json($days),
+    title: {
+           text: '{{ \Carbon\Carbon::now()->translatedFormat("F Y") }}',
+        
+        style: {
+            fontSize: '12px',
+            color: '#666'
+        }
+    }
+},
         yAxis: {
             title: {
                 text: 'Jumlah Transaksi'
             }
         },
+        
         series: [{
             name: 'Transaksi',
             data: @json($jumlahPerHari),

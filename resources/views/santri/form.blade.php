@@ -267,7 +267,7 @@
         
         <p id="nik_status" class="text-sm mt-1"></p>
 </div>
-                    <!-- Nama orangtua-->
+                    <!-- Nama -->
                     <div>
                         <label class="block text-gray-700 font-medium mb-1">
                             Nama Orangtua <span class="text-red-500">*</span>
