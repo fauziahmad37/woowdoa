@@ -7,6 +7,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\SantriController;
 use App\Http\Controllers\ParentController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\UserLevelController;
 use App\Http\Controllers\MerchantUserController;
 use App\Http\Controllers\MerchantController;
 use App\Http\Controllers\MerchantCategoryController;
@@ -154,9 +155,12 @@ Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.up
 Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
 
-//user
-Route::resource('user', UserController::class);   
-Route::get('/user/userlevel', [UserController::class, 'userlevel'])->name('user.userlevel');
+
+//user  
+Route::resource('user', UserController::class);
+
+//user level
+Route::resource('userlevel', UserLevelController::class);
 
 
 

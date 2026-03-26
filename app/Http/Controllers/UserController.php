@@ -142,19 +142,6 @@ class UserController extends Controller
 	}
 
 	
-	public function userlevel()
-	{
-		$query = UserLevel::with('level');
-    if ($request->search) {
-			$search = $request->search;
-
-			$query->where(function ($q) use ($search) {
-					$q->where('user_level_name', 'ILIKE', "%{$search}%");
-						}); 
-    }
-	
-		$userlevel = $query->latest()->paginate(20);
-		return view('user.userlevel', compact('userlevel'));		
-	}
  
+	
 }
