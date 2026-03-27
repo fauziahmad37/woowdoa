@@ -16,6 +16,7 @@ use App\Http\Controllers\ShortcutNominalController;
 use App\Http\Controllers\ReportTransactionController;
 use App\Http\Controllers\ReportReconcileController;
 use App\Http\Controllers\DashboardTransaksiSiswaController;
+use App\Http\Controllers\NotificationController;
 
 use App\Http\Controllers\SchoolController;
 use App\Http\Controllers\SettlementController;
@@ -160,7 +161,7 @@ Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit')
 Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
 Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-
+Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
 
 //user  
 Route::resource('user', UserController::class);
