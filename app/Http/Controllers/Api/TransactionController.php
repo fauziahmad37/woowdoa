@@ -59,8 +59,24 @@ class TransactionController extends BaseApiController
 
         // Filter berdasarkan merchant_id dari user yang login
         $user = auth()->user();
-        if ($user->user_level_id == '2') { // Jika user adalah merchant
+        if (in_array($user->user_level_id, ['2', '3'])) { // Jika user adalah merchant
             $query->where('merchant_id', $user->merchant_id);
+            $query->leftJoin('students as s', 'transactions.student_id', '=', 's.id');
+            $query->leftJoin('classes as c', 's.class_id', '=', 'c.id');
+            $query->select('transactions.*', 's.student_name', 's.nis', 's.class_id', 'c.class_level', 'c.class_name');
+        }
+
+        if (in_array($user->user_level_id, ['5'])) { // jika user adalah ortu
+            $parent = Parents::where('user_id', $user->id)->first();
+            $studentIds = Student::where('parent_id', $parent->id)->pluck('id');
+
+            $query->whereHas('student', function ($q) use ($studentIds) {
+                $q->whereIn('id', $studentIds);
+            });
+            $query->leftJoin('students as s', 'transactions.student_id', '=', 's.id');
+            $query->leftJoin('classes as c', 's.class_id', '=', 'c.id');
+            $query->leftJoin('payment_types as pt', 'transactions.payment_type_id', '=', 'pt.id');
+            $query->select('transactions.*', 's.student_name', 's.nis', 's.class_id', 'c.class_level', 'c.class_name', 'pt.payment_name');
         }
 
         // 🔹 Clone query untuk hitung total
@@ -87,7 +103,7 @@ class TransactionController extends BaseApiController
 
         // JIKA USER LOGIN DENGAN ROLE SELAIN MERCHANT ATAU 2, MAKA TIDAK BOLEH MENGAKSES ENDPOINT INI
         $user = auth()->user();
-        if (!in_array($user->user_level_id, ['2','3'])) {
+        if (!in_array($user->user_level_id, ['2', '3'])) {
             return $this->error('Hanya merchant yang dapat mengakses endpoint ini', 403);
         }
 
@@ -198,7 +214,18 @@ class TransactionController extends BaseApiController
                 'updated_at' => now()
             ]);
 
+<<<<<<< Updated upstream
             $qty = $request->qty ?? 1;
+=======
+            $response = Http::post('http://172.16.10.8:8000/api/v1/bank/callback', [
+                'transaction_code' => $transactionCode,
+                'amount' => $request->amount,
+                'status' => 'PAID'
+            ]);
+
+            dd($response->json());
+
+>>>>>>> Stashed changes
             // Simpan detail transaksi
             $transactionDetail = TransactionDetail::create([
                 'transaction_id' => $transaction->id,
