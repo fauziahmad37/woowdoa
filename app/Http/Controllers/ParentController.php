@@ -72,11 +72,13 @@ public function create()
     try {
 
         // Upload foto
-        $photoPath = null;
-        if ($request->hasFile('profile_photo')) {
-            $photoPath = $request->file('profile_photo')
-                ->store('profile_photo', 'public');
-        }
+     $photoPath = null;
+if ($request->hasFile('profile_photo')) {
+    $path = $request->file('profile_photo')
+        ->store('profile_photo', 'public');
+
+    $photoPath = 'storage/' . $path; 
+}
 
         // Insert ke users
         $user = User::create([
@@ -145,18 +147,22 @@ public function create()
 
     try {
 
-        $photoPath = $parent->user->profile_photo;
+   $photoPath = $parent->user->profile_photo;
 
-        if ($request->hasFile('profile_photo')) {
+if ($request->hasFile('profile_photo')) {
 
-            // Hapus foto lama
-            if ($photoPath) {
-                Storage::disk('public')->delete($photoPath);
-            }
+    //hapus foto lama (fix path)
+    if ($photoPath) {
+        $oldPath = str_replace('storage/', '', $photoPath);
+        Storage::disk('public')->delete($oldPath);
+    }
 
-            $photoPath = $request->file('profile_photo')
-                ->store('profile_photo', 'public');
-        }
+    // upload baru
+    $path = $request->file('profile_photo')
+        ->store('profile_photo', 'public');
+
+    $photoPath = 'storage/' . $path;
+}
 
         // Update users
         $parent->user->update([

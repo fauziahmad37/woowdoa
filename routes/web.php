@@ -38,7 +38,7 @@ Route::get('/dashboard/santri-angkatan/{id}', [DashboardController::class, 'sant
     ->middleware(['auth', 'verified'])    
     ->name('dashboard.santri.angkatan');
 
-
+Route::get('/get-kelas/{tahunAjaranId}', [DashboardController::class, 'getKelas']);
 
 // Card Management
 //Route::resource('card', CardController::class);

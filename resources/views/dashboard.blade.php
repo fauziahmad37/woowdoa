@@ -289,13 +289,73 @@ Persentase Siswa Topup Bulan Ini
 
 </div>
 
+
+<form method="GET" class="mb-4 flex gap-2 mt-4">
+    
+    <input type="hidden" name="tab" value="pesantren"> <!-- 🔥 INI -->
+
+    <select name="tahun_ajaran_id" id="angkatan" class="border p-2 rounded">
+        <option value="">Pilih Angkatan</option>
+        @foreach($angkatan as $a)
+            <option value="{{ $a->id }}" {{ $tahunAjaranId == $a->id ? 'selected' : '' }}>
+                {{ $a->tahun_ajaran }}
+            </option>
+        @endforeach
+    </select>
+
+    <select name="class_id" id="kelas" class="border p-2 rounded">
+        <option value="">Pilih Kelas</option>
+    </select>
+
+    <button class="bg-green-600 text-white px-4 rounded">Filter</button>
+</form>
+
+
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
+
+<!-- Total -->
+<div class="rounded-xl bg-blue-50 p-6 shadow-md">
+    <h1 class="text-3xl font-bold">
+        {{ number_format($tahunAjaranId ? $filterTotalSantri : $totalSantri) }}
+    </h1>
+    <p class="text-sm mt-2">
+        {{ $tahunAjaranId ? 'Total Santri (Filter)' : 'Total Santri' }}
+    </p>
+</div>
+
+<!-- Laki -->
+<div class="rounded-xl bg-blue-50 p-6 shadow-md">
+    <h1 class="text-3xl font-bold">
+        {{ number_format($tahunAjaranId ? $filterSantriLaki : $santriLaki) }}
+    </h1>
+    <p class="text-sm mt-2">Laki-laki</p>
+</div>
+
+<!-- Perempuan -->
+<div class="rounded-xl bg-blue-50 p-6 shadow-md">
+    <h1 class="text-3xl font-bold">
+        {{ number_format($tahunAjaranId ? $filterSantriPerempuan : $santriPerempuan) }}
+    </h1>
+    <p class="text-sm mt-2">Perempuan</p>
+</div>
+
+<!-- Aktif -->
+<div class="rounded-xl bg-blue-50 p-6 shadow-md">
+    <h1 class="text-3xl font-bold">
+        {{ number_format($tahunAjaranId ? $filterSantriAktif : $santriAktif) }}
+    </h1>
+    <p class="text-sm mt-2">Aktif</p>
+</div>
+
+</div>
 <!-- end grid santri -->
 
 <!-- grid ustad -->
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
 
+
 <!-- Total ustad dan ustazah -->
-<div class="rounded-xl bg-white text-gray-800 p-6 shadow-md w-full">
+<!-- <div class="rounded-xl bg-white text-gray-800 p-6 shadow-md w-full">
 <div class="flex items-center justify-between">
 
 <h1 class="text-4xl font-bold">
@@ -311,11 +371,11 @@ Persentase Siswa Topup Bulan Ini
 
 <h1 class="text-md font-bold mt-2">Total Ustadzh & Ustadzah</h1>
 <p class="text-sm text-gray-500 mt-1">Jumlah seluruh santri</p>
-</div>
+</div> -->
 
 
 <!-- Ustadzh -->
-<div class="rounded-xl bg-white text-gray-800 p-6 shadow-md w-full">
+<!-- <div class="rounded-xl bg-white text-gray-800 p-6 shadow-md w-full">
 <div class="flex items-center justify-between">
 
 <h1 class="text-4xl font-bold">
@@ -331,11 +391,11 @@ Persentase Siswa Topup Bulan Ini
 
 <h1 class="text-md font-bold mt-2">Ustadzh</h1>
 <p class="text-sm text-gray-500 mt-1">Jumlah Ustadzh</p>
-</div>
+</div> -->
 
 
 <!-- Ustadzah -->
-<div class="rounded-xl bg-white text-gray-800 p-6 shadow-md w-full">
+<!-- <div class="rounded-xl bg-white text-gray-800 p-6 shadow-md w-full">
 <div class="flex items-center justify-between">
 
 <h1 class="text-4xl font-bold">
@@ -353,11 +413,11 @@ Persentase Siswa Topup Bulan Ini
 
 <h1 class="text-md font-bold mt-2">Ustadzah</h1>
 <p class="text-sm text-gray-500 mt-1">Jumlah Ustadzah</p>
-</div>
+</div> -->
 
 
 <!-- Ustadzh aktif -->
-<div class="rounded-xl bg-white text-gray-800 p-6 shadow-md w-full">
+<!-- <div class="rounded-xl bg-white text-gray-800 p-6 shadow-md w-full">
 <div class="flex items-center justify-between">
 
 <h1 class="text-4xl font-bold">
@@ -372,7 +432,7 @@ Persentase Siswa Topup Bulan Ini
 
 <h1 class="text-md font-bold mt-2">Ustadzh & Ustadzah Aktif</h1>
 <p class="text-sm text-gray-500 mt-1">Ustadzh & Ustadzah yang masih aktif</p>
-</div>
+</div> -->
 
 </div>
 <!-- end grid ustad -->
@@ -383,17 +443,19 @@ Persentase Siswa Topup Bulan Ini
 <div id="chartSantri"></div>
 </div>
 
-<div class="bg-white rounded-xl shadow p-4">
+<!-- <div class="bg-white rounded-xl shadow p-4">
 <h5 class="font-semibold mb-3">Gender Teacher</h5>
 <div id="chartTeacher"></div>
-</div>
+</div> -->
 
-</div>
 
-<div class="bg-white rounded-xl shadow p-4 mt-4">
-<h5 class="font-semibold mb-3">Total Santri Berdasarkan Angkatan</h5>
+<div class="bg-white rounded-xl shadow p-4">
+<h5 class="font-semibold mb-3">Total Santri Berdasarkan Angkatan dan Kelas</h5>
 <div id="chart-angkatan"></div>
+</div> 
+
 </div>
+
 
 </div>
 
@@ -515,9 +577,41 @@ Reset
 <div id="chart-merchant-harian" class="h-[300px]"></div>
 </div>
 
-<div class="bg-white rounded-xl shadow p-4">
+<div class="bg-white rounded-xl shadow p-4 mt-6">
 <h4 class="font-bold mb-3">Top Merchant</h4>
 <div id="chart-top-merchant" class="h-[300px]"></div>
+
+
+<div class="mt-6 bg-white shadow rounded-xl p-4">
+    <h2 class="text-lg font-semibold mb-4">Top 5 Merchant</h2>
+
+    <div class="overflow-x-auto">
+        <table class="w-full text-sm text-left border">
+            <thead class="bg-gray-100">
+                <tr>
+                    <th class="p-2 border">No</th>
+                    <th class="p-2 border">Nama Merchant</th>
+                    <th class="p-2 border">Total Transaksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($topMerchant as $index => $row)
+                    <tr>
+                        <td class="p-2 border">{{ $index + 1 }}</td>
+                        <td class="p-2 border">{{ $row->merchant_name }}</td>
+                        <td class="p-2 border">{{ number_format($row->total) }}</td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="3" class="p-4 text-center text-gray-500">
+                            Tidak ada data
+                        </td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+</div>
 </div>
 
 <div class="bg-white rounded-xl p-4 shadow mt-6">
@@ -528,7 +622,39 @@ Pendapatan per Merchant
 
 <div id="chart-merchant-revenue" class="w-full h-[350px]"></div>
 
+
+<div class="mt-6 bg-white shadow rounded-xl p-4">
+    <h2 class="text-lg font-semibold mb-4">Top 5 Merchant (Revenue)</h2>
+
+    <table class="w-full text-sm border">
+        <thead class="bg-gray-100">
+            <tr>
+                <th class="p-2 border">No</th>
+                <th class="p-2 border">Merchant</th>
+                <th class="p-2 border">Total Revenue</th>
+            </tr>
+        </thead>
+        <tbody>
+            @forelse($merchantRevenue as $i => $row)
+                <tr>
+                    <td class="p-2 border">{{ $i + 1 }}</td>
+                    <td class="p-2 border">{{ $row->merchant_name }}</td>
+                    <td class="p-2 border">
+                        Rp {{ number_format($row->total_revenue, 0, ',', '.') }}
+                    </td>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="3" class="text-center p-4 text-gray-500">
+                        Tidak ada data
+                    </td>
+                </tr>
+            @endforelse
+        </tbody>
+    </table>
 </div>
+</div>
+
 
 </div>
 
@@ -542,6 +668,7 @@ Pendapatan per Merchant
 </div>
 
 @endsection
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 document.addEventListener("DOMContentLoaded", function () {
 
@@ -652,6 +779,32 @@ Highcharts.chart('chart-siswa-topup', {
     });
 
 
+    // chart by angkatan
+
+    Highcharts.chart('chart-angkatan', {
+    chart: {
+        type: 'pie'
+    },
+    title: {
+        text: 'Santri Berdasarkan Filter'
+    },
+    series: [{
+        name: 'Jumlah',
+        colorByPoint: true,
+        data: [
+            @foreach($chartLabels as $i => $label)
+            {
+                name: '{{ $label }}',
+                y: {{ $chartData[$i] }}
+            },
+            @endforeach
+        ]
+    }],
+    credits: {
+        enabled:false
+    }
+});
+
     // CHART TEACHER
     Highcharts.chart('chartTeacher', {
         chart: {
@@ -684,6 +837,8 @@ Highcharts.chart('chart-siswa-topup', {
 
 // merchant
 document.addEventListener("DOMContentLoaded", function () {
+
+// chart siswa by angkatan dan kelas
 
 
 // ======================
@@ -856,33 +1011,114 @@ Highcharts.chart('chart-top-belanja', {
     credits: { enabled:false }
 });
 
+// chart siswa by angkatan dan kelas
 
+  Highcharts.chart('chart-angkatan', {
+        chart: {
+            type: 'pie'
+        },
+        title: {
+            text: 'Santri Berdasarkan Filter'
+        },
+        tooltip: {
+            pointFormat: '<b>{point.y}</b> ({point.percentage:.1f}%)'
+        },
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: true,
+                    format: '{point.name}: {point.y}'
+                }
+            }
+        },
+        series: [{
+            name: 'Jumlah',
+            colorByPoint: true,
+            data: [
+                @foreach($chartLabels as $i => $label)
+                {
+                    name: '{{ $label }}',
+                    y: {{ $chartData[$i] }}
+                },
+                @endforeach
+            ]
+        }],
+        credits: {
+            enabled: false
+        }
+    });
+
+});
 
 // angkatan
 
 
- Highcharts.chart('chart-angkatan', {
-        chart: { type: 'column' },
-        title: {
-            text: 'Jumlah Siswa per Angkatan (10 Tahun Terakhir)'
-        },
-        xAxis: {
-            categories: @json($angkatanLabels)
-        },
-        yAxis: {
-            min: 0,
-            title: { text: 'Jumlah Siswa' }
-        },
-        series: [{
-            name: 'Siswa',
-            data: @json($angkatanTotal),
-            color: '#22c55e'
-        }],
-        credits: { enabled:false }
-    });
+
+
+// filter santri by angkatan
+
+
+$('#angkatan').on('change', function() {
+    let id = $(this).val();
+
+    $('#kelas').html('<option>Loading...</option>');
+
+    if (id) {
+        $.get('/get-kelas/' + id, function(data) {
+            let html = '<option value="">Pilih Kelas</option>';
+            data.forEach(function(item) {
+                html += `<option value="${item.id}">${item.class_name}</option>`;
+            });
+            $('#kelas').html(html);
+        });
+    }
 });
 
+$(document).ready(function() {
 
+    console.log('JS READY');
 
+    function loadKelas() {
+        let angkatanId = $('#angkatan').val();
 
+        console.log('angkatan ID:', angkatanId);
+
+        if (!angkatanId) return;
+
+        fetch('/get-kelas/' + angkatanId)
+            .then(res => res.json())
+            .then(data => {
+                console.log('DATA:', data);
+
+                let html = '<option value="">Pilih Kelas</option>';
+
+                data.forEach(item => {
+                    html += `<option value="${item.id}">${item.class_name}</option>`;
+                });
+
+                document.getElementById('kelas').innerHTML = html;
+            })
+            .catch(err => console.log('ERROR:', err));
+    }
+
+    loadKelas();
+
+    $('#angkatan').on('change', function() {
+        loadKelas();
+    });
+
+});
+
+// 🔥 saat pilih angkatan
+$('#angkatan').on('change', function() {
+    loadKelas();
+});
+
+// 🔥 saat halaman load (INI WAJIB)
+$(document).ready(function() {
+  let selectedKelas = "{{ $classId ?? '' }}";
+    loadKelas(selectedKelas);
+});
 </script>

@@ -24,8 +24,32 @@ class MerchantController extends Controller
 {
 public function index(Request $request)
 {
-    $query = Merchant::where('is_active', 't')
-            ->where('school_id', auth()->user()->school_id);
+ $query = Merchant::where('is_active', 't')
+    ->where('school_id', auth()->user()->school_id)
+
+    // TOTAL SALDO (ewallets)
+->addSelect([
+    'total_saldo' => DB::table('ewallets')
+        ->join('users', 'users.id', '=', 'ewallets.user_id')
+        ->selectRaw('COALESCE(SUM(ewallets.balance),0)')
+        ->whereColumn('users.merchant_id', 'merchants.id')
+        ->where('users.user_level_id', 2) 
+        ->where('ewallets.wallet_type', 'merchant') // ⚠️ sesuaikan value
+])
+    // TOTAL TRANSAKSI (transactions)
+    ->addSelect([
+        'total_transaksi' => DB::table('transactions')
+            ->selectRaw('COALESCE(SUM(total_amount),0)')
+            ->whereColumn('merchant_id', 'merchants.id')
+    ])
+
+    // TOTAL PENDING (settlements)
+    ->addSelect([
+        'total_pending' => DB::table('settlements')
+            ->selectRaw('COALESCE(SUM(amount),0)')
+            ->whereColumn('merchant_id', 'merchants.id')
+            ->where('status', 'pending')
+    ]);
 
     if ($request->search) {
         $query->where(function ($q) use ($request) {
@@ -75,7 +99,9 @@ public function store(Request $request)
 $logoPath = null;
 
 if ($request->hasFile('logo')) {
-    $logoPath = $request->file('logo')->store('merchant_logo', 'public');
+    $path = $request->file('logo')->store('merchant_logo', 'public');
+
+    $logoPath = 'storage/' . $path; 
 }
     try { 
         // 1️⃣ Insert ke merchant
@@ -157,20 +183,25 @@ public function update(Request $request, Merchant $merchant)
     DB::beginTransaction();
 
     try {
+$logoPath = $merchant->logo;
 
-        $logoPath = $merchant->logo;
+// jika upload logo baru
+if ($request->hasFile('logo')) {
 
-        // jika upload logo baru
-        if ($request->hasFile('logo')) {
+    // hapus logo lama (fix path)
+    if ($merchant->logo) {
+        $oldPath = str_replace('storage/', '', $merchant->logo);
 
-            // hapus logo lama
-            if ($merchant->logo && Storage::disk('public')->exists($merchant->logo)) {
-                Storage::disk('public')->delete($merchant->logo);
-            }
-
-            // upload logo baru
-            $logoPath = $request->file('logo')->store('merchant_logo', 'public');
+        if (Storage::disk('public')->exists($oldPath)) {
+            Storage::disk('public')->delete($oldPath);
         }
+    }
+
+    // upload logo baru
+    $path = $request->file('logo')->store('merchant_logo', 'public');
+
+    $logoPath = 'storage/' . $path; //  prefix storage
+}
 
         $merchant->update([
             'merchant_code' => $request->merchant_code,

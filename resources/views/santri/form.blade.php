@@ -232,11 +232,9 @@
 </div>
  <div class="mt-4">
                         <label class="block text-gray-700 font-medium mb-1">Profil Foto</label>
-                    @if(isset($santri) && optional($santri->user)->profile_photo)
-   <img src="{{ $santri->user && $santri->user->profile_photo
-    ? asset('storage/' . $santri->user->profile_photo)
-    : asset('images/default-avatar.png') }}"
-  class="w-12 h-12 object-cover rounded-full border">
+                 @if(isset($santri) && optional($santri->user)->profile_photo)
+    <img src="{{ asset($santri->user->profile_photo) }}"
+         class="w-12 h-12 object-cover rounded-full border">
 @endif
 
 <input type="file" name="profile_photo"
@@ -544,7 +542,7 @@ document.getElementById('parent_username').value = res.data.username;
 // foto preview
 if (res.data.profile_photo) {
     let img = document.getElementById('parent_photo_preview');
-    img.src = '/storage/' + res.data.profile_photo;
+    img.src = '/' + res.data.profile_photo; 
     img.classList.remove('hidden');
 }
                         statusText.innerText = "✅ NIK ditemukan";

@@ -89,6 +89,11 @@ for ($i = 1; $i <= $today; $i++) {
 }
 
 
+$chartLabels = [];
+$chartData = [];
+
+
+
 // top saldo 10 tertinggi siswa
 $topSaldo = DB::table('ewallets')
     ->join('students', 'students.id', '=', 'ewallets.user_id')
@@ -219,6 +224,69 @@ foreach ($santriPerAngkatan as $row) {
     $angkatanLabels[] = $row->tahun_ajaran;
     $angkatanTotal[] = (int) $row->total;
 }
+
+$angkatan = DB::table('students')
+    ->join('tahun_ajaran', 'tahun_ajaran.id', '=', 'students.tahun_ajaran_id')
+    ->where('students.school_id', $schoolId)
+    ->select('tahun_ajaran.id', 'tahun_ajaran.tahun_ajaran')
+    ->distinct()
+    ->orderBy('tahun_ajaran.tahun_ajaran')
+    ->get();
+
+
+// santri by angkatan dan kelas
+
+$tahunAjaranId = request('tahun_ajaran_id');
+$classId = request('class_id');
+
+// default null (biar gak error di blade)
+$filterTotalSantri = null;
+$filterSantriLaki = null;
+$filterSantriPerempuan = null;
+$filterSantriAktif = null;
+$chartLabels = [];
+$chartData = [];
+if ($tahunAjaranId) {
+    $filterQuery = DB::table('students')
+        ->where('school_id', $schoolId)
+        ->where('tahun_ajaran_id', $tahunAjaranId);
+
+    if ($classId) {
+        $filterQuery->where('class_id', $classId);
+    }
+
+    $filterTotalSantri = (clone $filterQuery)->count();
+
+    $filterSantriLaki = (clone $filterQuery)
+        ->where('gender', 'Laki-Laki')
+        ->count();
+
+    $filterSantriPerempuan = (clone $filterQuery)
+        ->where('gender', 'Perempuan')
+        ->count();
+
+    $filterSantriAktif = (clone $filterQuery)
+        ->where('active', true)
+        ->count();
+
+    // ✅ chart saat filter
+    $chartLabels = ['Laki-laki', 'Perempuan', 'Aktif'];
+    $chartData = [
+        $filterSantriLaki,
+        $filterSantriPerempuan,
+        $filterSantriAktif
+    ];
+
+} else {
+    // ✅ chart default (semua data)
+    $chartLabels = ['Laki-laki', 'Perempuan', 'Aktif'];
+    $chartData = [
+        $santriLaki,
+        $santriPerempuan,
+        $santriAktif
+    ];
+}
+
 
 // ======================
 // DATA TEACHER
@@ -411,7 +479,37 @@ $merchantTotalData = [$totalMerchant];
     'belanjaNames',
     'belanjaTotals',
       'angkatanLabels',
-    'angkatanTotal'
+    'angkatanTotal',
+    'filterTotalSantri',
+'filterSantriLaki',
+'filterSantriPerempuan',
+'filterSantriAktif',
+'tahunAjaranId',
+'classId',
+'angkatan',
+'chartLabels',
+'chartData',
+'topMerchant' ,
+'merchantRevenue', 
+
 ));
     }
+
+    public function getKelas($tahunAjaranId)
+{
+    $schoolId = auth()->user()->school_id;
+
+    $kelas = DB::table('students')
+        ->join('classes', 'classes.id', '=', 'students.class_id')
+        ->where('students.tahun_ajaran_id', $tahunAjaranId)
+        ->where('students.school_id', $schoolId)
+        ->select('classes.id', 'classes.class_name')
+        ->distinct()
+        ->orderBy('classes.class_name')
+        ->get();
+
+    return response()->json($kelas);
+}
+
+
 }

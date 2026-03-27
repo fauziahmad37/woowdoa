@@ -181,12 +181,12 @@
         Profil Foto
     </label>
 
-    @if(isset($parent))
-        <img src="{{ $parent->user && $parent->user->profile_photo
-            ? asset('storage/' . $parent->user->profile_photo)
-            : asset('images/default-avatar.png') }}"
-            class="w-12 h-12 object-cover rounded-full border mb-2">
-    @endif
+ @if(isset($parent))
+    <img src="{{ $parent->user && $parent->user->profile_photo
+        ? asset($parent->user->profile_photo)
+        : asset('images/default-avatar.png') }}"
+        class="w-12 h-12 object-cover rounded-full border mb-2">
+@endif
 
     <input type="file" name="profile_photo"
         class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500">
