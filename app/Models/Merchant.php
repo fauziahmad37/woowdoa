@@ -24,12 +24,12 @@ class Merchant extends Model
         'fax',
         'website',
         'school_id',
-           'bank_id',
-    'nomor_rekening',
-    'atas_nama_norek',
+        'bank_id',
+        'nomor_rekening',
+        'atas_nama_norek',
         'logo',
         'merchant_category_id',
-         'no_npwp',
+        'no_npwp',
     ];
 
     public function getFaxAttribute($value)
@@ -80,5 +80,10 @@ class Merchant extends Model
     public function user()
     {
         return $this->hasOne(User::class, 'merchant_id');
+    }
+
+    public function bank()
+    {
+        return $this->belongsTo(Bank::class);
     }
 }
