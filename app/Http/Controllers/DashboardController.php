@@ -201,6 +201,10 @@ $santriPerTingkat = DB::table('students')
 $laki = [];
 $perempuan = [];
 
+    $angkatanList = DB::table('tahun_ajaran')
+    ->select('tahun_ajaran.id','tahun_ajaran.tahun_ajaran')
+    ->get();
+
 
 $santriPerAngkatan = DB::table('students')
     ->join('tahun_ajaran', 'tahun_ajaran.id', '=', 'students.tahun_ajaran_id')
@@ -490,6 +494,7 @@ $merchantTotalData = [$totalMerchant];
 'chartData',
 'topMerchant' ,
 'merchantRevenue', 
+    'angkatanList'
 
 ));
     }
@@ -509,6 +514,32 @@ $merchantTotalData = [$totalMerchant];
 
     return response()->json($kelas);
 }
+
+public function santriByAngkatan($angkatanId)
+    {
+        $schoolId = Auth::user()->school_id;
+
+        $data = DB::table('students')
+        ->join('classes', 'classes.id', '=', 'students.class_id')
+        ->where('students.school_id', $schoolId)
+        ->where('students.tahun_ajaran_id', $angkatanId)
+        ->select(
+        'classes.id as class_id',
+        'classes.class_name',
+        DB::raw('COUNT(students.id) as total'),
+        )
+        ->groupBy('classes.id', 'classes.class_name')
+        ->orderBy('classes.class_name')
+        ->get();
+
+        // Cek dulu hasilnya
+        // dd($data, $angkatanId, $schoolId);
+
+        return response()->json([
+            'labels' => $data->pluck('class_name'),
+            'totals' => $data->pluck('total')->map(fn($v) => (int)$v),
+        ]);
+    }
 
 
 }

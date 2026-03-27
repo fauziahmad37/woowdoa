@@ -455,6 +455,37 @@ Persentase Siswa Topup Bulan Ini
 
 </div>
 
+<div class="bg-white rounded-xl shadow p-4 mt-4">
+    <div class="flex items-center justify-between mb-3">
+        <h5 class="font-semibold">Total Santri Berdasarkan Angkatan</h5>
+
+        {{-- DROPDOWN FILTER --}}
+        <div class="flex items-center gap-2">
+            <select
+                id="filter-angkatan"
+                onchange="filterAngkatan(this.value)"
+                class="text-sm border border-gray-200 rounded-lg px-3 py-1.5 text-gray-600 focus:outline-none focus:ring-1 focus:ring-green-400"
+            >
+                <option value="">Semua Angkatan</option>
+                @foreach($angkatanList as $angkatan)
+                <option value="{{ $angkatan->id }}">{{ $angkatan->tahun_ajaran }}</option>
+                @endforeach
+            </select>
+
+            <button
+                onclick="resetAngkatan()"
+                id="btn-reset-angkatan"
+                class="hidden text-xs text-gray-400 hover:text-red-500 transition px-2"
+                title="Reset"
+            >
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+    </div>
+
+    <div id="chart-angkatan-bar"></div>
+</div>
+
 
 </div>
 
@@ -669,6 +700,11 @@ Pendapatan per Merchant
 @endsection
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+    //deklarasi chart
+let chartAngkatan;
+let defaultLabels = @json($angkatanLabels);
+let defaultTotals = @json($angkatanTotal);
+
 document.addEventListener("DOMContentLoaded", function () {
 
     // CHART TRANSAKSI
@@ -1049,6 +1085,26 @@ Highcharts.chart('chart-top-belanja', {
         }
     });
 
+
+        // ✅ Simpan ke variabel chartAngkatan
+    chartAngkatan = Highcharts.chart('chart-angkatan-bar', {
+        chart: { type: 'column' },
+        title: { text: '' },
+        xAxis: {
+            categories: defaultLabels
+        },
+        yAxis: {
+            min: 0,
+            title: { text: 'Jumlah Siswa' }
+        },
+        series: [{
+            name: 'Siswa',
+            data: defaultTotals,
+            color: '#22c55e'
+        }],
+        credits: { enabled: false }
+    });
+
 });
 
 // angkatan
@@ -1120,4 +1176,34 @@ $(document).ready(function() {
   let selectedKelas = "{{ $classId ?? '' }}";
     loadKelas(selectedKelas);
 });
+
+   // Fungsi filter by angkatan
+    async function filterAngkatan(id) {
+        const btnReset = document.getElementById('btn-reset-angkatan');
+
+        if (!id) {
+            resetAngkatan();
+            return;
+        }
+
+        btnReset.classList.remove('hidden');
+
+        const res  = await fetch(`/dashboard/santri-angkatan/${id}`);
+        const json = await res.json();
+
+        // Update chart dengan data kelas
+        chartAngkatan.xAxis[0].setCategories(json.labels);
+        chartAngkatan.series[0].setData(json.totals);
+        chartAngkatan.series[0].update({ name: 'Santri per Kelas' });
+    }
+
+    // Fungsi reset ke default
+    function resetAngkatan() {
+        document.getElementById('filter-angkatan').value = '';
+        document.getElementById('btn-reset-angkatan').classList.add('hidden');
+
+        chartAngkatan.xAxis[0].setCategories(defaultLabels);
+        chartAngkatan.series[0].setData(defaultTotals);
+        chartAngkatan.series[0].update({ name: 'Siswa' });
+    }
 </script>
