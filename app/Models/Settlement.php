@@ -11,6 +11,7 @@ class Settlement extends Model
 
     protected $fillable = [
         'merchant_id',
+        'user_id_owner',
         'settlement_code',
         'period_start',
         'period_end',
