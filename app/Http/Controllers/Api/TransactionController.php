@@ -176,7 +176,7 @@ class TransactionController extends BaseApiController
             // GET Wallet Santri
             $ewallet = Ewallet::where('user_id', $santri->user_id)->first();
             if (!$ewallet || $ewallet->balance < $request->amount) {
-                return $this->error('Saldo tidak cukup', 400);
+                return $this->error('Saldo tidak cukup', 403);
             }
 
             $saldoBefore = $ewallet->balance;

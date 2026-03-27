@@ -54,6 +54,7 @@
                                 <th class="px-4 py-2 border">Nama Santri</th>
                                 <th class="px-4 py-2 border">Nomor Kartu</th> 
                                 <th class="px-4 py-2 border">Terbitan Ke</th> 
+                                <th class="px-4 py-2 border">Tangga Approve</th> 
                                 <th class="px-4 py-2 border">Status</th>  
                                 <th class="px-4 py-2 border text-center">Aksi</th> 
                             </tr>
@@ -69,6 +70,7 @@
                                     <td class="px-4 py-3 text-left">{{ $rec->student->student_name }}</td> 
                                     <td class="px-4 py-3 text-left">{{ $rec->card_number }}</td> 
                                     <td class="px-4 py-3 text-center">{{ $rec->sequence }}</td> 
+                                    <td class="px-4 py-3 text-center">{{ $rec->approved_at }}</td> 
                                    <td class="px-4 py-3 text-center">
     <span class="px-2 py-1 text-xs font-semibold rounded-full
         {{ strtolower($rec->status) == 'active' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' }}">

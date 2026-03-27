@@ -69,6 +69,7 @@ style="background: linear-gradient(203.18deg, #01AB14 11.82%, #085410 85.47%);">
                                 <th class="px-4 py-2 border">NIS</th>
                                 <th class="px-4 py-2 border">Nama</th>
                                 <th class="px-4 py-2 border">Gender</th>
+                                <th class="px-4 py-2 border">Saldo</th>
                                 <th class="px-4 py-2 border">Status</th>
                                 <th class="px-4 py-2 border text-center">Aksi</th>
                             </tr>
@@ -83,6 +84,7 @@ style="background: linear-gradient(203.18deg, #01AB14 11.82%, #085410 85.47%);">
                                     <td class="px-4 py-3">{{ $santri->nis }}</td>
                                     <td class="px-4 py-3">{{ $santri->student_name }}</td>
                                     <td class="px-4 py-3">{{ $santri->gender }}</td>
+                                    <td class="px-4 py-3">Rp {{ $santri->saldo }}</td>
                                     <td class="px-4 py-3">
                                         @if($santri->active)
                                             <span class="px-2 py-1 text-xs rounded bg-green-100 text-green-600">Aktif</span>
