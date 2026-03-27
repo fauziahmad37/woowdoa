@@ -5,7 +5,7 @@
     <div class="container mx-auto w-full">
 
         <!-- Header -->
-        <h2 class="text-xl font-semibold text-gray-600">Daftar Kartu</h2>
+        <h2 class="text-xl font-semibold text-gray-600">Daftar Kartu</h2> 
 
         <!-- Top Bar -->
         <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-4 w-full">
@@ -13,7 +13,7 @@
             <!-- Form Pencarian -->
          <form x-data="{ search: '{{ request('search') }}' }" method="GET" class="flex flex-col sm:flex-row items-center gap-2 w-full sm:w-auto">
 
-    <input
+    <input 
         type="text"
         name="search"
         x-model="search"
@@ -21,10 +21,10 @@
         class="w-full sm:w-64 border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
     >
 
-    <button
+    <button 
         type="submit"
         :disabled="search.trim() === ''"
-        :class="search.trim() === ''
+        :class="search.trim() === '' 
             ? 'bg-gray-200 text-gray-700 cursor-not-allowed px-4 py-2 rounded-md'
             : 'bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md'"
     >
@@ -37,7 +37,7 @@
 
 </form>
 
-
+ 
         </div>
 
         <!-- Table -->
@@ -52,10 +52,11 @@
                                 <th class="px-4 py-2 border">No </th>
                                 <th class="px-4 py-2 border">NIS</th>
                                 <th class="px-4 py-2 border">Nama Santri</th>
-                                <th class="px-4 py-2 border">Nomor Kartu</th>
-                                <th class="px-4 py-2 border">Terbitan Ke</th>
-                                <th class="px-4 py-2 border">Status</th>
-                                <th class="px-4 py-2 border text-center">Aksi</th>
+                                <th class="px-4 py-2 border">Nomor Kartu</th> 
+                                <th class="px-4 py-2 border">Terbitan Ke</th> 
+                                <th class="px-4 py-2 border">Tangga Approve</th>  
+                                <th class="px-4 py-2 border">Status</th>  
+                                <th class="px-4 py-2 border text-center">Aksi</th> 
                             </tr>
                         </thead>
 
@@ -66,21 +67,23 @@
                                         {{ ($card->currentPage() - 1) * $card->perPage() + $i + 1 }}
                                     </td>
                                     <td class="px-4 py-3 text-left">{{ $rec->nis }}</td>
-                                    <td class="px-4 py-3 text-left">{{ $rec->student->student_name }}</td>
-                                    <td class="px-4 py-3 text-left">{{ $rec->card_number }}</td>
-                                    <td class="px-4 py-3 text-center">{{ $rec->sequence }}</td>
+                                    <td class="px-4 py-3 text-left">{{ $rec->student->student_name }}</td> 
+                                    <td class="px-4 py-3 text-left">{{ $rec->card_number }}</td> 
+                                    <td class="px-4 py-3 text-center">{{ $rec->sequence }}</td>  
+                                    <td class="px-4 py-3 text-center">{{ $rec->created_at }}</td> 
+ 
                                    <td class="px-4 py-3 text-center">
     <span class="px-2 py-1 text-xs font-semibold rounded-full
         {{ strtolower($rec->status) == 'active' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' }}">
         {{ $rec->status }}
     </span>
-</td>
+</td> 
                                     <!-- Dropdown Aksi -->
                                     <td class="px-4 py-4 text-center">
                                         <details class="inline-block text-left">
-
+                                           
                                         <summary
-    class="list-none bg-green-600 hover:bg-green-700
+    class="list-none bg-green-600 hover:bg-green-700 
            text-white cursor-pointer marker:content-none
            w-8 h-8 flex items-center justify-center rounded-full">
 <svg width="13" height="4" viewBox="0 0 13 4" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -91,19 +94,19 @@
                                             <div class="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-xl shadow-lg z-50 overflow-hidden">
 
                                                 <!-- Cetak Depan -->
-                                                <a href="{{ route('cards.printfront', $rec->id) }}" target="_blank"
+                                                <a href="{{ route('cards.printfront', $rec->id) }}" target="_blank" 
                                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                                     Cetak Depan
                                                 </a>
 
                                                 <!-- Cetak Belakang -->
-                                                <a href="{{ route('cards.printback', $rec->id) }}" target="_blank"
+                                                <a href="{{ route('cards.printback', $rec->id) }}" target="_blank" 
                                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                                     Cetak Belakang
                                                 </a>
                                             </div>
                                         </details>
-                                    </td>
+                                    </td> 
                                 </tr>
                             @endforeach
                         </tbody>
