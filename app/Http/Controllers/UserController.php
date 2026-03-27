@@ -13,7 +13,7 @@ class UserController extends Controller
  
 	public function index(Request $request)
 	{ 	
-		$query = User::with('level')->where('school_id',  Auth::user()->school_id);
+		$query = User::with('level')->where('school_id',  Auth::user()->school_id)->whereIn('user_level_id',[1]);
     if ($request->search) {
         $search = $request->search;
 
