@@ -11,7 +11,6 @@ class DashboardController extends Controller
 {
     public function index()
     {
-
       $startDate = request('start_date')
     ? Carbon::parse(request('start_date'))->startOfDay()
     : Carbon::now()->startOfMonth();

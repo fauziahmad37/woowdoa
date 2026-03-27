@@ -20,7 +20,6 @@ use App\Imports\SantriImport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
-
 class SantriController extends Controller
 {
 public function index(Request $request)

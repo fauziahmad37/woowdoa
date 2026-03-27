@@ -51,7 +51,6 @@
         <div class="overflow-x-auto">
 
             @if($merchant->count() > 0)
-
                 <div class="w-full overflow-x-auto p-4">
                     <table class="min-w-full bg-white border border-gray-200 divide-y divide-gray-200 table-auto">
                         <thead class="text-xs text-gray-700 bg-gray-50">

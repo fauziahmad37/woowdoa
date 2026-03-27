@@ -3,7 +3,6 @@
 @section('content')
 <div class="py-6">
     <div class="container mx-auto w-full px-4">
-        
         <!-- Breadcrumb -->
         <nav class="text-gray-700 text-sm mb-6" aria-label="Breadcrumb">
             <ol class="list-reset flex flex-wrap items-center">

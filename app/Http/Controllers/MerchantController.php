@@ -19,7 +19,6 @@ use App\Models\Bank;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 
-
 class MerchantController extends Controller
 {
 public function index(Request $request)
