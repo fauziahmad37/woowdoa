@@ -32,7 +32,7 @@ public function index(Request $request)
         )
         ->where('students.is_delete', false)
         ->where('students.school_id', Auth::user()->school_id)
-        ->leftJoin('ewallets', 'ewallets.user_id', '=', 'students.id')
+        ->leftJoin('ewallets', 'ewallets.user_id', '=', 'students.user_id')
         ->orderBy('students.created_at', 'desc');
 
     if ($request->search) {
