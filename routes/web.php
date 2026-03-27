@@ -14,7 +14,6 @@ use App\Http\Controllers\MerchantCategoryController;
 use App\Http\Controllers\LimitBelanjaController;
 use App\Http\Controllers\ShortcutNominalController;
 use App\Http\Controllers\ReportTransactionController;
-<<<<<<< Updated upstream
 use App\Http\Controllers\ReportReconcileController;
 use App\Http\Controllers\DashboardTransaksiSiswaController;
 
@@ -28,10 +27,6 @@ use App\Http\Controllers\CardRequestController;
 use App\Http\Controllers\CardDesignController;
 use App\Http\Controllers\CardLossReportController;
 
-=======
-use App\Http\Controllers\DashboardTransaksiSiswaController;
-
->>>>>>> Stashed changes
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request;
 
@@ -119,16 +114,12 @@ Route::resource('parent', ParentController::class);
 // report transaksi santri
 Route::get('/transaksi_santri', [ReportTransactionController::class,'index'])
     ->name('report.transaksi_santri');
-<<<<<<< Updated upstream
-=======
 
     // dashboard
 Route::get('/dashboard-transaksi-siswa', [DashboardTransaksiSiswaController::class, 'index'])
     ->name('dashboard.transaksi.siswa');
 
-Route::middleware('auth')->group(function () {
 
->>>>>>> Stashed changes
 Route::get('/transaksi/detail/{id}', [ReportTransactionController::class, 'detail'])
     ->name('transaksi.detail');
 Route::get('/transaksi_santri/export/excel', [ReportTransactionController::class,'exportExcel'])
