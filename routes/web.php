@@ -19,6 +19,7 @@ use App\Http\Controllers\DashboardTransaksiSiswaController;
 
 use App\Http\Controllers\SchoolController;
 use App\Http\Controllers\SettlementController;
+use App\Http\Controllers\NotificationController;
 
 //Card
 use App\Http\Controllers\CardController;
@@ -33,6 +34,9 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
+Route::get('/dashboard/santri-angkatan/{id}', [DashboardController::class, 'santriByAngkatan'])
+    ->middleware(['auth', 'verified'])    
+    ->name('dashboard.santri.angkatan');
 
 
 
@@ -162,6 +166,9 @@ Route::resource('user', UserController::class);
 //user level
 Route::resource('userlevel', UserLevelController::class); 
 
+
+//notifikasi
+Route::get('/notifications',[NotificationController::class,'index'])->name('notifications.index');
 
 
 // logout
