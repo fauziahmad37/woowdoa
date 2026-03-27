@@ -73,6 +73,8 @@
 	<br>
 	<img src="{{asset($carddesign->front_background)}}" width="250">
 	<br>
+	<a  href="{{asset($carddesign->front_background)}}"  download="design-depan.jpg">download</a>
+	<br>
 	@endif
 	
 	<input type="file" name="front_background"
@@ -86,6 +88,8 @@
 	<br>
 	<img src="{{asset($carddesign->back_background)}}" width="250">
 	<br>
+	<a  href="{{asset($carddesign->back_background)}}"  download="design-belakang.jpg">download</a>
+	<br>	
 	@endif
 	
 	<input type="file" name="back_background"
@@ -105,12 +109,7 @@
                         class="text-white px-6 py-2 rounded-lg"
                         style="background: linear-gradient(203.18deg, #01AB14 11.82%, #085410 85.47%);">
                         Simpan Data
-                    </button>
-                    <button type="button" id="btnPreview"
-                        class="text-white px-6 py-2 rounded-lg"
-                        style="background: linear-gradient(203.18deg, #01AB14 11.82%, #085410 85.47%);">
-                        Preview
-                    </button>										
+                    </button> 							
                 </div>
 								
 
@@ -144,7 +143,7 @@
         </h2>
 
         <p class="mt-2 text-sm text-gray-600 text-center">
-            Data limit belanja berhasil ditambahkan.
+            Design kartu berhasil diupdate.
         </p>
 
         <div class="mt-6 flex flex-col sm:flex-row justify-center gap-3">

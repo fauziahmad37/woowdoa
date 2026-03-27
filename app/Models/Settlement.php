@@ -32,7 +32,7 @@ class Settlement extends Model
 
     function ewallet()
     {
-        return $this->belongsTo(Ewallet::class, 'merchant_id', 'user_id');
+        return $this->belongsTo(Ewallet::class, 'user_id_owner', 'user_id');
     }
 
 

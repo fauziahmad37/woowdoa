@@ -48,7 +48,7 @@
 
 	<div>
 			<label class="block text-gray-700 font-medium mb-1">
-					Belanja Harian <span class="text-red-500">*</span>
+					Nominal {{$i}} <span class="text-red-500">*</span>
 			</label>
 			<input type="text" name="nominal{{$i}}"
 						 value="{{ old('nominal'.$i, $shortcutnominal->{'nominal'.$i} ?? '') }}"
