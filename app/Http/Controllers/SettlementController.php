@@ -36,7 +36,7 @@ class SettlementController extends Controller
 			'approved_by'=>Auth::id(),
 			'approved_at'=>now()
 		]); 
-		$ewallet = Ewallet::where('user_id', $setreq->merchant_id)->first();	
+		$ewallet = Ewallet::where('user_id', $setreq->user_id_owner)->first();	
 			 
     WalletMovement::create([
 			'transaction_id',
