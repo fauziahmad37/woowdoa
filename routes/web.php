@@ -115,7 +115,8 @@ Route::get('/transaksi_santri', [ReportTransactionController::class,'index'])
     // dashboard
 Route::get('/dashboard-transaksi-siswa', [DashboardTransaksiSiswaController::class, 'index'])
     ->name('dashboard.transaksi.siswa');
-
+Route::get('/dashboard/santri-angkatan/{id}', [DashboardController::class, 'santriByAngkatan'])
+    ->name('dashboard.santri.angkatan');
 
 Route::get('/transaksi/detail/{id}', [ReportTransactionController::class, 'detail'])
     ->name('transaksi.detail');
