@@ -43,7 +43,6 @@ public function index(Request $request)
     }
 
     $student = $query->paginate(10);
-
     return view('santri.index', compact('student'));
 }
 
