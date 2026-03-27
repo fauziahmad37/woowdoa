@@ -240,12 +240,12 @@ class TransactionController extends BaseApiController
             ]);
 
             // Simpan ke wallet merchant, wallet movement ini digunakan untuk mencatat setiap perubahan saldo di e-wallet merchant
-            // get ewallet merchant
-            $ewalletMerchant = Ewallet::where('user_id', $user->id)->first();
+            $userOwner = User::where('merchant_id', $user->merchant_id)->where('user_level_id', 2)->first(); // get ewallet merchant owner
+            $ewalletMerchant = Ewallet::where('user_id', $userOwner->id)->first();
             $saldoBeforeMerchant = $ewalletMerchant->balance;
             $saldoAfterMerchant = $saldoBeforeMerchant + $request->amount;
 
-            $ewalletMovementMerchant = WalletMovement::create([
+            $walletMovementMerchant = WalletMovement::create([
                 'ewallet_id' => $ewalletMerchant->id,
                 'transaction_id' => $transaction->id,
                 'type' => 'credit',
