@@ -41,7 +41,7 @@
             <a href="{{ route('cardrequest.create') }}"
                class="px-4 py-2 rounded-lg text-white text-center sm:w-auto w-full"
                style="background: linear-gradient(203.18deg, #01AB14 11.82%, #085410 85.47%);">
-                + Tambah Request Kartu
+                + Tambah Kartu
             </a>
         </div>
 
@@ -81,9 +81,16 @@
                                     <td class="px-4 py-3 text-right">{{ $rec->requester->complete_name }}</td> 
                                     <td class="px-4 py-3 text-right">{{ $rec->created_at->format('d-m-Y') }}</td> 
                                     <td class="px-4 py-3 text-right">{{ $rec->reason }}</td> 
-                                    <td class="px-4 py-3 text-right">{{ $rec->status }}</td> 
+                                    <td class="px-4 py-3 text-right">
+																			<span class="px-2 py-1 text-xs font-semibold rounded-full
+																					{{ strtolower($rec->status) == 'approved' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' }}">  	 																		
+																						{{ $rec->status }}			
+																			</span>	
+																		</td> 
 																		@if($user_level==1)
                                     <td class="px-4 py-3 text-right">
+														 
+
 														 
 																				@if($rec->status == 'pending') 
 																				<form action="{{ route('cardrequest.approve',$rec->id) }}" method="POST">
@@ -94,7 +101,7 @@
 																				@csrf
 																				<button type="submit">Reject</button>
 																				</form> 
-																				@endif 																
+																				@endif 																			
 																		</td> 
 																		@endif 	
 																		@if($user_level==7)
