@@ -414,9 +414,7 @@
     <input type="file" name="parent_profile_photo"
         class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500">
 </div>
-                </div>
-
-
+                
 
                 <!-- Tombol -->
                 <div class="flex justify-end mt-6">
