@@ -8,3 +8,4 @@ class NotificationController extends Controller
         return view('notification.index');
     }
 }
+

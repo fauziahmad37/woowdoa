@@ -199,7 +199,6 @@
                     Lihat lebih banyak
                 </button>
             </div>
-
         </div>
     </div>
 @endsection
