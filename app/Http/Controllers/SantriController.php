@@ -52,7 +52,11 @@ public function create()
     $santri = null;
 
     $schools = School::where('is_active', true)->get();
+<<<<<<< Updated upstream
   $parents = Parents::where('is_delete', false)
+=======
+  $parents = StudentParent::where('is_delete', false)
+>>>>>>> Stashed changes
     ->where('school_id', Auth::user()->school_id)
     ->get();
     $tahunAjarans = TahunAjaran::where('is_active', true)->get();
@@ -189,6 +193,7 @@ public function edit(Santri $santri)
     $santri->load('user', 'parent.user');
 
     $schools = School::where('is_active', true)->get();
+<<<<<<< Updated upstream
 
     $parents = Parents::where('is_delete', false)
         ->where('school_id', Auth::user()->school_id)
@@ -198,6 +203,15 @@ public function edit(Santri $santri)
 
     $classes = SchoolClass::where('school_id', Auth::user()->school_id)
         ->get();
+=======
+  $parents = StudentParent::where('is_delete', false)
+    ->where('school_id', Auth::user()->school_id)
+    ->get();
+    $tahunAjarans = TahunAjaran::where('is_active', true)->get();
+    $classes = SchoolClass::where('school_id', Auth::user()->school_id)
+    ->get();
+
+>>>>>>> Stashed changes
 
     return view('santri.edit', compact(
         'santri',
