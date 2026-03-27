@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
 use App\Imports\SantriImport;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 
 class SantriController extends Controller
@@ -90,10 +91,13 @@ public function store(Request $request)
 
             // upload foto parent
             $parentPhoto = null;
-            if ($request->hasFile('parent_profile_photo')) {
-                $parentPhoto = $request->file('parent_profile_photo')
-                    ->store('profile_photo', 'public');
-            }
+          $parentPhoto = null;
+if ($request->hasFile('parent_profile_photo')) {
+    $path = $request->file('parent_profile_photo')
+        ->store('profile_photo', 'public');
+
+    $parentPhoto = 'storage/' . $path; 
+}
 
             // create user parent
             $parentUser = User::create([
@@ -124,11 +128,13 @@ public function store(Request $request)
         // =========================
         // 🔥 2. SANTRI PHOTO
         // =========================
-        $photoPath = null;
-        if ($request->hasFile('profile_photo')) {
-            $photoPath = $request->file('profile_photo')
-                ->store('profile_photo', 'public');
-        }
+    $photoPath = null;
+if ($request->hasFile('profile_photo')) {
+    $path = $request->file('profile_photo')
+        ->store('profile_photo', 'public');
+
+    $photoPath = 'storage/' . $path; 
+}
 
         // =========================
         // 🔥 3. USER SANTRI
@@ -286,12 +292,20 @@ public function update(Request $request, Santri $santri)
         // =========================
         // 🔥 2. FOTO SANTRI
         // =========================
-        $photoPath = $santri->user->profile_photo;
+    $photoPath = $santri->user->profile_photo;
+if ($request->hasFile('profile_photo')) {
 
-        if ($request->hasFile('profile_photo')) {
-            $photoPath = $request->file('profile_photo')
-                ->store('profile_photo', 'public');
-        }
+    // hapus foto lama (kalau ada)
+    if ($santri->user->profile_photo) {
+        $oldPath = str_replace('storage/', '', $santri->user->profile_photo);
+        Storage::disk('public')->delete($oldPath);
+    }
+
+    $path = $request->file('profile_photo')
+        ->store('profile_photo', 'public');
+
+    $photoPath = 'storage/' . $path;
+}
 
         // =========================
         // 🔥 3. UPDATE USER SANTRI
