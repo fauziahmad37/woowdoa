@@ -198,7 +198,18 @@ class TransactionController extends BaseApiController
                 'updated_at' => now()
             ]);
 
+<<<<<<< Updated upstream
             $qty = $request->qty ?? 1;
+=======
+            $response = Http::post('http://172.16.10.8:8000/api/v1/bank/callback', [
+                'transaction_code' => $transactionCode,
+                'amount' => $request->amount,
+                'status' => 'PAID'
+            ]);
+
+            dd($response->json());
+
+>>>>>>> Stashed changes
             // Simpan detail transaksi
             $transactionDetail = TransactionDetail::create([
                 'transaction_id' => $transaction->id,

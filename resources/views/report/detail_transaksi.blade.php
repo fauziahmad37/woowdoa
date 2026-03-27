@@ -59,6 +59,7 @@ $detail = $transaction->details->first();
 @endphp
 
  <div>
+<<<<<<< Updated upstream
     <p class="text-gray-500">Jenis Transaksi</p>
     <p class="font-semibold">
         {{ $wallet->type ?? '-' }}
@@ -93,6 +94,42 @@ $detail = $transaction->details->first();
                         </p>
                     </div>
 
+=======
+                        <p class="text-gray-500">Jenis Transaksi</p>
+                        <p class="font-semibold">
+                           {{ $detail->type }}
+                        </p>
+                    </div>
+
+<div>
+    <p class="text-gray-500">Jumlah Transaksi</p>
+    <p class="font-semibold text-green-600">
+        Rp {{ number_format($detail->amount ?? 0,0,',','.') }}
+    </p>
+</div>
+
+<div>
+    <p class="text-gray-500">Saldo Sebelum</p>
+    <p class="font-semibold">
+        Rp {{ number_format($detail->saldo_before ?? 0,0,',','.') }}
+    </p>
+</div>
+
+<div>
+    <p class="text-gray-500">Saldo Sesudah</p>
+    <p class="font-semibold">
+        Rp {{ number_format($detail->saldo_after ?? 0,0,',','.') }}
+    </p>
+</div>
+
+ <div>
+                        <p class="text-gray-500">Keterangan</p>
+                        <p class="font-semibold">
+                           {{ $detail->description }}
+                        </p>
+                    </div>
+
+>>>>>>> Stashed changes
 
                 </div>
             </div>
