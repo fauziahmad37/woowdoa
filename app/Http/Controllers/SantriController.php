@@ -24,8 +24,16 @@ class SantriController extends Controller
 {
 public function index(Request $request)
 {
-    $query = Santri::where('is_delete', false)
-        ->where('school_id', Auth::user()->school_id);
+    $query = Santri::select(
+            'students.*',
+            'ewallets.balance',
+            'ewallets.updated_at as ewallet_updated_at',
+            'ewallets.created_at as ewallet_created_at'
+        )
+        ->where('students.is_delete', false)
+        ->where('students.school_id', Auth::user()->school_id)
+        ->leftJoin('ewallets', 'ewallets.user_id', '=', 'students.user_id')
+        ->orderBy('students.created_at', 'desc');
 
     if ($request->search) {
         $query->where(function ($q) use ($request) {
