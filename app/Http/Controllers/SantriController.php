@@ -25,25 +25,17 @@ class SantriController extends Controller
 {
 public function index(Request $request)
 {
-   $query = Santri::select(
-            'students.*',
-            'ewallets.balance',
-            'ewallets.updated_at as ewallet_updated_at',
-            'ewallets.created_at as ewallet_created_at'
-        )
-        ->where('students.is_delete', false)
-        ->where('students.school_id', Auth::user()->school_id)
-        ->leftJoin('ewallets', 'ewallets.user_id', '=', 'students.id')
-        ->orderBy('students.created_at', 'desc');
+    $query = Santri::where('is_delete', false)
+        ->where('school_id', Auth::user()->school_id);
 
     if ($request->search) {
         $query->where(function ($q) use ($request) {
-            $q->where('students.nis', 'ilike', '%'.$request->search.'%')
-              ->orWhere('students.student_name', 'ilike', '%'.$request->search.'%');
+            $q->where('nis', 'ilike', '%'.$request->search.'%')
+              ->orWhere('student_name', 'ilike', '%'.$request->search.'%');
         });
     }
 
-    $student = $query->paginate(10);
+    $student = $query->latest()->paginate(10);
 
     return view('santri.index', compact('student'));
 }
@@ -195,6 +187,7 @@ public function edit(Santri $santri)
     $santri->load('user', 'parent.user');
 
     $schools = School::where('is_active', true)->get();
+
     $parents = Parents::where('is_delete', false)
         ->where('school_id', Auth::user()->school_id)
         ->get();
@@ -213,7 +206,6 @@ public function edit(Santri $santri)
     ));
 }
 
-
 public function update(Request $request, Santri $santri)
 {
     $request->validate([
@@ -226,8 +218,6 @@ public function update(Request $request, Santri $santri)
         'school_id' => 'required|exists:schools,id',
         'tahun_ajaran_id' => 'required|exists:tahun_ajaran,id',
         'class_id' => 'required|exists:classes,id',
-
-        // 🔥 pakai NIK seperti store
         'nik' => 'required',
     ]);
 
@@ -236,38 +226,19 @@ public function update(Request $request, Santri $santri)
     try {
 
         // =========================
-        // 🔥 1. CEK / CREATE / UPDATE PARENT
+        // 🔥 1. HANDLE PARENT
         // =========================
+
+        $currentParent = $santri->parent;
+
+        // cari parent berdasarkan NIK
         $parent = Parents::where('nik', $request->nik)->first();
 
-        if (!$parent) {
+        if ($parent && $currentParent && $parent->id == $currentParent->id) {
 
-            // create parent baru
-            $parentUser = User::create([
-                'complete_name' => $request->parent_name,
-                'username' => $request->parent_username,
-                'phone' => $request->parent_phone,
-                'email' => $request->parent_email,
-                'school_id' => $request->parent_school_id ?? $request->school_id,
-                'user_level_id' => 5,
-                'password' => Hash::make($request->parent_password ?? '123456'),
-                'is_active' => $request->parent_active ?? 1,
-            ]);
-
-            $parent = Parents::create([
-                'nik' => $request->nik,
-                'parent_name' => $request->parent_name,
-                'parent_phone' => $request->parent_phone,
-                'school_id' => $request->parent_school_id ?? $request->school_id,
-                'address' => $request->parent_address,
-                'user_id' => $parentUser->id,
-                'active' => $request->parent_active ?? 1,
-                'gender' => $request->parent_gender,
-            ]);
-
-        } else {
-
-            // 🔥 UPDATE parent jika sudah ada
+            // =========================
+            // ✅ CASE 1: parent sama → UPDATE
+            // =========================
             $parent->update([
                 'parent_name' => $request->parent_name,
                 'parent_phone' => $request->parent_phone,
@@ -277,7 +248,6 @@ public function update(Request $request, Santri $santri)
                 'gender' => $request->parent_gender,
             ]);
 
-            // update user parent
             if ($parent->user) {
                 $parent->user->update([
                     'complete_name' => $request->parent_name,
@@ -294,25 +264,70 @@ public function update(Request $request, Santri $santri)
                     ]);
                 }
             }
+
+        } elseif ($parent && (!$currentParent || $parent->id != $currentParent->id)) {
+
+            // =========================
+            // ✅ CASE 2: NIK ADA → PINDAH PARENT
+            // =========================
+            // tidak perlu update parent lama
+            // cukup pakai parent yg ditemukan
+
+        } else {
+
+            // =========================
+            // ✅ CASE 3: NIK TIDAK ADA → CREATE BARU
+            // =========================
+
+            // upload foto parent (optional)
+            $parentPhoto = null;
+            if ($request->hasFile('parent_profile_photo')) {
+                $path = $request->file('parent_profile_photo')
+                    ->store('profile_photo', 'public');
+                $parentPhoto = 'storage/' . $path;
+            }
+
+            $parentUser = User::create([
+                'complete_name' => $request->parent_name,
+                'username' => $request->parent_username,
+                'phone' => $request->parent_phone,
+                'email' => $request->parent_email,
+                'school_id' => $request->parent_school_id ?? $request->school_id,
+                'profile_photo' => $parentPhoto,
+                'user_level_id' => 5,
+                'password' => Hash::make($request->parent_password ?? '123456'),
+                'is_active' => $request->parent_active ?? 1,
+            ]);
+
+            $parent = Parents::create([
+                'nik' => $request->nik,
+                'parent_name' => $request->parent_name,
+                'parent_phone' => $request->parent_phone,
+                'school_id' => $request->parent_school_id ?? $request->school_id,
+                'address' => $request->parent_address,
+                'user_id' => $parentUser->id,
+                'active' => $request->parent_active ?? 1,
+                'gender' => $request->parent_gender,
+            ]);
         }
 
         // =========================
         // 🔥 2. FOTO SANTRI
         // =========================
-    $photoPath = $santri->user->profile_photo;
-if ($request->hasFile('profile_photo')) {
+        $photoPath = $santri->user->profile_photo;
 
-    // hapus foto lama (kalau ada)
-    if ($santri->user->profile_photo) {
-        $oldPath = str_replace('storage/', '', $santri->user->profile_photo);
-        Storage::disk('public')->delete($oldPath);
-    }
+        if ($request->hasFile('profile_photo')) {
 
-    $path = $request->file('profile_photo')
-        ->store('profile_photo', 'public');
+            if ($santri->user->profile_photo) {
+                $oldPath = str_replace('storage/', '', $santri->user->profile_photo);
+                Storage::disk('public')->delete($oldPath);
+            }
 
-    $photoPath = 'storage/' . $path;
-}
+            $path = $request->file('profile_photo')
+                ->store('profile_photo', 'public');
+
+            $photoPath = 'storage/' . $path;
+        }
 
         // =========================
         // 🔥 3. UPDATE USER SANTRI
@@ -345,7 +360,7 @@ if ($request->hasFile('profile_photo')) {
             'email' => $request->email,
             'active' => $request->active,
             'school_id' => $request->school_id,
-            'parent_id' => $parent->id, 
+            'parent_id' => $parent->id,
             'class_id' => $request->class_id,
             'tahun_ajaran_id' => $request->tahun_ajaran_id,
         ]);

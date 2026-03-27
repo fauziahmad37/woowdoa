@@ -14,7 +14,7 @@
             <!-- Form Pencarian -->
          <form x-data="{ search: '{{ request('search') }}' }" method="GET" class="flex flex-col sm:flex-row items-center gap-2 w-full sm:w-auto">
 
-    <input
+    <input 
         type="text"
         name="search"
         x-model="search"
@@ -22,10 +22,10 @@
         class="w-full sm:w-64 border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
     >
 
-    <button
+    <button 
         type="submit"
         :disabled="search.trim() === ''"
-        :class="search.trim() === ''
+        :class="search.trim() === '' 
             ? 'bg-gray-200 text-gray-700 cursor-not-allowed px-4 py-2 rounded-md'
             : 'bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md'"
     >
@@ -69,6 +69,7 @@ style="background: linear-gradient(203.18deg, #01AB14 11.82%, #085410 85.47%);">
                                 <th class="px-4 py-2 border">NIS</th>
                                 <th class="px-4 py-2 border">Nama</th>
                                 <th class="px-4 py-2 border">Gender</th>
+                                <th class="px-4 py-2 border">Saldo</th>
                                 <th class="px-4 py-2 border">Status</th>
                                 <th class="px-4 py-2 border text-center">Aksi</th>
                             </tr>
@@ -83,7 +84,7 @@ style="background: linear-gradient(203.18deg, #01AB14 11.82%, #085410 85.47%);">
                                     <td class="px-4 py-3">{{ $santri->nis }}</td>
                                     <td class="px-4 py-3">{{ $santri->student_name }}</td>
                                     <td class="px-4 py-3">{{ $santri->gender }}</td>
-                                    <td class="px-4 py-3">Rp {{ $santri->balance }} </td>
+                                    <td class="px-4 py-3">Rp {{ $santri->saldo }}</td>
                                     <td class="px-4 py-3">
                                         @if($santri->active)
                                             <span class="px-2 py-1 text-xs rounded bg-green-100 text-green-600">Aktif</span>
@@ -95,9 +96,9 @@ style="background: linear-gradient(203.18deg, #01AB14 11.82%, #085410 85.47%);">
                                     <!-- Dropdown Aksi -->
                                     <td class="px-4 py-4 text-center">
                                         <details class="inline-block text-left">
-
+                                           
                                         <summary
-    class="list-none bg-green-600 hover:bg-green-700
+    class="list-none bg-green-600 hover:bg-green-700 
            text-white cursor-pointer marker:content-none
            w-8 h-8 flex items-center justify-center rounded-full">
 <svg width="13" height="4" viewBox="0 0 13 4" fill="none" xmlns="http://www.w3.org/2000/svg">

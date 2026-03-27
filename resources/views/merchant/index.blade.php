@@ -62,6 +62,9 @@
                                 <th class="px-4 py-2 border">Owner</th>
                                 <th class="px-4 py-2 border">Phone</th>
                                 <th class="px-4 py-2 border">Alamat</th>
+                                <th class="px-4 py-2 border">Saldo</th>
+<th class="px-4 py-2 border">Total Transaksi</th>
+<th class="px-4 py-2 border">Pending</th>
                                 <th class="px-4 py-2 border text-center">Aksi</th>
                             </tr>
                         </thead>
@@ -77,7 +80,17 @@
                                     <td class="px-4 py-3">{{ $rec->owner_name }}</td>
                                     <td class="px-4 py-3">{{ $rec->phone }}</td>
                                     <td class="px-4 py-3">{{ $rec->address }}</td>  
+<td class="px-4 py-3">
+    Rp {{ number_format($rec->total_saldo, 0, ',', '.') }}
+</td>
 
+<td class="px-4 py-3">
+    Rp {{ number_format($rec->total_transaksi, 0, ',', '.') }}
+</td>
+
+<td class="px-4 py-3">
+    Rp {{ number_format($rec->total_pending, 0, ',', '.') }}
+</td>
                                     <!-- Dropdown Aksi -->
                                     <td class="px-4 py-4 text-center">
                                         <details class="inline-block text-left">
