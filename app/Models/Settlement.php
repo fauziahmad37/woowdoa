@@ -26,6 +26,13 @@ class Settlement extends Model
         'amount' => 'integer',
     ];
 
+    public function getCreatedAtAttribute($value)
+    {
+        return \Carbon\Carbon::parse($value)
+            ->setTimezone('Asia/Jakarta')
+            ->format('Y-m-d H:i:s');
+    }
+
     function merchant()
     {
         return $this->belongsTo(Merchant::class, 'merchant_id', 'id');

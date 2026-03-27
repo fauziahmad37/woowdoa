@@ -47,11 +47,11 @@ class NotificationController extends BaseApiController
         $notifications->each(function ($notification) {
             $data = $notification->data;
 
-            $notification->transaction_code = $data['transaction_code'] ?? null;
-            $notification->transaction_date = $data['transaction_date'] ?? null;
-            $notification->amount = isset($data['amount']) ? number_format($data['amount'], 0, ',', '.') : null;
-            $notification->saldo_before = isset($data['saldo_before']) ? number_format($data['saldo_before'], 0, ',', '.') : null;
-            $notification->saldo_after = isset($data['saldo_after']) ? number_format($data['saldo_after'], 0, ',', '.') : null;
+            $notification->transaction_code = $data['transaction_code'] ?? '';
+            $notification->transaction_date = $data['transaction_date'] ?? '';
+            $notification->amount = isset($data['amount']) ? number_format($data['amount'], 0, ',', '.') : '';
+            $notification->saldo_before = isset($data['saldo_before']) ? number_format($data['saldo_before'], 0, ',', '.') : '';
+            $notification->saldo_after = isset($data['saldo_after']) ? number_format($data['saldo_after'], 0, ',', '.') : '';
         });
 
         return $this->successPaginate(
