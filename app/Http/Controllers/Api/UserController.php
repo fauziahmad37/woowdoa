@@ -57,6 +57,7 @@ class UserController extends BaseApiController
         $merchant->city_name = $merchant->city ? $merchant->city->name : null;
         $merchant->district_name = $merchant->district ? $merchant->district->name : null;
         $merchant->village_name = $merchant->village ? $merchant->village->name : null;
+        $merchant->bank_name = $merchant->bank ? $merchant->bank->nama : null;
 
         return $this->success($merchant, 'User profile retrieved successfully');
     }
